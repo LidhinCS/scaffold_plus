@@ -46,7 +46,7 @@ Flagship widget remains `ScaffoldPlus`.
 | --- | --- | --- | --- |
 | **v0.1.0** Core Foundation | Scaffold + async + state widgets | **Completed** (theme config still open) | `0.1.0` (changelog) |
 | **v0.2.0** Connectivity | Plugin-free connectivity UI | **Completed** | `0.2.0+1` |
-| **v0.3.0** Everyday Productivity | Snackbars, dialogs, sheets, search | **Planned** | — |
+| **v0.3.0** Everyday Productivity | Snackbars, dialogs, sheets, search, refresh, theme | **Completed** (unreleased) | — |
 | **v0.4.0** Responsive UI & Utilities | Adaptive / responsive helpers | **Planned** | — |
 | **v0.5.0** Advanced Application UI | Higher-value advanced helpers | **Planned / Future** | — |
 | **v1.0.0** Stable Release | API freeze + pub.dev readiness | **Planned** | — |
@@ -214,48 +214,42 @@ Plugin-free connectivity **presentation**. Apps supply `bool` / `Stream<bool>` (
 
 # In Progress
 
-_None._
+_None — v0.3.0 implementation complete (unreleased)._
 
----
-
-# Planned
-
-## v0.3.0 — Everyday Productivity
-
-Goal: high-frequency UI helpers that add clear value beyond Flutter primitives. Prefer thin, opinionated helpers — **do not** wrap widgets that only rename SDK APIs.
+## v0.3.0 — Everyday Productivity (completed, unreleased)
 
 ### PlusSnackbar
 
 | Field | Detail |
 | --- | --- |
 | **Purpose** | Consistent, theme-aware snackbar helpers for success/info/error feedback. |
-| **Public API** | `PlusSnackbar` (static helpers and/or small config type — finalize at implementation) |
-| **Main functionality** | Show/hide with sensible defaults (duration, action, semantics); optional messenger context helpers. |
+| **Public API** | `PlusSnackbar`, `PlusSnackbarTone` |
+| **Main functionality** | `show` / `success` / `info` / `error` / `hide` / `clear`; Material 3 tones; optional action; clears current by default. |
 | **Dependencies** | Flutter SDK only |
-| **Testing** | Show/dismiss, theming, action callbacks, a11y labels |
-| **Status** | **Planned** |
+| **Testing** | `test/src/feedback/plus_snackbar_test.dart` |
+| **Status** | **Completed** (unreleased) |
 
-### PlusDialog / PlusConfirmDialog
+### PlusDialog / PlusConfirmationDialog
 
 | Field | Detail |
 | --- | --- |
 | **Purpose** | Standard alert and confirm flows without app-specific boilerplate. |
-| **Public API** | `PlusDialog`, `PlusConfirmDialog` |
-| **Main functionality** | Title/content/actions; confirm/cancel callbacks; Material 3 dialog theming. |
+| **Public API** | `PlusDialog`, `PlusConfirmationDialog` |
+| **Main functionality** | Alert `show`/`alert`; confirmation returns `bool`; optional destructive confirm. |
 | **Dependencies** | Flutter SDK only |
-| **Testing** | Render, actions, barrier dismiss, dark/light, text scale |
-| **Status** | **Planned** |
+| **Testing** | `test/src/dialogs/plus_dialog_test.dart`, `plus_confirmation_dialog_test.dart` |
+| **Status** | **Completed** (unreleased) |
 
 ### PlusBottomSheet
 
 | Field | Detail |
 | --- | --- |
-| **Purpose** | Consistent modal/persistent bottom-sheet presentation helpers. |
-| **Public API** | `PlusBottomSheet` (show helpers + optional content chrome) |
-| **Main functionality** | Safe-area aware sheets with optional drag handle / title; avoid duplicating `showModalBottomSheet` unless API clearly simplifies. |
+| **Purpose** | Consistent modal bottom-sheet presentation helpers. |
+| **Public API** | `PlusBottomSheet` |
+| **Main functionality** | `show` / `showScrollable` with optional title, drag handle, safe area, height factor. |
 | **Dependencies** | Flutter SDK only |
-| **Testing** | Present/dismiss, scroll content, theming |
-| **Status** | **Planned** |
+| **Testing** | `test/src/sheets/plus_bottom_sheet_test.dart` |
+| **Status** | **Completed** (unreleased) |
 
 ### PlusSearchField
 
@@ -263,32 +257,40 @@ Goal: high-frequency UI helpers that add clear value beyond Flutter primitives. 
 | --- | --- |
 | **Purpose** | Common search input pattern for app bars and list filters. |
 | **Public API** | `PlusSearchField` |
-| **Main functionality** | Debounced `onChanged` (optional), clear button, hint, theming; no search engine coupling. |
+| **Main functionality** | Optional debounced `onChanged`, clear button, hint, Material 3 theming; no search engine coupling. |
 | **Dependencies** | Flutter SDK only |
-| **Testing** | Input, clear, debounce timing, semantics |
-| **Status** | **Planned** |
+| **Testing** | `test/src/inputs/plus_search_field_test.dart` |
+| **Status** | **Completed** (unreleased) |
 
-### PlusRefreshIndicator (conditional)
+### PlusRefreshIndicator
 
 | Field | Detail |
 | --- | --- |
-| **Purpose** | Only if it meaningfully simplifies pull-to-refresh wiring with async states. |
+| **Purpose** | Theme-aware pull-to-refresh with optional error handling. |
 | **Public API** | `PlusRefreshIndicator` |
-| **Main functionality** | Thin wrapper coordinating refresh + `PlusAsyncState` / callbacks. Skip if it is a pure rename of Flutter’s widget. |
+| **Main functionality** | Material `RefreshIndicator` defaults + `onError` so failures can dismiss cleanly. |
 | **Dependencies** | Flutter SDK only |
-| **Testing** | Trigger, completion, error path |
-| **Status** | **Planned** (gate: clear value vs SDK) |
+| **Testing** | `test/src/refresh/plus_refresh_indicator_test.dart` |
+| **Status** | **Completed** (unreleased) |
 
-### Shared style defaults (PlusTheme — evaluate)
+### PlusTheme
 
 | Field | Detail |
 | --- | --- |
-| **Purpose** | App-wide defaults for spacing/copy defaults across Plus widgets **only if** duplication becomes painful. |
-| **Public API** | Optional `PlusTheme` / `ThemeExtension` |
-| **Main functionality** | Inherited defaults without forcing a parallel design system. |
+| **Purpose** | App-wide defaults for Plus helpers without a parallel design system. |
+| **Public API** | `PlusTheme` |
+| **Main functionality** | `ThemeExtension` for snackbar duration, search debounce, state/sheet paddings; `PlusTheme.of`. |
 | **Dependencies** | Flutter SDK only |
-| **Testing** | Theme inheritance, override precedence |
-| **Status** | **Planned** (optional; not a blocker for other v0.3 items) |
+| **Testing** | `test/src/theme/plus_theme_test.dart` |
+| **Status** | **Completed** (unreleased) |
+
+---
+
+# Planned
+
+## Later / next milestones
+
+Goal: continue with responsive helpers (v0.4) after cutting v0.3.0.
 
 ---
 
@@ -416,7 +418,7 @@ explicit value case and approval.
 | --- | --- |
 | `PlusAsyncButton` | Button that reflects in-flight async action state |
 | `PlusFeedback` | Unified success/info/error feedback helper |
-| `PlusConfirmationDialog` | Confirm/cancel dialog (may consolidate with planned v0.3 dialog naming) |
+| `PlusConfirmationDialog` | **Shipped in v0.3 (unreleased)** — confirm/cancel returning `bool` |
 | `PlusCountdown` | Timed countdown / resend affordance |
 | `PlusDebouncer` | Debounce utility for UI events |
 | `PlusThrottler` | Throttle utility for UI events |

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ui_plus/src/states/plus_state_layout.dart';
+import 'package:ui_plus/src/theme/plus_theme.dart';
 
 /// A centered full-page offline presentation.
 ///
@@ -32,7 +33,7 @@ class PlusOfflineState extends StatelessWidget {
     this.actionLabel,
     this.onRetry,
     this.spacing = 16,
-    this.padding = const EdgeInsets.all(24),
+    this.padding,
     this.mainAxisSize = MainAxisSize.min,
     this.mainAxisAlignment = MainAxisAlignment.center,
     this.crossAxisAlignment = CrossAxisAlignment.center,
@@ -70,7 +71,9 @@ class PlusOfflineState extends StatelessWidget {
   final double spacing;
 
   /// Outer padding.
-  final EdgeInsetsGeometry padding;
+  ///
+  /// Null uses [PlusTheme.statePadding].
+  final EdgeInsetsGeometry? padding;
 
   /// Column main-axis size.
   final MainAxisSize mainAxisSize;
@@ -114,7 +117,7 @@ class PlusOfflineState extends StatelessWidget {
         : '$title. $message';
 
     return PlusStateLayout(
-      padding: padding,
+      padding: padding ?? PlusTheme.of(context).statePadding,
       child: Column(
         mainAxisSize: mainAxisSize,
         mainAxisAlignment: mainAxisAlignment,

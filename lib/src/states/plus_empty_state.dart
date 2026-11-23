@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ui_plus/src/states/plus_state_layout.dart';
+import 'package:ui_plus/src/theme/plus_theme.dart';
 
 /// A centered empty-state layout for lists, searches, and similar screens.
 ///
@@ -37,7 +38,7 @@ class PlusEmptyState extends StatelessWidget {
     this.actionLabel,
     this.onAction,
     this.spacing = 16,
-    this.padding = const EdgeInsets.all(24),
+    this.padding,
     this.mainAxisSize = MainAxisSize.min,
     this.mainAxisAlignment = MainAxisAlignment.center,
     this.crossAxisAlignment = CrossAxisAlignment.center,
@@ -79,7 +80,9 @@ class PlusEmptyState extends StatelessWidget {
   final double spacing;
 
   /// Outer padding around the column.
-  final EdgeInsetsGeometry padding;
+  ///
+  /// Null uses [PlusTheme.statePadding].
+  final EdgeInsetsGeometry? padding;
 
   /// How much vertical space the column should occupy.
   final MainAxisSize mainAxisSize;
@@ -119,7 +122,7 @@ class PlusEmptyState extends StatelessWidget {
         : '$title. $description';
 
     return PlusStateLayout(
-      padding: padding,
+      padding: padding ?? PlusTheme.of(context).statePadding,
       child: Column(
         mainAxisSize: mainAxisSize,
         mainAxisAlignment: mainAxisAlignment,

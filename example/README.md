@@ -15,3 +15,8 @@ Demos currently cover:
 - `PlusLoader` / `PlusSkeleton`
 - Connectivity (`ScaffoldPlus` banner, `PlusConnectivityBuilder`,
   `PlusOfflineState`, `PlusConnectivityBanner`)
+- `PlusSnackbar`
+- `PlusDialog` / `PlusConfirmationDialog`
+- `PlusBottomSheet`
+- `PlusSearchField`
+- `PlusRefreshIndicator` / `PlusTheme`

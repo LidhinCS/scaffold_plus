@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `PlusSnackbar` / `PlusSnackbarTone` helpers for success, info, and error
+  snackbars (Material 3 theme colors, optional action, clear/hide).
+- `PlusDialog` alert helpers (`show` / `alert`).
+- `PlusConfirmationDialog` confirm/cancel helper returning `bool`, with
+  optional destructive confirm styling.
+- `PlusBottomSheet` modal helpers (`show` / `showScrollable`) with optional
+  title, drag handle, and safe-area defaults.
+- `PlusSearchField` search input with optional debounce, clear action, and
+  Material 3 theming.
+- `PlusRefreshIndicator` pull-to-refresh wrapper with theme colors and optional
+  `onError` handling.
+- `PlusTheme` (`ThemeExtension`) for shared defaults (snackbar duration, search
+  debounce, state/sheet paddings).
+
+### Changed
+
+- README: removed Continuous Integration section from the package docs.
+
 ## [0.2.0] - 2026-11-23
 
 ### Changed

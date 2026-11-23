@@ -19,8 +19,8 @@ into an architecture.
 
 ## Status
 
-**v0.2.0** — core foundation plus plugin-free connectivity UI. Flagship entry is
-`ScaffoldPlus`; building blocks remain independently reusable.
+**v0.2.0** published; **v0.3.0** everyday productivity helpers in progress.
+Flagship entry is `ScaffoldPlus`; building blocks remain independently reusable.
 
 | Component | Status |
 | --- | --- |
@@ -34,6 +34,13 @@ into an architecture.
 | `PlusErrorState` | Available |
 | `PlusLoader` | Available |
 | `PlusSkeleton` | Available |
+| `PlusSnackbar` | Available |
+| `PlusDialog` | Available |
+| `PlusConfirmationDialog` | Available |
+| `PlusBottomSheet` | Available |
+| `PlusSearchField` | Available |
+| `PlusRefreshIndicator` | Available |
+| `PlusTheme` | Available |
 
 See [plan.md](plan.md) (summary: [doc/roadmap.md](doc/roadmap.md)) for the
 release plan. Connectivity design notes: [doc/connectivity.md](doc/connectivity.md).
@@ -280,13 +287,142 @@ const PlusOfflineState(
 )
 ```
 
----
+### PlusSnackbar
 
-## Continuous Integration 🤖
+Theme-aware snackbar helpers for success, info, and error feedback.
 
-UI Plus comes with a built-in [GitHub Actions workflow][github_actions_link] powered by [Very Good Workflows][very_good_workflows_link] but you can also add your preferred CI/CD solution.
+**Solves:** consistent Material 3 snackbars without repeating color / action
+boilerplate.
 
-Out of the box, on each pull request and push, the CI `formats`, `lints`, and `tests` the code. This ensures the code remains consistent and behaves correctly as you add functionality or make changes. The project uses [Very Good Analysis][very_good_analysis_link] for a strict set of analysis options used by our team. Code coverage is enforced using the [Very Good Workflows][very_good_workflows_link].
+**Minimal usage:**
+
+```dart
+PlusSnackbar.success(context, message: 'Saved');
+PlusSnackbar.error(context, message: 'Something went wrong');
+PlusSnackbar.show(
+  context,
+  message: 'Item deleted',
+  actionLabel: 'Undo',
+  onAction: restore,
+);
+```
+
+**Customization:** `tone`, `duration`, `behavior`, `clearCurrent`, colors,
+text style, margin/padding/width. Action renders only when both `actionLabel`
+and `onAction` are set.
+
+**Limitations:** requires a [ScaffoldMessenger] ancestor (usually from
+[MaterialApp] / [Scaffold]).
+
+### PlusDialog
+
+Simple Material 3 alert helpers.
+
+```dart
+await PlusDialog.alert(
+  context,
+  title: 'Offline',
+  message: 'Check your connection and try again.',
+);
+```
+
+**Customization:** `show` accepts `content`, custom `actions`, barrier options,
+and text styles. Default action label is `OK`.
+
+### PlusConfirmationDialog
+
+Confirm / cancel dialog that returns a `bool`.
+
+```dart
+final confirmed = await PlusConfirmationDialog.show(
+  context,
+  title: 'Delete item?',
+  message: 'This cannot be undone.',
+  confirmLabel: 'Delete',
+  isDestructive: true,
+);
+```
+
+Returns `true` on confirm, `false` on cancel or barrier dismiss.
+
+### PlusBottomSheet
+
+Modal bottom-sheet helpers with optional title, drag handle, and safe area.
+
+```dart
+await PlusBottomSheet.show(
+  context: context,
+  title: 'Share',
+  builder: (context) => ListTile(
+    title: const Text('Copy link'),
+    onTap: () => Navigator.pop(context),
+  ),
+);
+
+await PlusBottomSheet.showScrollable(
+  context: context,
+  title: 'Choose item',
+  builder: (context) => ListView(...),
+);
+```
+
+**Customization:** `showDragHandle`, `useSafeArea`, `isScrollControlled`,
+colors, shape, padding, and `heightFactor` for scrollable sheets.
+
+### PlusSearchField
+
+Search input with optional debounce and a clear button.
+
+```dart
+PlusSearchField(
+  hintText: 'Search items',
+  debounceDuration: const Duration(milliseconds: 300),
+  onChanged: (query) => filterItems(query),
+  onSubmitted: (query) => runSearch(query),
+)
+```
+
+**Customization:** controller/focus node, debounce, icons, fill color, border
+radius, full `InputDecoration` override. Clear appears when text is non-empty.
+
+**Limitations:** does not search or filter data — emit queries to the app.
+
+### PlusRefreshIndicator
+
+Pull-to-refresh wrapper with theme-aware colors and optional error handling.
+
+```dart
+PlusRefreshIndicator(
+  onRefresh: reload,
+  onError: (error, stack) {
+    PlusSnackbar.error(context, message: 'Refresh failed');
+  },
+  child: ListView(...),
+)
+```
+
+When `onError` is set, refresh failures are caught and the indicator still
+dismisses. Without `onError`, errors are rethrown.
+
+### PlusTheme
+
+Optional `ThemeExtension` for shared UI Plus defaults.
+
+```dart
+ThemeData(
+  extensions: const [
+    PlusTheme(
+      snackbarDuration: Duration(seconds: 3),
+      searchDebounceDuration: Duration(milliseconds: 300),
+    ),
+  ],
+)
+```
+
+Used when arguments are omitted by `PlusSnackbar` (duration),
+`PlusSearchField` (debounce), empty/error/offline states (`statePadding`), and
+`PlusBottomSheet` (`bottomSheetContentPadding`). Read with
+`PlusTheme.of(context)`.
 
 ---
 
@@ -335,11 +471,9 @@ flutter test
 MIT — see [LICENSE](LICENSE).
 
 [flutter_install_link]: https://docs.flutter.dev/get-started/install
-[github_actions_link]: https://docs.github.com/en/actions/learn-github-actions
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license_link]: https://opensource.org/licenses/MIT
 [mason_link]: https://github.com/felangel/mason
 [very_good_analysis_badge]: https://img.shields.io/badge/style:very_good_analysis-B22C89.svg
 [very_good_analysis_link]: https://pub.dev/packages/very_good_analysis
 [very_good_cli_link]: https://pub.dev/packages/very_good_cli
-[very_good_workflows_link]: https://github.com/VeryGoodOpenSource/very_good_workflows

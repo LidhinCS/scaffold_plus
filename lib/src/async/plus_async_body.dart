@@ -5,6 +5,7 @@ import 'package:ui_plus/src/loaders/plus_loader.dart';
 import 'package:ui_plus/src/loaders/plus_skeleton.dart';
 import 'package:ui_plus/src/states/plus_empty_state.dart';
 import 'package:ui_plus/src/states/plus_error_state.dart';
+import 'package:ui_plus/src/theme/plus_theme.dart';
 
 /// Shared async state renderer used by `PlusAsyncView` and `ScaffoldPlus`.
 ///
@@ -74,7 +75,7 @@ class PlusAsyncBody<T> extends StatelessWidget {
       return loadingBuilder!(context);
     }
     if (useSkeleton) {
-      return skeletonBuilder?.call(context) ?? _defaultSkeleton();
+      return skeletonBuilder?.call(context) ?? _defaultSkeleton(context);
     }
     return _defaultLoading();
   }
@@ -83,10 +84,10 @@ class PlusAsyncBody<T> extends StatelessWidget {
     return const Center(child: PlusLoader());
   }
 
-  Widget _defaultSkeleton() {
-    return const Padding(
-      padding: EdgeInsets.all(24),
-      child: Column(
+  Widget _defaultSkeleton(BuildContext context) {
+    return Padding(
+      padding: PlusTheme.of(context).statePadding,
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           PlusSkeleton(height: 20, width: 180),

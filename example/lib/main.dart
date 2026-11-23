@@ -19,6 +19,9 @@ class UiPlusExampleApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         useMaterial3: true,
+        extensions: const [
+          PlusTheme(searchDebounceDuration: Duration(milliseconds: 250)),
+        ],
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -26,6 +29,9 @@ class UiPlusExampleApp extends StatelessWidget {
           brightness: Brightness.dark,
         ),
         useMaterial3: true,
+        extensions: const [
+          PlusTheme(searchDebounceDuration: Duration(milliseconds: 250)),
+        ],
       ),
       home: const _HomePage(),
     );
@@ -84,6 +90,31 @@ class _HomePage extends StatelessWidget {
             title: 'Connectivity',
             subtitle: 'Banner, offline state, and builder demos',
             builder: (_) => const _ConnectivityDemoPage(),
+          ),
+          _DemoTile(
+            title: 'PlusSnackbar',
+            subtitle: 'Success, info, and error snackbars',
+            builder: (_) => const _SnackbarDemoPage(),
+          ),
+          _DemoTile(
+            title: 'Dialogs',
+            subtitle: 'Alert and confirmation dialogs',
+            builder: (_) => const _DialogsDemoPage(),
+          ),
+          _DemoTile(
+            title: 'PlusBottomSheet',
+            subtitle: 'Modal and scrollable bottom sheets',
+            builder: (_) => const _BottomSheetDemoPage(),
+          ),
+          _DemoTile(
+            title: 'PlusSearchField',
+            subtitle: 'Search input with debounce and clear',
+            builder: (_) => const _SearchFieldDemoPage(),
+          ),
+          _DemoTile(
+            title: 'PlusRefreshIndicator',
+            subtitle: 'Pull-to-refresh with error handling',
+            builder: (_) => const _RefreshIndicatorDemoPage(),
           ),
         ],
       ),
@@ -534,6 +565,293 @@ class _ConnectivityDemoPageState extends State<_ConnectivityDemoPage> {
           const SizedBox(height: 8),
           PlusConnectivityBanner(isConnected: _isConnected),
         ],
+      ),
+    );
+  }
+}
+
+class _SnackbarDemoPage extends StatelessWidget {
+  const new();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('PlusSnackbar')),
+      body: ListView(
+        padding: const EdgeInsets.all(24),
+        children: [
+          FilledButton(
+            onPressed: () =>
+                PlusSnackbar.success(context, message: 'Changes saved'),
+            child: const Text('Success'),
+          ),
+          const SizedBox(height: 12),
+          FilledButton.tonal(
+            onPressed: () => PlusSnackbar.info(
+              context,
+              message: 'Sync is paused while offline',
+            ),
+            child: const Text('Info'),
+          ),
+          const SizedBox(height: 12),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+            onPressed: () => PlusSnackbar.error(
+              context,
+              message: 'Could not save changes',
+              actionLabel: 'Retry',
+              onAction: () =>
+                  PlusSnackbar.info(context, message: 'Retry queued'),
+            ),
+            child: const Text('Error with action'),
+          ),
+          const SizedBox(height: 12),
+          OutlinedButton(
+            onPressed: () => PlusSnackbar.hide(context),
+            child: const Text('Hide current'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DialogsDemoPage extends StatelessWidget {
+  const new();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Dialogs')),
+      body: ListView(
+        padding: const EdgeInsets.all(24),
+        children: [
+          FilledButton(
+            onPressed: () => PlusDialog.alert(
+              context,
+              title: 'Heads up',
+              message: 'Your session will expire in 5 minutes.',
+            ),
+            child: const Text('Alert dialog'),
+          ),
+          const SizedBox(height: 12),
+          FilledButton.tonal(
+            onPressed: () async {
+              final confirmed = await PlusConfirmationDialog.show(
+                context,
+                title: 'Discard draft?',
+                message: 'Unsaved changes will be lost.',
+                confirmLabel: 'Discard',
+                cancelLabel: 'Keep editing',
+              );
+              if (!context.mounted) return;
+              PlusSnackbar.info(
+                context,
+                message: confirmed ? 'Draft discarded' : 'Kept editing',
+              );
+            },
+            child: const Text('Confirmation dialog'),
+          ),
+          const SizedBox(height: 12),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+            onPressed: () async {
+              final confirmed = await PlusConfirmationDialog.show(
+                context,
+                title: 'Delete account?',
+                message: 'This action cannot be undone.',
+                confirmLabel: 'Delete',
+                isDestructive: true,
+              );
+              if (!context.mounted) return;
+              PlusSnackbar.info(
+                context,
+                message: confirmed ? 'Account deleted' : 'Cancelled',
+              );
+            },
+            child: const Text('Destructive confirmation'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BottomSheetDemoPage extends StatelessWidget {
+  const new();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('PlusBottomSheet')),
+      body: ListView(
+        padding: const EdgeInsets.all(24),
+        children: [
+          FilledButton(
+            onPressed: () => PlusBottomSheet.show<void>(
+              context: context,
+              title: 'Share',
+              builder: (sheetContext) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.link),
+                      title: const Text('Copy link'),
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        if (!context.mounted) return;
+                        PlusSnackbar.success(context, message: 'Link copied');
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.share_outlined),
+                      title: const Text('Share elsewhere'),
+                      onTap: () => Navigator.pop(sheetContext),
+                    ),
+                  ],
+                );
+              },
+            ),
+            child: const Text('Simple sheet'),
+          ),
+          const SizedBox(height: 12),
+          FilledButton.tonal(
+            onPressed: () => PlusBottomSheet.showScrollable<void>(
+              context: context,
+              title: 'Choose item',
+              heightFactor: 0.55,
+              builder: (sheetContext) {
+                return ListView.builder(
+                  itemCount: 40,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text('Item ${index + 1}'),
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        if (!context.mounted) return;
+                        PlusSnackbar.info(
+                          context,
+                          message: 'Picked item ${index + 1}',
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+            child: const Text('Scrollable sheet'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SearchFieldDemoPage extends StatefulWidget {
+  const new();
+
+  @override
+  State<_SearchFieldDemoPage> createState() => _SearchFieldDemoPageState();
+}
+
+class _SearchFieldDemoPageState extends State<_SearchFieldDemoPage> {
+  static const _items = ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta'];
+
+  String _query = '';
+
+  @override
+  Widget build(BuildContext context) {
+    final filtered = _items
+        .where((item) => item.toLowerCase().contains(_query.toLowerCase()))
+        .toList(growable: false);
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('PlusSearchField')),
+      body: ListView(
+        padding: const EdgeInsets.all(24),
+        children: [
+          PlusSearchField(
+            hintText: 'Search items',
+            onChanged: (value) => setState(() => _query = value),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            _query.isEmpty
+                ? 'All items'
+                : '${filtered.length} result${filtered.length == 1 ? '' : 's'}',
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          const SizedBox(height: 8),
+          if (filtered.isEmpty)
+            const PlusEmptyState(
+              title: 'No matches',
+              description: 'Try a different search term.',
+              icon: Icons.search_off,
+            )
+          else
+            ...filtered.map(
+              (item) =>
+                  ListTile(contentPadding: EdgeInsets.zero, title: Text(item)),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RefreshIndicatorDemoPage extends StatefulWidget {
+  const new();
+
+  @override
+  State<_RefreshIndicatorDemoPage> createState() =>
+      _RefreshIndicatorDemoPageState();
+}
+
+class _RefreshIndicatorDemoPageState extends State<_RefreshIndicatorDemoPage> {
+  final List<String> _items = List.generate(12, (index) => 'Item ${index + 1}');
+  bool _failNext = false;
+
+  Future<void> _refresh() async {
+    await Future<void>.delayed(const Duration(milliseconds: 600));
+    if (_failNext) {
+      _failNext = false;
+      throw StateError('Simulated refresh failure');
+    }
+    if (!mounted) return;
+    setState(() {
+      _items.insert(0, 'Item ${_items.length + 1}');
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('PlusRefreshIndicator'),
+        actions: [
+          TextButton(
+            onPressed: () => setState(() => _failNext = true),
+            child: const Text('Fail next'),
+          ),
+        ],
+      ),
+      body: PlusRefreshIndicator(
+        onRefresh: _refresh,
+        onError: (error, stackTrace) {
+          PlusSnackbar.error(context, message: 'Refresh failed');
+        },
+        child: ListView.builder(
+          physics: const AlwaysScrollableScrollPhysics(),
+          itemCount: _items.length,
+          itemBuilder: (context, index) {
+            return ListTile(title: Text(_items[index]));
+          },
+        ),
       ),
     );
   }
