@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:scaffold_plus/src/connectivity/plus_connectivity_banner.dart';
-import 'package:scaffold_plus/src/connectivity/plus_connectivity_config.dart';
+import 'package:ui_plus/src/connectivity/plus_connectivity_banner.dart';
+import 'package:ui_plus/src/connectivity/plus_connectivity_config.dart';
 
 /// Builds a custom connectivity banner for the given status.
 typedef PlusConnectivityBannerBuilder = Widget Function(

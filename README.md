@@ -1,11 +1,14 @@
-# Scaffold Plus
+# UI Plus
 
 [![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link]
 [![Powered by Mason](https://img.shields.io/endpoint?url=https%3A%2F%2Ftinyurl.com%2Fmason-badge)](https://github.com/felangel/mason)
 [![License: MIT][license_badge]][license_link]
 
-Reusable Flutter building blocks for common application states and layouts,
-without locking developers into an architecture.
+**More power to your Flutter UI.**
+
+A collection of reusable Flutter UI components, application states,
+connectivity features and productivity utilities — without locking developers
+into an architecture.
 
 ## Goals
 
@@ -16,7 +19,7 @@ without locking developers into an architecture.
 
 ## Status
 
-**v0.2.0** — core foundation plus plugin-free connectivity UI. Primary entry is
+**v0.2.0** — core foundation plus plugin-free connectivity UI. Flagship entry is
 `ScaffoldPlus`; building blocks remain independently reusable.
 
 | Component | Status |
@@ -37,18 +40,18 @@ release plan. Connectivity design notes: [doc/connectivity.md](doc/connectivity.
 
 ## Installation 💻
 
-**❗ In order to start using Scaffold Plus you must have the [Flutter SDK][flutter_install_link] installed on your machine.**
+**❗ In order to start using UI Plus you must have the [Flutter SDK][flutter_install_link] installed on your machine.**
 
 Supported versions match `pubspec.yaml` (`Flutter ^3.47.0`, `Dart ^3.13.0`).
 
 Install via `dart pub add`:
 
 ```sh
-dart pub add scaffold_plus
+dart pub add ui_plus
 ```
 
 ```dart
-import 'package:scaffold_plus/scaffold_plus.dart';
+import 'package:ui_plus/ui_plus.dart';
 ```
 
 ## Quick start
@@ -88,7 +91,7 @@ flutter run
 
 ### ScaffoldPlus
 
-Drop-in replacement for Flutter's `Scaffold` with optional async body
+Flagship drop-in replacement for Flutter's `Scaffold` with optional async body
 rendering. Composes a native `Scaffold` internally (so `Scaffold.of` works).
 
 **Solves:** one widget for chrome + loading / empty / error / success.
@@ -281,7 +284,7 @@ const PlusOfflineState(
 
 ## Continuous Integration 🤖
 
-Scaffold Plus comes with a built-in [GitHub Actions workflow][github_actions_link] powered by [Very Good Workflows][very_good_workflows_link] but you can also add your preferred CI/CD solution.
+UI Plus comes with a built-in [GitHub Actions workflow][github_actions_link] powered by [Very Good Workflows][very_good_workflows_link] but you can also add your preferred CI/CD solution.
 
 Out of the box, on each pull request and push, the CI `formats`, `lints`, and `tests` the code. This ensures the code remains consistent and behaves correctly as you add functionality or make changes. The project uses [Very Good Analysis][very_good_analysis_link] for a strict set of analysis options used by our team. Code coverage is enforced using the [Very Good Workflows][very_good_workflows_link].
 
@@ -323,7 +326,7 @@ flutter test
 
 1. Keep changes scoped to the current milestone.
 2. Add widget tests for every new public component.
-3. Export public APIs from `lib/scaffold_plus.dart` only.
+3. Export public APIs from `lib/ui_plus.dart` only.
 4. Update the example app and this README when APIs change.
 5. Run format, analyze, and tests before opening a PR.
 

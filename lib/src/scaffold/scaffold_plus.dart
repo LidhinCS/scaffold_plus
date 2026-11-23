@@ -1,10 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:scaffold_plus/src/async/plus_async_body.dart';
-import 'package:scaffold_plus/src/async/plus_async_state.dart';
-import 'package:scaffold_plus/src/async/plus_async_types.dart';
-import 'package:scaffold_plus/src/connectivity/plus_connectivity_config.dart';
-import 'package:scaffold_plus/src/connectivity/plus_connectivity_overlay.dart';
+import 'package:ui_plus/src/async/plus_async_body.dart';
+import 'package:ui_plus/src/async/plus_async_state.dart';
+import 'package:ui_plus/src/async/plus_async_types.dart';
+import 'package:ui_plus/src/connectivity/plus_connectivity_config.dart';
+import 'package:ui_plus/src/connectivity/plus_connectivity_overlay.dart';
 
 /// A drop-in [Scaffold] replacement with optional async body rendering and
 /// optional connectivity banners.

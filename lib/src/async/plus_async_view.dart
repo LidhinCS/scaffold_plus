@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:scaffold_plus/src/async/plus_async_body.dart';
-import 'package:scaffold_plus/src/async/plus_async_state.dart';
-import 'package:scaffold_plus/src/async/plus_async_types.dart';
+import 'package:ui_plus/src/async/plus_async_body.dart';
+import 'package:ui_plus/src/async/plus_async_state.dart';
+import 'package:ui_plus/src/async/plus_async_types.dart';
 
 /// Renders loading, failure, empty, or success UI from a single [state].
 ///

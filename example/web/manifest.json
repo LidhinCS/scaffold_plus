@@ -1,6 +1,6 @@
 {
-    "name": "scaffold_plus_example",
-    "short_name": "scaffold_plus_example",
+    "name": "ui_plus_example",
+    "short_name": "ui_plus_example",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

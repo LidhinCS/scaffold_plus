@@ -1,17 +1,19 @@
 ---
-description: scaffold_plus package conventions and implementation constraints
+description: ui_plus package conventions and implementation constraints
 alwaysApply: true
 ---
 
-# scaffold_plus
+# ui_plus (UI Plus)
 
 This is a reusable Flutter package, not an application.
+
+**Positioning:** UI Plus — More power to your Flutter UI.
 
 ## Architecture
 
 - Keep core APIs architecture agnostic.
 - Do not depend on Bloc, Riverpod, Provider, GetX, Dio, or networking clients in the core package.
-- Public APIs must be exported from `lib/scaffold_plus.dart`.
+- Public APIs must be exported from `lib/ui_plus.dart`.
 - Keep implementation files inside `lib/src/`.
 - Do not ask package users to import from `src/`.
 

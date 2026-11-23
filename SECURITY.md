@@ -1,6 +1,6 @@
 # Security Policy
 
-This document describes which versions of Scaffold Plus are
+This document describes which versions of UI Plus are
 supported with security updates and how to report a vulnerability.
 
 ## Supported Versions
@@ -15,7 +15,7 @@ supported.
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in Scaffold Plus,
+If you discover a security vulnerability in UI Plus,
 please report it privately to the maintainers. For projects hosted on GitHub,
 open a private security advisory through the repository's **Security** tab.
 Otherwise, contact the maintainers directly.

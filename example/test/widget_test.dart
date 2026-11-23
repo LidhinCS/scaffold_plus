@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:scaffold_plus/scaffold_plus.dart';
-import 'package:scaffold_plus_example/main.dart';
+import 'package:ui_plus/ui_plus.dart';
+import 'package:ui_plus_example/main.dart';
 
 void main() {
   testWidgets('example app lists ScaffoldPlus demo first', (tester) async {
-    await tester.pumpWidget(const ScaffoldPlusExampleApp());
+    await tester.pumpWidget(const UiPlusExampleApp());
 
     expect(find.text('ScaffoldPlus'), findsOneWidget);
     expect(find.text('PlusAsyncView'), findsOneWidget);
@@ -17,7 +17,7 @@ void main() {
     await tester.pumpWidget(
       const MediaQuery(
         data: MediaQueryData(disableAnimations: true),
-        child: ScaffoldPlusExampleApp(),
+        child: UiPlusExampleApp(),
       ),
     );
 

@@ -1,10 +1,14 @@
-# scaffold_plus — Development Roadmap
+# ui_plus (UI Plus) — Development Roadmap
 
-> **Role:** Central development roadmap for `scaffold_plus`.  
+> **Role:** Central development roadmap for `ui_plus`.  
+> **Branding:** UI Plus — More power to your Flutter UI.  
 > **Last verified against source:** 2026-11-23 (lib exports, tests, example, docs).  
-> **Package version in `pubspec.yaml`:** `0.2.0+1`
+> **Package version in `pubspec.yaml`:** `0.2.0`
 
-Modular, architecture-agnostic Flutter UI toolkit for common application states and layouts. Core stays free of Bloc, Riverpod, Provider, GetX, Dio, and connectivity plugins.
+Modular, architecture-agnostic Flutter UI toolkit for reusable components,
+application states, connectivity presentation, and productivity utilities.
+Core stays free of Bloc, Riverpod, Provider, GetX, Dio, and connectivity plugins.
+Flagship widget remains `ScaffoldPlus`.
 
 ---
 
@@ -126,7 +130,7 @@ Modular, architecture-agnostic Flutter UI toolkit for common application states 
 | Field | Detail |
 | --- | --- |
 | **Purpose** | Shipable package skeleton and quality bar. |
-| **Public API** | `package:scaffold_plus/scaffold_plus.dart` barrel |
+| **Public API** | `package:ui_plus/ui_plus.dart` barrel |
 | **Main functionality** | VGV analysis/CI, example host, README/CHANGELOG, Cursor rules, docs under `doc/`. |
 | **Dependencies** | Runtime: Flutter SDK. Dev: `very_good_analysis`, `mocktail`. |
 | **Testing** | Full suite currently **73** widget tests + example smoke test |
@@ -380,7 +384,7 @@ Goal: higher-value helpers that remain architecture-agnostic. Each item requires
 | Field | Detail |
 | --- | --- |
 | **Purpose** | Map Bloc/Riverpod states → `PlusAsyncState` without polluting core. |
-| **Public API** | Separate packages e.g. `scaffold_plus_bloc`, `scaffold_plus_riverpod` |
+| **Public API** | Separate packages e.g. `ui_plus_bloc`, `ui_plus_riverpod` |
 | **Main functionality** | Thin adapters only when a real integration API exists. |
 | **Dependencies** | Live in companion packages |
 | **Testing** | Adapter unit/widget tests in those packages |
@@ -446,7 +450,7 @@ Revisit only when they reduce real app boilerplate without violating architectur
 | Connectivity is presentation-only (`bool`/`Stream<bool>`) | Apps own reachability |
 | Banner via `Stack` overlay | Body does not resize |
 | Silent first connectivity status | No false “restored” on launch |
-| Public import only via `lib/scaffold_plus.dart` | Stable surface |
+| Public import only via `lib/ui_plus.dart` | Stable surface |
 | No empty folders for speculative features | Implement when scheduled |
 | Keep `ScaffoldPlus` focused | New utilities as independent widgets/helpers |
 
@@ -454,7 +458,7 @@ Revisit only when they reduce real app boilerplate without violating architectur
 
 ## Current public export surface
 
-From `lib/scaffold_plus.dart`:
+From `lib/ui_plus.dart`:
 
 - Async: `PlusAsyncState`, `PlusLoading`, `PlusSuccess`, `PlusFailure`, typedefs, `PlusAsyncView`
 - Connectivity: `PlusConnectivityBanner`, `PlusConnectivityBuilder`, `PlusConnectivityConfig`, `PlusConnectivityBannerPosition`, `PlusConnectivityOverlay`, `PlusConnectivityBannerBuilder`, `PlusOfflineState`
@@ -480,4 +484,4 @@ From `lib/scaffold_plus.dart`:
 - Prefer Flutter SDK; justify any new dependency before adding it.
 - Update this `plan.md` when milestone status changes.
 
-**Related docs:** [README](README.md) · [CHANGELOG](CHANGELOG.md) · [doc/roadmap.md](doc/roadmap.md) · [doc/async_view_design.md](doc/async_view_design.md) · [doc/connectivity.md](doc/connectivity.md) · [`.cursor/rules/scaffold-plus.mdc`](.cursor/rules/scaffold-plus.mdc)
+**Related docs:** [README](README.md) · [CHANGELOG](CHANGELOG.md) · [doc/roadmap.md](doc/roadmap.md) · [doc/async_view_design.md](doc/async_view_design.md) · [doc/connectivity.md](doc/connectivity.md) · [`.cursor/rules/ui-plus.mdc`](.cursor/rules/ui-plus.mdc)

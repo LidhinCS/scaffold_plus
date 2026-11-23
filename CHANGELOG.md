@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.0] - 2026-11-23
 
+### Changed
+
+- Renamed the Dart package from `scaffold_plus` to `ui_plus` (import
+  `package:ui_plus/ui_plus.dart`). Public widget APIs such as `ScaffoldPlus`
+  are unchanged. Branding: **UI Plus — More power to your Flutter UI.**
+
 ### Added
 
 - Connectivity UI (plugin-free presentation only):
@@ -41,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `PlusSkeleton` composable shimmer placeholder with reduced-motion support.
 - `PlusAsyncState` sealed model (`PlusLoading`, `PlusSuccess`, `PlusFailure`)
   and `PlusAsyncView` for async UI switching.
-- Example app demos for scaffold-plus, async view, and state widgets.
+- Example app demos for scaffold, async view, and state widgets.
 - Product-oriented package description and public entry-point docs.
 - `CHANGELOG.md`, `doc/roadmap.md`, `plan.md`, and Cursor project rules.
 
@@ -49,5 +55,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Replaced the temporary `ScaffoldPlus` marker class with a real widget API
   (**breaking** for the placeholder-only constructor).
-- Adapted the Very Good Flutter Package template toward `scaffold_plus`
-  product goals while preserving VGV analysis, testing, and CI workflows.
+- Adapted the Very Good Flutter Package template toward product goals while
+  preserving VGV analysis, testing, and CI workflows.

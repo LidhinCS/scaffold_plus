@@ -1,9 +1,12 @@
-/// Reusable Flutter building blocks for common application states and layouts.
+/// UI Plus — More power to your Flutter UI.
+///
+/// A collection of reusable Flutter UI components, application states,
+/// connectivity features and productivity utilities.
 ///
 /// Import this library for all supported public APIs:
 ///
 /// ```dart
-/// import 'package:scaffold_plus/scaffold_plus.dart';
+/// import 'package:ui_plus/ui_plus.dart';
 /// ```
 library;
 

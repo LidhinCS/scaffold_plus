@@ -1,7 +1,7 @@
 # Connectivity UI
 
-`scaffold_plus` provides connectivity **presentation** only. The core package
-does not depend on `connectivity_plus` or any networking client.
+UI Plus provides connectivity **presentation** only. The core package does not
+depend on `connectivity_plus` or any networking client.
 
 ## Supplying status
 

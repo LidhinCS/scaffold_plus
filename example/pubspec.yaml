@@ -1,5 +1,5 @@
-name: scaffold_plus_example
-description: Example app for the scaffold_plus package.
+name: ui_plus_example
+description: Example app for the UI Plus package.
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  scaffold_plus:
+  ui_plus:
     path: ../
 
 dev_dependencies:

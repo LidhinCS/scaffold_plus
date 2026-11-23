@@ -1,12 +1,15 @@
-name: scaffold_plus
+name: ui_plus
 description: >
-  Reusable Flutter building blocks for common application states and layouts,
-  without locking developers into an architecture.
-version: 0.2.0+1
+  A collection of reusable Flutter UI components, application states,
+  connectivity features and productivity utilities.
+version: 0.2.0
+homepage: https://github.com/LidhinCS/ui_plus
+repository: https://github.com/LidhinCS/ui_plus
+issue_tracker: https://github.com/LidhinCS/ui_plus/issues
 
 environment:
   sdk: ^3.13.0
-  flutter: ^3.47.0
+  flutter: '>=3.47.0'
 
 dependencies:
   flutter:

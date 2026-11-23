@@ -16,7 +16,8 @@
   ],
   "useGitignore": true,
   "words": [
-    "scaffold_plus",
+    "ui_plus",
+    "uiplus",
     "roadmap",
     "pubspec",
     "Keepachangelog",
@@ -34,6 +35,7 @@
     "ConnectivityBanner",
     "ConnectivityOverlay",
     "ConnectivityBuilder",
-    "ConnectivityConfig"
+    "ConnectivityConfig",
+    "ScaffoldPlus"
   ]
 }

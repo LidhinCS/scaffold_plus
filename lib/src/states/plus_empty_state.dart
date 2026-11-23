@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scaffold_plus/src/states/plus_state_layout.dart';
+import 'package:ui_plus/src/states/plus_state_layout.dart';
 
 /// A centered empty-state layout for lists, searches, and similar screens.
 ///
