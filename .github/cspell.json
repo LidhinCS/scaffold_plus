@@ -36,6 +36,10 @@
     "ConnectivityOverlay",
     "ConnectivityBuilder",
     "ConnectivityConfig",
-    "ScaffoldPlus"
+    "ScaffoldPlus",
+    "Riverpod",
+    "riverpod",
+    "Snackbars",
+    "affordances"
   ]
 }
