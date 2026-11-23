@@ -129,7 +129,7 @@ Flagship widget remains `ScaffoldPlus`.
 
 | Field | Detail |
 | --- | --- |
-| **Purpose** | Shipable package skeleton and quality bar. |
+| **Purpose** | Shippable package skeleton and quality bar. |
 | **Public API** | `package:ui_plus/ui_plus.dart` barrel |
 | **Main functionality** | VGV analysis/CI, example host, README/CHANGELOG, Cursor rules, docs under `doc/`. |
 | **Dependencies** | Runtime: Flutter SDK. Dev: `very_good_analysis`, `mocktail`. |
