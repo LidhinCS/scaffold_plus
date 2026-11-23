@@ -48,6 +48,13 @@
     "lidhincs",
     "Lidhin",
     "screenflow",
-    "squidfunk"
+    "squidfunk",
+    "toastification",
+    "ToastHost",
+    "Pulse",
+    "JetBrains",
+    "twemoji",
+    "inlinehilite",
+    "linenums"
   ]
 }

@@ -1,21 +1,59 @@
-# Feedback UI
+# Feedback & toasts
 
-Polished snackbars, dialogs, and connectivity banners — Material 3 with motion.
+Material 3 snackbars, dialogs, and connectivity banners with polished motion.
+
+!!! tip "Seen in Pulse Tasks"
+    Cubits call `PlusSnackbar.success(message: …)` with no context after
+    `PlusToastHost` is wired in `main.dart`. Deletes use
+    `PlusConfirmationDialog`; compose uses `PlusBottomSheet` + `PlusAsyncButton`.
 
 ## Snackbars
 
+=== "With context"
+
+    ```dart
+    PlusSnackbar.success(context: context, message: 'Saved');
+    PlusSnackbar.error(context: context, message: 'Could not sync');
+    PlusSnackbar.info(
+      context: context,
+      message: 'Draft discarded',
+      actionLabel: 'Undo',
+      onAction: restore,
+    );
+    ```
+
+=== "Global (no context)"
+
+    ```dart
+    PlusSnackbar.success(message: 'Saved');
+    PlusSnackbar.error(message: 'Could not sync');
+    PlusSnackbar.hide();
+    PlusSnackbar.clear();
+    ```
+
+Tone icon badge, floating card chrome, optional `showIcon: false`.
+
+### Global toasts (optional)
+
+Wire the host once (toastification-style). Call sites can omit `context`:
+
 ```dart
-PlusSnackbar.success(context, message: 'Saved');
-PlusSnackbar.error(context, message: 'Could not sync');
-PlusSnackbar.info(
-  context,
-  message: 'Draft discarded',
-  actionLabel: 'Undo',
-  onAction: restore,
+MaterialApp(
+  scaffoldMessengerKey: PlusToastHost.messengerKey, // optional but explicit
+  builder: (context, child) => PlusToastHost(child: child!),
+  home: const HomePage(),
 );
 ```
 
-Tone icon badge, floating card chrome, optional `showIcon: false`.
+| Setup | Result |
+| --- | --- |
+| `PlusToastHost` via `MaterialApp.builder` | Attaches the ambient `ScaffoldMessenger` |
+| `scaffoldMessengerKey: PlusToastHost.messengerKey` | Key-only fallback without the host widget |
+| Neither | Contextual `context:` argument required |
+
+!!! note "Dialogs stay contextual"
+    Only toasts are global. `PlusDialog` / `PlusConfirmationDialog` still need a
+    `BuildContext` (navigator).
 
 ## Dialogs
 
@@ -35,14 +73,27 @@ final ok = await PlusConfirmationDialog.show(
 );
 ```
 
-Scale + fade entrance and icon headers.
+Scale + fade entrance and icon headers. Destructive confirm uses a filled
+error action.
+
+## Bottom sheets
+
+```dart
+await PlusBottomSheet.show(
+  context: context,
+  title: 'New task',
+  isScrollControlled: true,
+  builder: (context) => const ComposeForm(),
+);
+```
 
 ## Banners
 
-Used by `PlusConnectivityOverlay` / `ScaffoldPlus.connectivityBanner`. Soft card
-chrome with an animated icon badge.
+`PlusConnectivityBanner` / overlay used by `ScaffoldPlus.connectivityBanner` —
+soft card chrome with an animated icon badge.
 
-## Example screenflow
+## See also
 
-In the example app, open **Feedback screenflow** for a guided tour:
-toast → dialog → confirm → banner.
+- [Pulse Tasks](../example/pulse-tasks.md) — global toasts from Cubits
+- [Getting started](../getting-started.md#4-global-toasts-optional) — host setup
+- [ScaffoldPlus](scaffold-plus.md) — `onRefreshError` + snackbars

@@ -23,6 +23,7 @@ export 'src/connectivity/plus_offline_state.dart';
 export 'src/dialogs/plus_confirmation_dialog.dart';
 export 'src/dialogs/plus_dialog.dart';
 export 'src/feedback/plus_snackbar.dart';
+export 'src/feedback/plus_toast_host.dart' show PlusToastHost;
 export 'src/inputs/plus_search_field.dart';
 export 'src/lists/plus_paged_list.dart';
 export 'src/loaders/plus_loader.dart';

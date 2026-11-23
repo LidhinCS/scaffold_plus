@@ -28,7 +28,7 @@ void main() {
     testWidgets('show displays message', (tester) async {
       final context = await pumpHost(tester);
 
-      PlusSnackbar.show(context, message: 'Hello snackbar');
+      PlusSnackbar.show(context: context, message: 'Hello snackbar');
       await tester.pumpAndSettle();
 
       expect(find.text('Hello snackbar'), findsOneWidget);
@@ -39,7 +39,11 @@ void main() {
     testWidgets('can hide tone icon', (tester) async {
       final context = await pumpHost(tester);
 
-      PlusSnackbar.success(context, message: 'No icon', showIcon: false);
+      PlusSnackbar.success(
+        context: context,
+        message: 'No icon',
+        showIcon: false,
+      );
       await tester.pumpAndSettle();
 
       expect(find.byIcon(Icons.check_circle_rounded), findsNothing);
@@ -52,7 +56,7 @@ void main() {
       );
       final context = await pumpHost(tester, theme: theme);
 
-      PlusSnackbar.success(context, message: 'Saved');
+      PlusSnackbar.success(context: context, message: 'Saved');
       await tester.pumpAndSettle();
 
       final snackBar = tester.widget<SnackBar>(find.byType(SnackBar));
@@ -67,7 +71,7 @@ void main() {
       );
       final context = await pumpHost(tester, theme: theme);
 
-      PlusSnackbar.error(context, message: 'Failed');
+      PlusSnackbar.error(context: context, message: 'Failed');
       await tester.pumpAndSettle();
 
       final snackBar = tester.widget<SnackBar>(find.byType(SnackBar));
@@ -82,7 +86,7 @@ void main() {
       );
       final context = await pumpHost(tester, theme: theme);
 
-      PlusSnackbar.info(context, message: 'Heads up');
+      PlusSnackbar.info(context: context, message: 'Heads up');
       await tester.pumpAndSettle();
 
       final snackBar = tester.widget<SnackBar>(find.byType(SnackBar));
@@ -94,7 +98,7 @@ void main() {
       var tapped = false;
 
       PlusSnackbar.show(
-        context,
+        context: context,
         message: 'Deleted',
         actionLabel: 'Undo',
         onAction: () => tapped = true,
@@ -110,7 +114,11 @@ void main() {
     testWidgets('does not show action without onAction', (tester) async {
       final context = await pumpHost(tester);
 
-      PlusSnackbar.show(context, message: 'No action', actionLabel: 'Undo');
+      PlusSnackbar.show(
+        context: context,
+        message: 'No action',
+        actionLabel: 'Undo',
+      );
       await tester.pumpAndSettle();
 
       expect(find.text('Undo'), findsNothing);
@@ -119,9 +127,9 @@ void main() {
     testWidgets('clearCurrent replaces previous snackbar', (tester) async {
       final context = await pumpHost(tester);
 
-      PlusSnackbar.show(context, message: 'First');
+      PlusSnackbar.show(context: context, message: 'First');
       await tester.pump();
-      PlusSnackbar.show(context, message: 'Second');
+      PlusSnackbar.show(context: context, message: 'Second');
       await tester.pumpAndSettle();
 
       expect(find.text('First'), findsNothing);
@@ -131,11 +139,11 @@ void main() {
     testWidgets('hide dismisses current snackbar', (tester) async {
       final context = await pumpHost(tester);
 
-      PlusSnackbar.show(context, message: 'Temporary');
+      PlusSnackbar.show(context: context, message: 'Temporary');
       await tester.pumpAndSettle();
       expect(find.text('Temporary'), findsOneWidget);
 
-      PlusSnackbar.hide(context);
+      PlusSnackbar.hide(context: context);
       await tester.pumpAndSettle();
       expect(find.text('Temporary'), findsNothing);
     });
@@ -150,7 +158,7 @@ void main() {
       );
       final context = await pumpHost(tester, theme: theme);
 
-      PlusSnackbar.success(context, message: 'Dark ok');
+      PlusSnackbar.success(context: context, message: 'Dark ok');
       await tester.pumpAndSettle();
 
       final snackBar = tester.widget<SnackBar>(find.byType(SnackBar));
@@ -161,7 +169,7 @@ void main() {
     testWidgets('defaults to floating behavior', (tester) async {
       final context = await pumpHost(tester);
 
-      PlusSnackbar.show(context, message: 'Floating');
+      PlusSnackbar.show(context: context, message: 'Floating');
       await tester.pumpAndSettle();
 
       final snackBar = tester.widget<SnackBar>(find.byType(SnackBar));

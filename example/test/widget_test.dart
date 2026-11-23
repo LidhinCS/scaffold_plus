@@ -4,48 +4,37 @@ import 'package:ui_plus/ui_plus.dart';
 import 'package:ui_plus_example/main.dart';
 
 void main() {
-  testWidgets('example app lists ScaffoldPlus demo first', (tester) async {
-    await tester.pumpWidget(const UiPlusExampleApp());
-
-    expect(find.text('ScaffoldPlus'), findsOneWidget);
-    expect(find.text('PlusAsyncView'), findsOneWidget);
-  });
-
-  testWidgets('ScaffoldPlus demo switches states from app bar controls', (
-    tester,
-  ) async {
+  testWidgets('Pulse Tasks shell shows Tasks destination', (tester) async {
     await tester.pumpWidget(
       const MediaQuery(
         data: MediaQueryData(disableAnimations: true),
-        child: UiPlusExampleApp(),
+        child: PulseTasksApp(),
       ),
     );
-
-    await tester.ensureVisible(find.text('ScaffoldPlus'));
-    await tester.tap(find.text('ScaffoldPlus'));
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
+    // Fake repository latency + jitter.
+    await tester.pump(const Duration(seconds: 2));
 
-    expect(find.byType(ScaffoldPlus<List<String>>), findsOneWidget);
-    expect(find.text('Alpha'), findsOneWidget);
+    expect(find.byType(PlusAdaptiveScaffold), findsOneWidget);
+    expect(find.text('New task'), findsOneWidget);
+    expect(find.textContaining('Ship ui_plus'), findsOneWidget);
+  });
 
-    await tester.tap(find.widgetWithText(ActionChip, 'Empty'));
+  testWidgets('Settings tab exposes developer gates', (tester) async {
+    await tester.pumpWidget(
+      const MediaQuery(
+        data: MediaQueryData(disableAnimations: true),
+        child: PulseTasksApp(),
+      ),
+    );
     await tester.pump();
-    expect(find.byType(PlusEmptyState), findsOneWidget);
+    await tester.pump(const Duration(seconds: 2));
 
-    await tester.tap(find.widgetWithText(ActionChip, 'Error'));
-    await tester.pump();
-    expect(find.byType(PlusErrorState), findsOneWidget);
+    await tester.tap(find.text('Settings').last);
+    await tester.pumpAndSettle();
 
-    final plainChip = find.widgetWithText(ActionChip, 'Plain body');
-    await tester.ensureVisible(plainChip);
-    await tester.tap(plainChip);
-    await tester.pump();
-    expect(find.textContaining('Plain scaffold body'), findsOneWidget);
-
-    await tester.ensureVisible(find.widgetWithText(ActionChip, 'Loading'));
-    await tester.tap(find.widgetWithText(ActionChip, 'Loading'));
-    await tester.pump();
-    expect(find.byType(PlusSkeleton), findsWidgets);
+    expect(find.text('Developer gates'), findsOneWidget);
+    expect(find.text('Maintenance mode'), findsOneWidget);
+    expect(find.text('Force offline'), findsOneWidget);
   });
 }

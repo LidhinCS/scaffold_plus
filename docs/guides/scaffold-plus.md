@@ -1,9 +1,17 @@
 # ScaffoldPlus
 
-Drop-in `Scaffold` replacement with optional async body, connectivity banner,
-and product-state gates.
+Drop-in replacement for Flutter's `Scaffold` with optional async body,
+connectivity banner, and product-state gates. Composes a native `Scaffold`
+internally (`Scaffold.of` still works).
+
+!!! tip "Seen in Pulse Tasks"
+    The Tasks and Activity tabs are full `ScaffoldPlus` screens with async
+    state, refresh, and gates driven by `AppShellCubit`.
+    [Open the walkthrough →](../example/pulse-tasks.md)
 
 ## Body precedence
+
+When multiple modes are active, the first match wins:
 
 1. `maintenanceMode`
 2. `sessionExpired`
@@ -11,25 +19,40 @@ and product-state gates.
 4. Async `state` (when non-null)
 5. `body`
 
-Product states suppress the FAB.
+Product states also suppress the FAB.
 
 ## Async body
+
+Pass a `PlusAsyncState<T>` and a `bodyBuilder` for success data:
 
 ```dart
 ScaffoldPlus<User>(
   state: state,
+  useSkeleton: true,
   isEmpty: (user) => user.items.isEmpty,
   onRetry: reload,
   onRefresh: reload,
   onRefreshError: (error, stack) {
-    PlusSnackbar.error(context, message: 'Refresh failed');
+    PlusSnackbar.error(context: context, message: 'Refresh failed');
   },
   bodyBuilder: (context, user) => UserProfile(user: user),
 )
 ```
 
-`onRefresh` wraps success / empty content in `PlusRefreshIndicator`. Success
-content should be scrollable (e.g. `ListView`).
+| Parameter | Role |
+| --- | --- |
+| `state` | `PlusLoading` / `PlusSuccess` / `PlusFailure` |
+| `bodyBuilder` | Builds success UI from `T` |
+| `isEmpty` | Treats success data as empty → empty state |
+| `useSkeleton` | Skeleton instead of spinner while loading |
+| `onRetry` | Error-state action |
+| `onRefresh` | Wraps success/empty in `PlusRefreshIndicator` |
+
+!!! warning "Scrollable refresh"
+    `onRefresh` needs a scrollable success body (e.g. `ListView` /
+    `PlusPagedList`). Non-scrollable content will not pull.
+
+When `state != null`, the plain `body` parameter is ignored.
 
 ## Product states
 
@@ -47,10 +70,13 @@ ScaffoldPlus(
 )
 ```
 
-Standalone widgets: `PlusMaintenanceMode`, `PlusSessionExpired`,
-`PlusPermissionState`.
+Standalone widgets (usable without `ScaffoldPlus`):
 
-## Connectivity
+- `PlusMaintenanceMode`
+- `PlusSessionExpired`
+- `PlusPermissionState`
+
+## Connectivity banner
 
 ```dart
 ScaffoldPlus(
@@ -59,12 +85,18 @@ ScaffoldPlus(
 )
 ```
 
-Custom `isConnected` / `connectivityStream` always win. See
+Custom `isConnected` / `connectivityStream` always win. Details:
 [Connectivity](connectivity.md).
 
 ## Independent pieces
 
-Prefer these when you already have a `Scaffold`:
+Already have a `Scaffold`? Use the shared renderer:
 
-- `PlusAsyncView` — same async renderer as `ScaffoldPlus`
+- `PlusAsyncView` — same async switching as `ScaffoldPlus`
 - `PlusEmptyState` / `PlusErrorState` / `PlusLoader` / `PlusSkeleton`
+
+## See also
+
+- [Pulse Tasks](../example/pulse-tasks.md) — end-to-end gates + async
+- [State management](state-management.md) — map Cubit/Riverpod → `PlusAsyncState`
+- [Feedback & toasts](feedback.md) — `onRefreshError` UX

@@ -223,11 +223,11 @@ Plugin-free connectivity **presentation**. Apps supply `bool` / `Stream<bool>` (
 | Field | Detail |
 | --- | --- |
 | **Purpose** | Consistent, theme-aware snackbar helpers for success/info/error feedback. |
-| **Public API** | `PlusSnackbar`, `PlusSnackbarTone` |
-| **Main functionality** | `show` / `success` / `info` / `error` / `hide` / `clear`; Material 3 tones; optional action; clears current by default. |
+| **Public API** | `PlusSnackbar`, `PlusSnackbarTone`, `PlusToastHost` |
+| **Main functionality** | `show` / `success` / `info` / `error` / `hide` / `clear`; Material 3 tones; optional action; clears current by default. Optional context-free calls via `PlusToastHost` / `messengerKey`. |
 | **Dependencies** | Flutter SDK only |
-| **Testing** | `test/src/feedback/plus_snackbar_test.dart` |
-| **Status** | **Completed** |
+| **Testing** | `test/src/feedback/plus_snackbar_test.dart`, `plus_toast_host_test.dart` |
+| **Status** | **Completed** (global host unreleased until next pub bump) |
 
 ### PlusDialog / PlusConfirmationDialog
 
@@ -535,5 +535,8 @@ From `lib/ui_plus.dart`:
 - Do not implement speculative features outside the active milestone.
 - Prefer Flutter SDK; justify any new dependency before adding it.
 - Update this `plan.md` when milestone status changes.
+- The `example/` app is **Pulse Tasks** (Bloc showcase), not a widget catalog.
+  Example-only deps (`flutter_bloc`, `equatable`) must never enter core
+  `ui_plus`.
 
-**Related docs:** [README](README.md) · [CHANGELOG](CHANGELOG.md) · [Docs site](https://lidhincs.github.io/ui_plus/) (`docs/` + `mkdocs.yml`) · [doc/roadmap.md](doc/roadmap.md) · [doc/async_view_design.md](doc/async_view_design.md) · [doc/connectivity.md](doc/connectivity.md) · [`.cursor/rules/ui-plus.mdc`](.cursor/rules/ui-plus.mdc)
+**Related docs:** [README](README.md) · [CHANGELOG](CHANGELOG.md) · [Docs site](https://lidhincs.github.io/ui_plus/) · [Pulse Tasks walkthrough](https://lidhincs.github.io/ui_plus/example/pulse-tasks/) · [example/README.md](example/README.md) · [doc/roadmap.md](doc/roadmap.md) · [doc/async_view_design.md](doc/async_view_design.md) · [doc/connectivity.md](doc/connectivity.md) · [`.cursor/rules/ui-plus.mdc`](.cursor/rules/ui-plus.mdc)

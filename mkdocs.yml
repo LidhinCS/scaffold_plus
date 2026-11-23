@@ -4,10 +4,15 @@ site_url: https://lidhincs.github.io/ui_plus/
 repo_url: https://github.com/LidhinCS/ui_plus
 repo_name: LidhinCS/ui_plus
 edit_uri: edit/main/docs/
+copyright: Copyright &copy; UI Plus contributors
 
 theme:
   name: material
   palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: teal
@@ -21,39 +26,71 @@ theme:
       accent: teal
       toggle:
         icon: material/brightness-4
-        name: Switch to light mode
+        name: Switch to system preference
   features:
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.tracking
     - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.sections
+    - navigation.expand
     - navigation.top
+    - navigation.footer
     - search.suggest
+    - search.highlight
     - content.code.copy
+    - content.code.annotate
     - content.action.edit
+    - toc.follow
   icon:
     repo: fontawesome/brands/github
+    logo: material/view-dashboard-outline
+  font:
+    text: Inter
+    code: JetBrains Mono
 
 plugins:
-  - search
+  - search:
+      lang: en
 
 markdown_extensions:
   - admonition
   - attr_list
+  - md_in_html
   - tables
+  - def_list
   - toc:
       permalink: true
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.highlight:
       anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 nav:
   - Home: index.md
   - Getting started: getting-started.md
+  - Example:
+      - Pulse Tasks: example/pulse-tasks.md
   - Guides:
       - ScaffoldPlus: guides/scaffold-plus.md
       - Connectivity: guides/connectivity.md
-      - Feedback UI: guides/feedback.md
+      - Feedback & toasts: guides/feedback.md
       - State management: guides/state-management.md
+      - Lists, search & shell: guides/productivity.md
   - API reference: reference.md
   - Roadmap: roadmap.md
 
@@ -61,8 +98,12 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/LidhinCS/ui_plus
+      name: GitHub
     - icon: material/package-variant
       link: https://pub.dev/packages/ui_plus
+      name: pub.dev
+extra_css:
+  - stylesheets/extra.css
 
 validation:
   links:

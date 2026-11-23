@@ -39,6 +39,7 @@ into an architecture.
 | `PlusLoader` | Available |
 | `PlusSkeleton` | Available |
 | `PlusSnackbar` | Available |
+| `PlusToastHost` | Available (unreleased) |
 | `PlusDialog` | Available |
 | `PlusConfirmationDialog` | Available |
 | `PlusBottomSheet` | Available |
@@ -98,12 +99,18 @@ ScaffoldPlus<void>(
 )
 ```
 
-Run the example host for interactive demos:
+Run **Pulse Tasks**, the Bloc showcase example (real inbox flows, not a
+component catalog):
 
 ```sh
 cd example
+flutter pub get
 flutter run
 ```
+
+See [`example/README.md`](example/README.md). Cubits own domain state; widgets
+map to `PlusAsyncState` at the UI edge. Use **Settings → Developer gates** to
+demo maintenance, session, permission, and offline banners.
 
 ## Components
 
@@ -207,7 +214,7 @@ ScaffoldPlus<List<Item>>(
   state: state,
   onRefresh: reload,
   onRefreshError: (error, stack) {
-    PlusSnackbar.error(context, message: 'Refresh failed');
+    PlusSnackbar.error(context: context, message: 'Refresh failed');
   },
   bodyBuilder: (context, items) => ListView(...),
 )
@@ -418,33 +425,48 @@ PlusSessionExpired(
 
 Does not manage auth — the app owns the expired flag and navigation.
 
-### PlusSnackbar
+### PlusSnackbar / PlusToastHost
 
 Theme-aware snackbar helpers for success, info, and error feedback — with a
 tone icon badge, floating card chrome, and a light spring entrance on the icon.
 
 **Solves:** consistent Material 3 snackbars without repeating color / action
-boilerplate.
+boilerplate. Optional global (context-free) calls via [PlusToastHost], similar
+to toastification.
 
 **Minimal usage:**
 
 ```dart
-PlusSnackbar.success(context, message: 'Saved');
-PlusSnackbar.error(context, message: 'Something went wrong');
+PlusSnackbar.success(context: context, message: 'Saved');
+PlusSnackbar.error(context: context, message: 'Something went wrong');
 PlusSnackbar.show(
-  context,
+  context: context,
   message: 'Item deleted',
   actionLabel: 'Undo',
   onAction: restore,
 );
 ```
 
+**Global toasts (optional):**
+
+```dart
+MaterialApp(
+  scaffoldMessengerKey: PlusToastHost.messengerKey, // optional
+  builder: (context, child) => PlusToastHost(child: child!),
+  home: const HomePage(),
+);
+
+// from a Cubit, interceptor, etc.
+PlusSnackbar.success(message: 'Saved');
+```
+
 **Customization:** `tone`, `duration`, `behavior`, `clearCurrent`, colors,
 text style, margin/padding/width. Action renders only when both `actionLabel`
 and `onAction` are set.
 
-**Limitations:** requires a [ScaffoldMessenger] ancestor (usually from
-[MaterialApp] / [Scaffold]).
+**Limitations:** contextual calls need a [ScaffoldMessenger] ancestor. Global
+calls need [PlusToastHost] (or `scaffoldMessengerKey: PlusToastHost.messengerKey`).
+Dialogs stay context-based.
 
 ### PlusDialog
 
@@ -527,7 +549,7 @@ Pull-to-refresh wrapper with theme-aware colors and optional error handling.
 PlusRefreshIndicator(
   onRefresh: reload,
   onError: (error, stack) {
-    PlusSnackbar.error(context, message: 'Refresh failed');
+    PlusSnackbar.error(context: context, message: 'Refresh failed');
   },
   child: ListView(...),
 )
@@ -565,7 +587,7 @@ PlusAsyncButton(
   onPressed: () async => await saveDraft(),
   successChild: const Text('Saved'),
   onError: (error, stack) {
-    PlusSnackbar.error(context, message: 'Save failed');
+    PlusSnackbar.error(context: context, message: 'Save failed');
   },
   child: const Text('Save'),
 )
@@ -647,6 +669,13 @@ flutter test
 Guides are built with [MkDocs Material](https://squidfunk.github.io/mkdocs-material/)
 and API docs with `dart doc`. The [docs](.github/workflows/docs.yaml) workflow
 publishes both to GitHub Pages on every push to `main`.
+
+Highlights:
+
+- Getting started + feature guides
+- **[Pulse Tasks](https://lidhincs.github.io/ui_plus/example/pulse-tasks/)** —
+  Bloc showcase walkthrough for the example app
+- Generated API reference under `/api/`
 
 Local preview:
 

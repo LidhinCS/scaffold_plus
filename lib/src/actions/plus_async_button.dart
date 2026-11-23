@@ -31,7 +31,7 @@ enum PlusAsyncButtonVariant {
 /// PlusAsyncButton(
 ///   onPressed: () async => await saveDraft(),
 ///   onError: (error, stack) {
-///     PlusSnackbar.error(context, message: 'Save failed');
+///     PlusSnackbar.error(context: context, message: 'Save failed');
 ///   },
 ///   child: const Text('Save'),
 /// )

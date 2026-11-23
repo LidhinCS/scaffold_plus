@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 /// PlusRefreshIndicator(
 ///   onRefresh: reload,
 ///   onError: (error, stack) {
-///     PlusSnackbar.error(context, message: 'Refresh failed');
+///     PlusSnackbar.error(context: context, message: 'Refresh failed');
 ///   },
 ///   child: ListView(...),
 /// )

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ui_plus/src/feedback/plus_toast_host.dart';
 import 'package:ui_plus/src/theme/plus_theme.dart';
 
 /// Visual tone for [PlusSnackbar] messages.
@@ -18,13 +19,16 @@ enum PlusSnackbarTone {
 /// Prefer these helpers over ad-hoc [SnackBar] construction when you want
 /// consistent success / info / error styling across an app.
 ///
+/// Pass `context`, or omit it after wiring [PlusToastHost] (or
+/// [PlusToastHost.messengerKey] on [MaterialApp]).
+///
 /// {@tool snippet}
 /// ```dart
-/// PlusSnackbar.success(context, message: 'Saved');
-/// PlusSnackbar.error(context, message: 'Could not save');
+/// PlusSnackbar.success(context: context, message: 'Saved');
+/// PlusSnackbar.error(message: 'Could not save'); // with PlusToastHost
 /// PlusSnackbar.show(
-///   context,
 ///   message: 'Draft discarded',
+///   context: context,
 ///   actionLabel: 'Undo',
 ///   onAction: restoreDraft,
 /// );
@@ -33,6 +37,9 @@ enum PlusSnackbarTone {
 abstract final class PlusSnackbar {
   /// Shows a snackbar with the given [message] and optional [tone].
   ///
+  /// When [context] is null, uses the messenger from [PlusToastHost] /
+  /// [PlusToastHost.messengerKey].
+  ///
   /// When [clearCurrent] is true (default), any visible snackbar is cleared
   /// first so messages do not queue.
   ///
@@ -40,9 +47,9 @@ abstract final class PlusSnackbar {
   /// are non-null.
   ///
   /// When [showIcon] is true (default), a tone icon appears beside the message.
-  static ScaffoldFeatureController<SnackBar, SnackBarClosedReason> show(
-    BuildContext context, {
+  static ScaffoldFeatureController<SnackBar, SnackBarClosedReason> show({
     required String message,
+    BuildContext? context,
     PlusSnackbarTone tone = PlusSnackbarTone.info,
     String? actionLabel,
     VoidCallback? onAction,
@@ -60,13 +67,15 @@ abstract final class PlusSnackbar {
     EdgeInsetsGeometry? padding,
     double? width,
   }) {
-    final messenger = ScaffoldMessenger.of(context);
+    final messenger = PlusToastBinding.resolve(context);
+    final themeContext = context ?? messenger.context;
+
     if (clearCurrent) {
       messenger.clearSnackBars();
     }
 
-    final theme = Theme.of(context);
-    final colors = _resolveColors(context, tone);
+    final theme = Theme.of(themeContext);
+    final colors = _resolveColors(themeContext, tone);
     final resolvedBackground = backgroundColor ?? colors.background;
     final resolvedForeground = foregroundColor ?? colors.foreground;
     final resolvedTextStyle =
@@ -76,7 +85,8 @@ abstract final class PlusSnackbar {
           fontWeight: FontWeight.w500,
           height: 1.35,
         );
-    final resolvedDuration = duration ?? PlusTheme.of(context).snackbarDuration;
+    final resolvedDuration =
+        duration ?? PlusTheme.of(themeContext).snackbarDuration;
     final resolvedIcon = icon ?? _iconForTone(tone);
     final showAction = actionLabel != null && onAction != null;
 
@@ -114,9 +124,9 @@ abstract final class PlusSnackbar {
   }
 
   /// Shows an informational snackbar.
-  static ScaffoldFeatureController<SnackBar, SnackBarClosedReason> info(
-    BuildContext context, {
+  static ScaffoldFeatureController<SnackBar, SnackBarClosedReason> info({
     required String message,
+    BuildContext? context,
     String? actionLabel,
     VoidCallback? onAction,
     Duration? duration,
@@ -125,8 +135,8 @@ abstract final class PlusSnackbar {
     bool showIcon = true,
   }) {
     return show(
-      context,
       message: message,
+      context: context,
       actionLabel: actionLabel,
       onAction: onAction,
       duration: duration,
@@ -137,9 +147,9 @@ abstract final class PlusSnackbar {
   }
 
   /// Shows a success snackbar.
-  static ScaffoldFeatureController<SnackBar, SnackBarClosedReason> success(
-    BuildContext context, {
+  static ScaffoldFeatureController<SnackBar, SnackBarClosedReason> success({
     required String message,
+    BuildContext? context,
     String? actionLabel,
     VoidCallback? onAction,
     Duration? duration,
@@ -148,8 +158,8 @@ abstract final class PlusSnackbar {
     bool showIcon = true,
   }) {
     return show(
-      context,
       message: message,
+      context: context,
       tone: PlusSnackbarTone.success,
       actionLabel: actionLabel,
       onAction: onAction,
@@ -161,9 +171,9 @@ abstract final class PlusSnackbar {
   }
 
   /// Shows an error snackbar.
-  static ScaffoldFeatureController<SnackBar, SnackBarClosedReason> error(
-    BuildContext context, {
+  static ScaffoldFeatureController<SnackBar, SnackBarClosedReason> error({
     required String message,
+    BuildContext? context,
     String? actionLabel,
     VoidCallback? onAction,
     Duration? duration,
@@ -172,8 +182,8 @@ abstract final class PlusSnackbar {
     bool showIcon = true,
   }) {
     return show(
-      context,
       message: message,
+      context: context,
       tone: PlusSnackbarTone.error,
       actionLabel: actionLabel,
       onAction: onAction,
@@ -185,13 +195,13 @@ abstract final class PlusSnackbar {
   }
 
   /// Dismisses the current snackbar, if any.
-  static void hide(BuildContext context) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+  static void hide({BuildContext? context}) {
+    PlusToastBinding.resolve(context).hideCurrentSnackBar();
   }
 
-  /// Clears all queued and visible snackbars for the nearest messenger.
-  static void clear(BuildContext context) {
-    ScaffoldMessenger.of(context).clearSnackBars();
+  /// Clears all queued and visible snackbars for the resolved messenger.
+  static void clear({BuildContext? context}) {
+    PlusToastBinding.resolve(context).clearSnackBars();
   }
 
   static IconData _iconForTone(PlusSnackbarTone tone) {

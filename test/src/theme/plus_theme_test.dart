@@ -86,7 +86,7 @@ void main() {
         ),
       );
 
-      PlusSnackbar.info(captured, message: 'Timed');
+      PlusSnackbar.info(context: captured, message: 'Timed');
       await tester.pump();
 
       final snackBar = tester.widget<SnackBar>(find.byType(SnackBar));

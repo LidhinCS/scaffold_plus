@@ -1,30 +1,36 @@
-# UI Plus example
+# Pulse Tasks (ui_plus example)
 
-Minimal Flutter app that depends on the local `ui_plus` package (`v0.4.0`).
+A small **Bloc**-powered inbox that showcases `ui_plus` in a real app flow —
+not a component catalog.
 
 ```sh
 cd example
+flutter pub get
 flutter run
 ```
 
-Demos currently cover:
+## What it demonstrates
 
-- `ScaffoldPlus` (plain + async modes)
-- `PlusAsyncView`
-- `PlusEmptyState` / `PlusErrorState`
-- `PlusLoader` / `PlusSkeleton`
-- Connectivity (`ScaffoldPlus` banner, `PlusConnectivityBuilder`,
-  `PlusOfflineState`, `PlusConnectivityBanner`)
-- Feedback screenflow (toast → dialog → confirm → banner)
-- `PlusSnackbar`
-- `PlusDialog` / `PlusConfirmationDialog`
-- `PlusBottomSheet`
-- `PlusSearchField`
-- `PlusRefreshIndicator` / `PlusTheme`
-- `PlusAsyncButton`
-- `PlusPagedList`
-- `PlusAdaptiveScaffold`
-- `PlusMaintenanceMode` / `ScaffoldPlus.maintenanceMode`
-- `PlusPermissionState` / `ScaffoldPlus.permissionDenied`
-- `PlusSessionExpired` / `ScaffoldPlus.sessionExpired`
-- `ScaffoldPlus.onRefresh` (pull-to-refresh on async success)
+| Flow | ui_plus APIs |
+| --- | --- |
+| Adaptive shell | `PlusAdaptiveScaffold` |
+| Tasks inbox | `ScaffoldPlus`, `PlusAsyncState`, skeleton / empty / error, `onRefresh` |
+| Search + paging | `PlusSearchField`, `PlusPagedList` |
+| Create / delete | `PlusBottomSheet`, `PlusAsyncButton`, `PlusConfirmationDialog` |
+| Global toasts | `PlusToastHost`, `PlusSnackbar` (no context from Cubits) |
+| Connectivity | Built-in checker + Settings “Force offline” |
+| Product gates | Maintenance / session / permission toggles in Settings |
+| Activity feed | Second `ScaffoldPlus` + Bloc mapping surface |
+
+## Architecture
+
+- `TaskRepository` — fake API (latency, paging, search, failures)
+- `AppShellCubit` — tabs + developer gates
+- `TasksCubit` / `ActivityCubit` — domain state
+- Widgets map Cubit state → `PlusAsyncState` at the UI edge (core package stays Bloc-free)
+
+Open **Settings → Developer gates** to flip maintenance, notifications, offline,
+and to arm a one-shot fetch failure on Tasks.
+
+Full docs walkthrough:
+[Pulse Tasks on the docs site](https://lidhincs.github.io/ui_plus/example/pulse-tasks/).

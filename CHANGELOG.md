@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Example **Pulse Tasks** app — Bloc showcase inbox (paging, search, gates,
+  global toasts) replacing the component catalog demos.
+- Docs site refresh — Pulse Tasks walkthrough, clearer guides, Material
+  navigation / tabbed samples, productivity guide.
+- `PlusToastHost` — optional root host / `messengerKey` so `PlusSnackbar`
+  can show, hide, and clear without a `BuildContext` (toastification-style).
+  Dialogs stay context-based.
 - `PlusMaintenanceMode` full-page maintenance presentation (app-owned flag).
 - `ScaffoldPlus.maintenanceMode` / `maintenanceBuilder` — replaces body and
   suppresses FAB; takes priority over async `state` and `body`.
@@ -32,6 +39,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `PlusSnackbar` — `context` is now an optional named parameter so global
+  calls work as `PlusSnackbar.success(message: '…')` with `PlusToastHost`.
+  Update call sites from `success(context, message: …)` to
+  `success(context: context, message: …)`.
 - `PlusSnackbar` — tone icon badge with spring entrance, softer floating card
   chrome (radius / elevation / padding).
 - `PlusDialog` / `PlusConfirmationDialog` — icon header, rounded surface, and
