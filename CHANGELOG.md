@@ -7,47 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+## [0.5.0] - 2026-11-23
 
-- Example **Pulse Tasks** app — Bloc showcase inbox (paging, search, gates,
-  global toasts) replacing the component catalog demos.
-- Docs site refresh — Pulse Tasks walkthrough, clearer guides, Material
-  navigation / tabbed samples, productivity guide.
-- `PlusToastHost` — optional root host / `messengerKey` so `PlusSnackbar`
-  can show, hide, and clear without a `BuildContext` (toastification-style).
-  Dialogs stay context-based.
-- `PlusMaintenanceMode` full-page maintenance presentation (app-owned flag).
-- `ScaffoldPlus.maintenanceMode` / `maintenanceBuilder` — replaces body and
-  suppresses FAB; takes priority over async `state` and `body`.
-- `PlusPermissionState` permission denied / request presentation (app-owned
-  status; optional secondary action).
-- `ScaffoldPlus.permissionDenied` / `permissionBuilder` — same body/FAB
-  behavior; after maintenance, before async/`body`.
-- `PlusSessionExpired` session-expired presentation (app-owned auth flag).
-- `ScaffoldPlus.sessionExpired` / `sessionExpiredBuilder` — after maintenance,
-  before permission.
-- `ScaffoldPlus.onRefresh` / `onRefreshError` and matching `PlusAsyncView`
-  APIs — pull-to-refresh on async success / empty via `PlusRefreshIndicator`.
+### Breaking
+
+- `PlusSnackbar` — `context` is now an optional **named** parameter so global
+  calls work as `PlusSnackbar.success(message: '…')` with `PlusToastHost`.
+  Update call sites from `success(context, message: …)` to
+  `success(context: context, message: …)` (same for `show` / `info` / `error` /
+  `hide` / `clear`).
 
 ### Added
 
+- `PlusToastHost` — optional root host / `messengerKey` for context-free
+  snackbars (toastification-style). Dialogs stay context-based.
 - `PlusInternetChecker` / `PlusInternetCheckerConfig` — plugin-free reachability
   probe (HTTP on IO, browser online signal on web).
 - `ScaffoldPlus` / `PlusConnectivityOverlay`: `useBuiltInInternetCheck` (default
   true) and `internetCheckerConfig`. Custom `isConnected` /
   `connectivityStream` still win when provided.
+- `PlusMaintenanceMode` and `ScaffoldPlus.maintenanceMode` /
+  `maintenanceBuilder`.
+- `PlusPermissionState` and `ScaffoldPlus.permissionDenied` /
+  `permissionBuilder`.
+- `PlusSessionExpired` and `ScaffoldPlus.sessionExpired` /
+  `sessionExpiredBuilder`.
+- `ScaffoldPlus.onRefresh` / `onRefreshError` and matching `PlusAsyncView`
+  APIs — pull-to-refresh on async success / empty.
+- Example **Pulse Tasks** app — Bloc showcase inbox (paging, search, gates,
+  global toasts).
+- Docs site (MkDocs) with Pulse Tasks walkthrough + pub.dev screenshots.
 
 ### Changed
 
-- `PlusSnackbar` — `context` is now an optional named parameter so global
-  calls work as `PlusSnackbar.success(message: '…')` with `PlusToastHost`.
-  Update call sites from `success(context, message: …)` to
-  `success(context: context, message: …)`.
 - `PlusSnackbar` — tone icon badge with spring entrance, softer floating card
   chrome (radius / elevation / padding).
 - `PlusDialog` / `PlusConfirmationDialog` — icon header, rounded surface, and
   scale+fade route transition; destructive confirm uses filled error action.
 - `PlusConnectivityBanner` — animated icon badge and softer card defaults.
+- README focused on package APIs (removed template / tooling noise).
 
 ## [0.4.0] - 2026-11-23
 

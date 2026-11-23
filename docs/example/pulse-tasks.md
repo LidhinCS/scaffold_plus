@@ -12,6 +12,9 @@ app. Source: [`example/`](https://github.com/LidhinCS/ui_plus/tree/main/example)
 
     Then open **Settings → Developer gates** to flip product states live.
 
+    pub.dev screenshots for this flow live in `screenshots/` at the package
+    root (regenerate with `tool/capture_screenshots.sh`).
+
 ## What it demonstrates
 
 | Flow | ui_plus APIs |

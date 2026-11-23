@@ -3,7 +3,7 @@
 > **Role:** Central development roadmap for `ui_plus`.  
 > **Branding:** UI Plus — More power to your Flutter UI.  
 > **Last verified against source:** 2026-11-23 (lib exports, tests, example, docs).  
-> **Package version in `pubspec.yaml`:** `0.4.0`
+> **Package version in `pubspec.yaml`:** `0.5.0`
 
 Modular, architecture-agnostic Flutter UI toolkit for reusable components,
 application states, connectivity presentation, and productivity utilities.
@@ -48,7 +48,7 @@ Flagship widget remains `ScaffoldPlus`.
 | **v0.2.0** Connectivity | Plugin-free connectivity UI | **Completed** | `0.2.0` |
 | **v0.3.0** Everyday Productivity | Snackbars, dialogs, sheets, search, refresh, theme | **Completed** | `0.3.0` |
 | **v0.4.0** Unique application patterns | Async button, paged list, adaptive shell | **Completed** | `0.4.0` |
-| **v0.5.0** Advanced Application UI | Higher-value advanced helpers | **Planned / Future** | — |
+| **v0.5.0** Product gates + polish | Maintenance/session/permission, internet checker, toast host, Pulse Tasks, docs | **Completed** | `0.5.0` |
 | **v1.0.0** Stable Release | API freeze + pub.dev readiness | **Planned** | — |
 
 **In Progress:** none.
@@ -227,7 +227,7 @@ Plugin-free connectivity **presentation**. Apps supply `bool` / `Stream<bool>` (
 | **Main functionality** | `show` / `success` / `info` / `error` / `hide` / `clear`; Material 3 tones; optional action; clears current by default. Optional context-free calls via `PlusToastHost` / `messengerKey`. |
 | **Dependencies** | Flutter SDK only |
 | **Testing** | `test/src/feedback/plus_snackbar_test.dart`, `plus_toast_host_test.dart` |
-| **Status** | **Completed** (global host unreleased until next pub bump) |
+| **Status** | **Completed** |
 
 ### PlusDialog / PlusConfirmationDialog
 
@@ -326,7 +326,9 @@ out of the box — not renamed Material widgets.
 
 ---
 
-## PlusMaintenanceMode (unreleased)
+## v0.5.0 — Product gates + polish
+
+### PlusMaintenanceMode
 
 | Field | Detail |
 | --- | --- |
@@ -335,9 +337,9 @@ out of the box — not renamed Material widgets.
 | **Main functionality** | App-owned flag; replaces body and suppresses FAB; priority over async/`body`. |
 | **Dependencies** | Flutter SDK only |
 | **Testing** | `test/src/states/plus_maintenance_mode_test.dart`, scaffold cases |
-| **Status** | **Completed** (unreleased) |
+| **Status** | **Completed** |
 
-## PlusPermissionState (unreleased)
+### PlusPermissionState
 
 | Field | Detail |
 | --- | --- |
@@ -346,9 +348,9 @@ out of the box — not renamed Material widgets.
 | **Main functionality** | App-owned status; primary + optional secondary actions; after maintenance in precedence. |
 | **Dependencies** | Flutter SDK only (no permission plugin) |
 | **Testing** | `test/src/states/plus_permission_state_test.dart`, scaffold cases |
-| **Status** | **Completed** (unreleased) |
+| **Status** | **Completed** |
 
-## PlusSessionExpired (unreleased)
+### PlusSessionExpired
 
 | Field | Detail |
 | --- | --- |
@@ -357,9 +359,9 @@ out of the box — not renamed Material widgets.
 | **Main functionality** | App-owned auth flag; after maintenance, before permission. |
 | **Dependencies** | Flutter SDK only |
 | **Testing** | `test/src/states/plus_session_expired_test.dart`, scaffold cases |
-| **Status** | **Completed** (unreleased) |
+| **Status** | **Completed** |
 
-## Async pull-to-refresh (unreleased)
+### Async pull-to-refresh
 
 | Field | Detail |
 | --- | --- |
@@ -368,8 +370,10 @@ out of the box — not renamed Material widgets.
 | **Main functionality** | Wraps success/empty in `PlusRefreshIndicator` via shared `PlusAsyncBody`. |
 | **Dependencies** | Flutter SDK only |
 | **Testing** | Scaffold + `PlusAsyncView` refresh cases |
-| **Status** | **Completed** (unreleased) |
+| **Status** | **Completed** |
 
+Also in **0.5.0:** `PlusInternetChecker`, `PlusToastHost`, Pulse Tasks example,
+docs site, pub.dev screenshots.
 ---
 
 # In Progress
@@ -387,7 +391,7 @@ Prefer opinionated shells (`PlusAdaptiveScaffold`) over `LayoutBuilder` renames.
 
 ---
 
-## v0.5.0 — Advanced Application UI
+## Future — Advanced Application UI
 
 Goal: higher-value helpers that remain architecture-agnostic. Each item requires a written value case before coding.
 
@@ -520,12 +524,11 @@ From `lib/ui_plus.dart`:
 
 ## Recommended implementation order (next)
 
-1. Publish / tag `0.4.0` on pub.dev when approved.
+1. Publish / tag `0.5.0` on pub.dev when approved.
 2. Enable GitHub Pages (Actions) so the docs workflow can publish
-   `https://lidhincs.github.io/ui_plus/`.
-3. Schedule v0.5.0 only with a written uniqueness value case (form/submit shell,
-   permission/session state, etc.).
-4. Future Consideration candidates remain unscheduled until explicitly approved.
+   `https://lidhincs.github.io/ui_plus/` (if not already).
+3. Schedule further work only with a written uniqueness value case
+   (Future Consideration candidates remain unscheduled until approved).
 
 ---
 

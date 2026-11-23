@@ -34,3 +34,13 @@ and to arm a one-shot fetch failure on Tasks.
 
 Full docs walkthrough:
 [Pulse Tasks on the docs site](https://lidhincs.github.io/ui_plus/example/pulse-tasks/).
+
+### Capture pub.dev screenshots
+
+```sh
+# From example/, runs an auto-advancing gallery; capture with simctl in another shell
+# or use the helper script from repo root after flutter run -t lib/screenshot_gallery.dart
+flutter run -t lib/screenshot_gallery.dart
+```
+
+Images land in `../screenshots/` and are declared in the package `pubspec.yaml`.

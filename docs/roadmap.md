@@ -11,7 +11,7 @@ in the repository.
 | v0.2.0 | Connectivity | Released |
 | v0.3.0 | Everyday Productivity | Released |
 | v0.4.0 | Unique application patterns | Released |
-| Next | Product-state polish, `PlusToastHost`, docs + Pulse Tasks example | In source (`Unreleased`) |
+| v0.5.0 | Product gates + polish | Released |
 | v1.0.0 | API freeze + pub.dev readiness | Planned |
 
 ## Uniqueness bar
