@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:ui_plus/src/dialogs/plus_dialog_surface.dart';
 
-/// Material 3 alert dialog helpers.
+/// Material 3 alert dialog helpers with polished chrome and motion.
 ///
 /// Use [PlusDialog.show] for a simple title / message / actions dialog, or
 /// [PlusDialog.alert] when a single dismiss action is enough.
@@ -15,13 +16,16 @@ import 'package:flutter/material.dart';
 /// ```
 /// {@end-tool}
 abstract final class PlusDialog {
-  /// Shows a customizable [AlertDialog].
+  /// Shows a customizable alert dialog.
   ///
   /// Provide either [message] (plain text) or [content] (custom widget), not
   /// both as competing body content — when [content] is non-null it is used.
   ///
   /// When [actions] is null, a single dismiss button is shown using
   /// [primaryLabel] (default `OK`).
+  ///
+  /// When [icon] is null, a default info icon badge is shown. Pass an explicit
+  /// icon or set [showIcon] to false to hide it.
   static Future<T?> show<T>(
     BuildContext context, {
     required String title,
@@ -32,27 +36,27 @@ abstract final class PlusDialog {
     VoidCallback? onPrimary,
     bool barrierDismissible = true,
     Color? barrierColor,
-    EdgeInsetsGeometry? contentPadding,
-    EdgeInsetsGeometry? actionsPadding,
+    IconData? icon = Icons.info_rounded,
+    bool showIcon = true,
+    Color? iconBackgroundColor,
+    Color? iconColor,
     TextStyle? titleTextStyle,
     TextStyle? messageTextStyle,
-    Clip clipBehavior = Clip.none,
   }) {
     assert(
       message == null || content == null,
       'Provide message or content, not both.',
     );
 
-    return showDialog<T>(
+    return showPlusDialogRoute<T>(
       context: context,
       barrierDismissible: barrierDismissible,
       barrierColor: barrierColor,
       builder: (dialogContext) {
-        final theme = Theme.of(dialogContext);
         final resolvedActions =
             actions ??
             [
-              TextButton(
+              FilledButton(
                 onPressed: () {
                   onPrimary?.call();
                   Navigator.of(dialogContext).pop();
@@ -61,23 +65,15 @@ abstract final class PlusDialog {
               ),
             ];
 
-        return AlertDialog(
-          title: Text(title, style: titleTextStyle),
-          content:
-              content ??
-              (message == null || message.isEmpty
-                  ? null
-                  : Text(
-                      message,
-                      style:
-                          messageTextStyle ??
-                          theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                    )),
-          contentPadding: contentPadding,
-          actionsPadding: actionsPadding,
-          clipBehavior: clipBehavior,
+        return PlusDialogSurface(
+          title: title,
+          message: message,
+          content: content,
+          icon: showIcon ? icon : null,
+          iconBackgroundColor: iconBackgroundColor,
+          iconColor: iconColor,
+          titleTextStyle: titleTextStyle,
+          messageTextStyle: messageTextStyle,
           actions: resolvedActions,
         );
       },
@@ -92,6 +88,8 @@ abstract final class PlusDialog {
     String primaryLabel = 'OK',
     VoidCallback? onPrimary,
     bool barrierDismissible = true,
+    IconData? icon = Icons.info_rounded,
+    bool showIcon = true,
   }) {
     return show<void>(
       context,
@@ -100,6 +98,8 @@ abstract final class PlusDialog {
       primaryLabel: primaryLabel,
       onPrimary: onPrimary,
       barrierDismissible: barrierDismissible,
+      icon: icon,
+      showIcon: showIcon,
     );
   }
 }

@@ -19,6 +19,9 @@ migrate_working_dir/
 # VSCode related
 .vscode/*
 
+# Docs site (MkDocs + dartdoc)
+/site/
+
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id

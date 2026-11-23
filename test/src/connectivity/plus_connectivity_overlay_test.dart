@@ -153,7 +153,7 @@ void main() {
       );
 
       expect(find.text('No internet connection'), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.close));
+      await tester.tap(find.byTooltip('Dismiss'));
       await tester.pumpAndSettle();
       expect(find.text('No internet connection'), findsNothing);
     });

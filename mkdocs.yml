@@ -1,0 +1,71 @@
+site_name: UI Plus
+site_description: More power to your Flutter UI — architecture-agnostic widgets and scaffolds.
+site_url: https://lidhincs.github.io/ui_plus/
+repo_url: https://github.com/LidhinCS/ui_plus
+repo_name: LidhinCS/ui_plus
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: teal
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - content.code.copy
+    - content.action.edit
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+
+nav:
+  - Home: index.md
+  - Getting started: getting-started.md
+  - Guides:
+      - ScaffoldPlus: guides/scaffold-plus.md
+      - Connectivity: guides/connectivity.md
+      - Feedback UI: guides/feedback.md
+      - State management: guides/state-management.md
+  - API reference: reference.md
+  - Roadmap: roadmap.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/LidhinCS/ui_plus
+    - icon: material/package-variant
+      link: https://pub.dev/packages/ui_plus
+
+validation:
+  links:
+    # API docs are generated into site/api after MkDocs build.
+    absolute_links: ignore
+    unrecognized_links: ignore

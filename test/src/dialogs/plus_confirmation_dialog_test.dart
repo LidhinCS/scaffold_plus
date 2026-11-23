@@ -96,11 +96,11 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final button = tester.widget<TextButton>(
-        find.widgetWithText(TextButton, 'Delete'),
+      final button = tester.widget<FilledButton>(
+        find.widgetWithText(FilledButton, 'Delete'),
       );
       expect(
-        button.style?.foregroundColor?.resolve({}),
+        button.style?.backgroundColor?.resolve({}),
         theme.colorScheme.error,
       );
 

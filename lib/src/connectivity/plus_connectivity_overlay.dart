@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:ui_plus/src/connectivity/plus_connectivity_banner.dart';
 import 'package:ui_plus/src/connectivity/plus_connectivity_config.dart';
+import 'package:ui_plus/src/connectivity/plus_internet_checker.dart';
 
 /// Builds a custom connectivity banner for the given status.
 typedef PlusConnectivityBannerBuilder = Widget Function(
@@ -12,9 +13,10 @@ typedef PlusConnectivityBannerBuilder = Widget Function(
 
 /// Overlays a connectivity banner on [child] without resizing the body.
 ///
-/// Supply connectivity via [isConnected] and/or [connectivityStream]. The
-/// values should represent actual internet reachability when reliable online
-/// indicators are required — Wi-Fi association alone is not enough.
+/// Connectivity source precedence:
+/// 1. Custom [connectivityStream] / [isConnected] when either is provided
+/// 2. Built-in [PlusInternetChecker] when [useBuiltInInternetCheck] is true
+/// 3. Otherwise no status updates (banner stays hidden)
 ///
 /// The first observed status is applied silently (no "connection restored"
 /// flash on launch). Subsequent `false → true` transitions may show the
@@ -26,6 +28,8 @@ class PlusConnectivityOverlay extends StatefulWidget {
     super.key,
     this.isConnected,
     this.connectivityStream,
+    this.useBuiltInInternetCheck = true,
+    this.internetCheckerConfig = const PlusInternetCheckerConfig(),
     this.config = const PlusConnectivityConfig(),
     this.bannerBuilder,
   });
@@ -33,12 +37,23 @@ class PlusConnectivityOverlay extends StatefulWidget {
   /// Underlying content (typically a [Scaffold]).
   final Widget child;
 
-  /// Optional snapshot status. Used when no stream is provided, and as the
-  /// initial value before the first stream event.
+  /// Optional custom snapshot status.
+  ///
+  /// When set (with or without [connectivityStream]), built-in checking is
+  /// skipped.
   final bool? isConnected;
 
-  /// Optional live connectivity updates.
+  /// Optional custom live connectivity updates.
+  ///
+  /// When set, built-in checking is skipped.
   final Stream<bool>? connectivityStream;
+
+  /// When true and no custom [isConnected] / [connectivityStream] is provided,
+  /// uses [PlusInternetChecker] (plugin-free HTTP / browser probe).
+  final bool useBuiltInInternetCheck;
+
+  /// Configuration for the built-in internet checker.
+  final PlusInternetCheckerConfig internetCheckerConfig;
 
   /// Banner appearance and behavior.
   final PlusConnectivityConfig config;
@@ -56,6 +71,7 @@ class _PlusConnectivityOverlayState extends State<PlusConnectivityOverlay>
   StreamSubscription<bool>? _subscription;
   Timer? _debounceTimer;
   Timer? _autoHideTimer;
+  PlusInternetChecker? _builtInChecker;
 
   late final AnimationController _controller;
 
@@ -65,6 +81,9 @@ class _PlusConnectivityOverlayState extends State<PlusConnectivityOverlay>
   var _showingOnline = false;
   var _dismissed = false;
 
+  bool get _hasCustomSource =>
+      widget.connectivityStream != null || widget.isConnected != null;
+
   @override
   void initState() {
     super.initState();
@@ -72,8 +91,7 @@ class _PlusConnectivityOverlayState extends State<PlusConnectivityOverlay>
       vsync: this,
       duration: widget.config.animationDuration,
     );
-    _applyStatus(widget.isConnected, immediate: true);
-    _subscribe(widget.connectivityStream);
+    _syncConnectivitySource(immediate: true);
   }
 
   @override
@@ -84,14 +102,48 @@ class _PlusConnectivityOverlayState extends State<PlusConnectivityOverlay>
       _controller.duration = widget.config.animationDuration;
     }
 
-    if (oldWidget.connectivityStream != widget.connectivityStream) {
+    final sourceChanged =
+        oldWidget.connectivityStream != widget.connectivityStream ||
+        oldWidget.isConnected != widget.isConnected ||
+        oldWidget.useBuiltInInternetCheck != widget.useBuiltInInternetCheck ||
+        oldWidget.internetCheckerConfig != widget.internetCheckerConfig;
+
+    if (sourceChanged) {
+      _syncConnectivitySource();
+    }
+  }
+
+  void _syncConnectivitySource({bool immediate = false}) {
+    _disposeBuiltInChecker();
+    // Cancel is fire-and-forget; awaiting would block rebuilds.
+    // ignore: discarded_futures
+    _subscription?.cancel();
+    _subscription = null;
+
+    if (_hasCustomSource) {
+      if (widget.isConnected != null) {
+        _applyStatus(widget.isConnected, immediate: immediate);
+      }
       _subscribe(widget.connectivityStream);
+      return;
     }
 
-    if (oldWidget.isConnected != widget.isConnected &&
-        widget.connectivityStream == null) {
-      _applyStatus(widget.isConnected);
+    if (!widget.useBuiltInInternetCheck) {
+      return;
     }
+
+    final checker = PlusInternetChecker(config: widget.internetCheckerConfig)
+      ..start();
+    _builtInChecker = checker;
+    if (checker.isConnected != null) {
+      _applyStatus(checker.isConnected, immediate: immediate);
+    }
+    _subscribe(checker.onStatusChange);
+  }
+
+  void _disposeBuiltInChecker() {
+    _builtInChecker?.dispose();
+    _builtInChecker = null;
   }
 
   Animation<Offset> get _slideAnimation {
@@ -105,10 +157,6 @@ class _PlusConnectivityOverlayState extends State<PlusConnectivityOverlay>
   }
 
   void _subscribe(Stream<bool>? stream) {
-    // Cancel is fire-and-forget; awaiting would block rebuilds.
-    // ignore: discarded_futures
-    _subscription?.cancel();
-    _subscription = null;
     if (stream == null) {
       return;
     }
@@ -238,6 +286,7 @@ class _PlusConnectivityOverlayState extends State<PlusConnectivityOverlay>
     // Cancel is fire-and-forget during dispose.
     // ignore: discarded_futures
     _subscription?.cancel();
+    _disposeBuiltInChecker();
     _controller.dispose();
     super.dispose();
   }

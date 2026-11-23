@@ -204,6 +204,35 @@ void main() {
       expect(find.text('custom-skeleton'), findsOneWidget);
     });
 
+    testWidgets('onRefresh wraps success content', (tester) async {
+      var refreshed = 0;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: PlusAsyncView<String>(
+              state: const PlusSuccess('ok'),
+              onRefresh: () async {
+                refreshed++;
+              },
+              builder: (context, data) => ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: [Text(data)],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(PlusRefreshIndicator), findsOneWidget);
+
+      await tester.fling(find.text('ok'), const Offset(0, 300), 1000);
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+      expect(refreshed, 1);
+    });
+
     testWidgets('supports light and dark themes with defaults', (tester) async {
       Future<void> pumpWithBrightness(Brightness brightness) {
         return tester.pumpWidget(

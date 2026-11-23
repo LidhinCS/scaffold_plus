@@ -21,7 +21,9 @@ This is a reusable Flutter package, not an application.
 
 - Do not add dependencies without explaining why they are needed.
 - Prefer Flutter SDK APIs before introducing third-party packages.
-- Do not add connectivity plugins to the core package; accept `bool` / `Stream<bool>` from the app.
+- Do not add connectivity plugins to the core package. Built-in reachability uses
+  a plugin-free probe (`PlusInternetChecker`); apps may still supply
+  `bool` / `Stream<bool>` (custom wins).
 - Optional state-management integrations belong in companion packages only when there is a real integration API.
 
 ## Quality bar

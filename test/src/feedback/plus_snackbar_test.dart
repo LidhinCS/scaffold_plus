@@ -33,6 +33,16 @@ void main() {
 
       expect(find.text('Hello snackbar'), findsOneWidget);
       expect(find.byType(SnackBar), findsOneWidget);
+      expect(find.byIcon(Icons.info_rounded), findsOneWidget);
+    });
+
+    testWidgets('can hide tone icon', (tester) async {
+      final context = await pumpHost(tester);
+
+      PlusSnackbar.success(context, message: 'No icon', showIcon: false);
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.check_circle_rounded), findsNothing);
     });
 
     testWidgets('success uses primary container colors', (tester) async {

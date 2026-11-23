@@ -3,6 +3,7 @@ import 'package:ui_plus/src/async/plus_async_state.dart';
 import 'package:ui_plus/src/async/plus_async_types.dart';
 import 'package:ui_plus/src/loaders/plus_loader.dart';
 import 'package:ui_plus/src/loaders/plus_skeleton.dart';
+import 'package:ui_plus/src/refresh/plus_refresh_indicator.dart';
 import 'package:ui_plus/src/states/plus_empty_state.dart';
 import 'package:ui_plus/src/states/plus_error_state.dart';
 import 'package:ui_plus/src/theme/plus_theme.dart';
@@ -13,6 +14,10 @@ import 'package:ui_plus/src/theme/plus_theme.dart';
 /// 1. [PlusLoading] → [loadingBuilder] → skeleton (if enabled) → [PlusLoader]
 /// 2. [PlusFailure] → [errorBuilder] → [PlusErrorState]
 /// 3. [PlusSuccess] → empty if [isEmpty] → else [builder]
+///
+/// When [onRefresh] is set, success and empty content are wrapped in
+/// [PlusRefreshIndicator]. Success [builder] content should be scrollable
+/// (e.g. [ListView]); empty defaults are made pullable automatically.
 class PlusAsyncBody<T> extends StatelessWidget {
   /// Creates the shared async body renderer.
   const new({
@@ -21,6 +26,8 @@ class PlusAsyncBody<T> extends StatelessWidget {
     super.key,
     this.isEmpty,
     this.onRetry,
+    this.onRefresh,
+    this.onRefreshError,
     this.loadingBuilder,
     this.emptyBuilder,
     this.errorBuilder,
@@ -39,6 +46,12 @@ class PlusAsyncBody<T> extends StatelessWidget {
 
   /// Optional retry callback used by the default error UI.
   final VoidCallback? onRetry;
+
+  /// Optional pull-to-refresh for success / empty content.
+  final Future<void> Function()? onRefresh;
+
+  /// Optional error handler for [onRefresh] failures.
+  final void Function(Object error, StackTrace stackTrace)? onRefreshError;
 
   /// Optional loading UI.
   final WidgetBuilder? loadingBuilder;
@@ -63,11 +76,49 @@ class PlusAsyncBody<T> extends StatelessWidget {
       PlusLoading<T>() => _buildLoading(context),
       PlusFailure<T>(:final error, :final stackTrace) =>
         errorBuilder?.call(context, error, stackTrace) ?? _defaultError(),
-      PlusSuccess<T>(:final data) =>
-        (isEmpty?.call(data) ?? false)
-            ? (emptyBuilder?.call(context) ?? _defaultEmpty())
-            : builder(context, data),
+      PlusSuccess<T>(:final data) => _buildSuccess(context, data),
     };
+  }
+
+  Widget _buildSuccess(BuildContext context, T data) {
+    final empty = isEmpty?.call(data) ?? false;
+    final content = empty
+        ? (emptyBuilder?.call(context) ?? _defaultEmpty())
+        : builder(context, data);
+
+    return _maybeRefresh(empty ? _ensurePullable(content) : content);
+  }
+
+  Widget _maybeRefresh(Widget child) {
+    final refresh = onRefresh;
+    if (refresh == null) {
+      return child;
+    }
+
+    return PlusRefreshIndicator(
+      onRefresh: refresh,
+      onError: onRefreshError,
+      child: child,
+    );
+  }
+
+  /// Makes non-scrollable empty content pull-to-refresh friendly.
+  Widget _ensurePullable(Widget child) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (!constraints.hasBoundedHeight) {
+          return child;
+        }
+
+        return SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: child,
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildLoading(BuildContext context) {

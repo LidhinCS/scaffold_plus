@@ -13,6 +13,9 @@ import 'package:ui_plus/src/async/plus_async_types.dart';
 /// 2. [PlusFailure] → [errorBuilder] → default error
 /// 3. [PlusSuccess] → [emptyBuilder] when [isEmpty] is true, else [builder]
 ///
+/// When [onRefresh] is set, success / empty content supports pull-to-refresh.
+/// Success [builder] content should be scrollable (e.g. [ListView]).
+///
 /// See `doc/async_view_design.md` for the design rationale.
 ///
 /// {@tool snippet}
@@ -21,6 +24,7 @@ import 'package:ui_plus/src/async/plus_async_types.dart';
 ///   state: state,
 ///   isEmpty: (user) => user.items.isEmpty,
 ///   onRetry: reload,
+///   onRefresh: reload,
 ///   builder: (context, user) => UserProfile(user: user),
 /// )
 /// ```
@@ -33,6 +37,8 @@ class PlusAsyncView<T> extends StatelessWidget {
     super.key,
     this.isEmpty,
     this.onRetry,
+    this.onRefresh,
+    this.onRefreshError,
     this.loadingBuilder,
     this.emptyBuilder,
     this.errorBuilder,
@@ -51,6 +57,12 @@ class PlusAsyncView<T> extends StatelessWidget {
 
   /// Optional retry callback used by the default error UI.
   final VoidCallback? onRetry;
+
+  /// Optional pull-to-refresh for success / empty content.
+  final Future<void> Function()? onRefresh;
+
+  /// Optional error handler for [onRefresh] failures.
+  final void Function(Object error, StackTrace stackTrace)? onRefreshError;
 
   /// Optional loading UI. Defaults to a centered loader (or skeleton).
   final WidgetBuilder? loadingBuilder;
@@ -74,6 +86,8 @@ class PlusAsyncView<T> extends StatelessWidget {
       builder: builder,
       isEmpty: isEmpty,
       onRetry: onRetry,
+      onRefresh: onRefresh,
+      onRefreshError: onRefreshError,
       loadingBuilder: loadingBuilder,
       emptyBuilder: emptyBuilder,
       errorBuilder: errorBuilder,

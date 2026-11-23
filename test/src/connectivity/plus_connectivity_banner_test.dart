@@ -45,7 +45,7 @@ void main() {
       );
 
       expect(find.text('Offline now'), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.close));
+      await tester.tap(find.byTooltip('Dismiss'));
       expect(dismissed, isTrue);
     });
 

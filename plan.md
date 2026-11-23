@@ -326,6 +326,52 @@ out of the box — not renamed Material widgets.
 
 ---
 
+## PlusMaintenanceMode (unreleased)
+
+| Field | Detail |
+| --- | --- |
+| **Purpose** | Full-page maintenance presentation; opt-in on `ScaffoldPlus`. |
+| **Public API** | `PlusMaintenanceMode`; `ScaffoldPlus.maintenanceMode` / `maintenanceBuilder` |
+| **Main functionality** | App-owned flag; replaces body and suppresses FAB; priority over async/`body`. |
+| **Dependencies** | Flutter SDK only |
+| **Testing** | `test/src/states/plus_maintenance_mode_test.dart`, scaffold cases |
+| **Status** | **Completed** (unreleased) |
+
+## PlusPermissionState (unreleased)
+
+| Field | Detail |
+| --- | --- |
+| **Purpose** | Full-page permission denied / request UI; opt-in on `ScaffoldPlus`. |
+| **Public API** | `PlusPermissionState`; `ScaffoldPlus.permissionDenied` / `permissionBuilder` |
+| **Main functionality** | App-owned status; primary + optional secondary actions; after maintenance in precedence. |
+| **Dependencies** | Flutter SDK only (no permission plugin) |
+| **Testing** | `test/src/states/plus_permission_state_test.dart`, scaffold cases |
+| **Status** | **Completed** (unreleased) |
+
+## PlusSessionExpired (unreleased)
+
+| Field | Detail |
+| --- | --- |
+| **Purpose** | Full-page session-expired UI; opt-in on `ScaffoldPlus`. |
+| **Public API** | `PlusSessionExpired`; `ScaffoldPlus.sessionExpired` / `sessionExpiredBuilder` |
+| **Main functionality** | App-owned auth flag; after maintenance, before permission. |
+| **Dependencies** | Flutter SDK only |
+| **Testing** | `test/src/states/plus_session_expired_test.dart`, scaffold cases |
+| **Status** | **Completed** (unreleased) |
+
+## Async pull-to-refresh (unreleased)
+
+| Field | Detail |
+| --- | --- |
+| **Purpose** | Opt-in refresh on async success / empty without manual wrapping. |
+| **Public API** | `ScaffoldPlus.onRefresh` / `onRefreshError`; `PlusAsyncView` equivalents |
+| **Main functionality** | Wraps success/empty in `PlusRefreshIndicator` via shared `PlusAsyncBody`. |
+| **Dependencies** | Flutter SDK only |
+| **Testing** | Scaffold + `PlusAsyncView` refresh cases |
+| **Status** | **Completed** (unreleased) |
+
+---
+
 # In Progress
 
 _None._
@@ -417,9 +463,6 @@ explicit value case and approval.
 | `PlusCountdown` | Timed countdown / resend affordance |
 | `PlusDebouncer` | Debounce utility for UI events |
 | `PlusThrottler` | Throttle utility for UI events |
-| `PlusMaintenanceMode` | Full-screen / banner maintenance presentation |
-| `PlusSessionExpired` | Session-expired interstitial / dialog pattern |
-| `PlusPermissionState` | Permission denied/request UI state |
 | `PlusErrorBoundary` | Widget-tree error catch UI (presentation only) |
 | `PlusShowcase` | Feature highlight / coach-mark presentation |
 
@@ -443,12 +486,14 @@ Revisit only when they reduce real app boilerplate without violating architectur
 | Shared internal `PlusAsyncBody` | No duplicated async switching |
 | `ScaffoldPlus` composes native `Scaffold` | `Scaffold.of` compatibility |
 | `state == null` → `body`; else async wins (no assert) | Drop-in scaffold + opt-in async |
-| Connectivity is presentation-only (`bool`/`Stream<bool>`) | Apps own reachability |
+| Connectivity presentation + optional built-in probe; custom wins | No connectivity plugin; apps can still own reachability |
 | Banner via `Stack` overlay | Body does not resize |
 | Silent first connectivity status | No false “restored” on launch |
 | Public import only via `lib/ui_plus.dart` | Stable surface |
 | No empty folders for speculative features | Implement when scheduled |
 | Keep `ScaffoldPlus` focused | New utilities as independent widgets/helpers |
+| Product states: maintenance → session → permission → async/`body`; FAB off | Clear precedence; no accidental actions |
+| No permission / connectivity plugins in core | Built-in HTTP/browser probe or app-supplied bools/streams |
 
 ---
 
@@ -457,7 +502,7 @@ Revisit only when they reduce real app boilerplate without violating architectur
 From `lib/ui_plus.dart`:
 
 - Async: `PlusAsyncState`, `PlusLoading`, `PlusSuccess`, `PlusFailure`, typedefs, `PlusAsyncView`
-- Connectivity: `PlusConnectivityBanner`, `PlusConnectivityBuilder`, `PlusConnectivityConfig`, `PlusConnectivityBannerPosition`, `PlusConnectivityOverlay`, `PlusConnectivityBannerBuilder`, `PlusOfflineState`
+- Connectivity: `PlusConnectivityBanner`, `PlusConnectivityBuilder`, `PlusConnectivityConfig`, `PlusConnectivityBannerPosition`, `PlusConnectivityOverlay`, `PlusConnectivityBannerBuilder`, `PlusOfflineState`, `PlusInternetChecker`, `PlusInternetCheckerConfig`
 - Actions: `PlusAsyncButton`, `PlusAsyncButtonVariant`
 - Dialogs: `PlusDialog`, `PlusConfirmationDialog`
 - Feedback: `PlusSnackbar`, `PlusSnackbarTone`
@@ -467,7 +512,8 @@ From `lib/ui_plus.dart`:
 - Refresh: `PlusRefreshIndicator`
 - Scaffold: `ScaffoldPlus`, `PlusAdaptiveScaffold`, `PlusNavigationDestination`
 - Sheets: `PlusBottomSheet`
-- States: `PlusEmptyState`, `PlusErrorState`
+- States: `PlusEmptyState`, `PlusErrorState`, `PlusMaintenanceMode`,
+  `PlusPermissionState`, `PlusSessionExpired`
 - Theme: `PlusTheme`
 
 ---
@@ -475,9 +521,11 @@ From `lib/ui_plus.dart`:
 ## Recommended implementation order (next)
 
 1. Publish / tag `0.4.0` on pub.dev when approved.
-2. Schedule v0.5.0 only with a written uniqueness value case (form/submit shell,
+2. Enable GitHub Pages (Actions) so the docs workflow can publish
+   `https://lidhincs.github.io/ui_plus/`.
+3. Schedule v0.5.0 only with a written uniqueness value case (form/submit shell,
    permission/session state, etc.).
-3. Future Consideration candidates remain unscheduled until explicitly approved.
+4. Future Consideration candidates remain unscheduled until explicitly approved.
 
 ---
 
@@ -488,4 +536,4 @@ From `lib/ui_plus.dart`:
 - Prefer Flutter SDK; justify any new dependency before adding it.
 - Update this `plan.md` when milestone status changes.
 
-**Related docs:** [README](README.md) · [CHANGELOG](CHANGELOG.md) · [doc/roadmap.md](doc/roadmap.md) · [doc/async_view_design.md](doc/async_view_design.md) · [doc/connectivity.md](doc/connectivity.md) · [`.cursor/rules/ui-plus.mdc`](.cursor/rules/ui-plus.mdc)
+**Related docs:** [README](README.md) · [CHANGELOG](CHANGELOG.md) · [Docs site](https://lidhincs.github.io/ui_plus/) (`docs/` + `mkdocs.yml`) · [doc/roadmap.md](doc/roadmap.md) · [doc/async_view_design.md](doc/async_view_design.md) · [doc/connectivity.md](doc/connectivity.md) · [`.cursor/rules/ui-plus.mdc`](.cursor/rules/ui-plus.mdc)

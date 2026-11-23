@@ -92,6 +92,11 @@ class _HomePage extends StatelessWidget {
             builder: (_) => const _ConnectivityDemoPage(),
           ),
           _DemoTile(
+            title: 'Feedback screenflow',
+            subtitle: 'Guided tour of toast, dialog, and banner polish',
+            builder: (_) => const _FeedbackScreenflowPage(),
+          ),
+          _DemoTile(
             title: 'PlusSnackbar',
             subtitle: 'Success, info, and error snackbars',
             builder: (_) => const _SnackbarDemoPage(),
@@ -130,6 +135,21 @@ class _HomePage extends StatelessWidget {
             title: 'PlusAdaptiveScaffold',
             subtitle: 'Nav bar ↔ rail by breakpoint',
             builder: (_) => const _AdaptiveScaffoldDemoPage(),
+          ),
+          _DemoTile(
+            title: 'PlusMaintenanceMode',
+            subtitle: 'Full-page maintenance + ScaffoldPlus flag',
+            builder: (_) => const _MaintenanceModeDemoPage(),
+          ),
+          _DemoTile(
+            title: 'PlusPermissionState',
+            subtitle: 'Permission denied UI + ScaffoldPlus flag',
+            builder: (_) => const _PermissionStateDemoPage(),
+          ),
+          _DemoTile(
+            title: 'PlusSessionExpired',
+            subtitle: 'Session gate + ScaffoldPlus flag',
+            builder: (_) => const _SessionExpiredDemoPage(),
           ),
         ],
       ),
@@ -275,8 +295,16 @@ class _ScaffoldPlusDemoPageState extends State<_ScaffoldPlusDemoPage> {
       useSkeleton: _useSkeleton,
       isEmpty: (items) => items.isEmpty,
       onRetry: () => setState(() => _state = const PlusLoading()),
+      onRefresh: () async {
+        await Future<void>.delayed(const Duration(milliseconds: 600));
+        if (!mounted) return;
+        setState(() => _state = const PlusSuccess(['Alpha', 'Beta', 'Gamma']));
+        if (!context.mounted) return;
+        PlusSnackbar.success(context, message: 'Refreshed');
+      },
       bodyBuilder: (context, items) {
         return ListView.builder(
+          physics: const AlwaysScrollableScrollPhysics(),
           itemCount: items.length,
           itemBuilder: (context, index) {
             return ListTile(
@@ -470,7 +498,7 @@ class _SkeletonDemoPage extends StatelessWidget {
   }
 }
 
-/// Simulates reachability with a local stream (no connectivity plugin).
+/// Connectivity demo: built-in internet check or a custom status stream.
 class _ConnectivityDemoPage extends StatefulWidget {
   const new();
 
@@ -482,6 +510,7 @@ class _ConnectivityDemoPageState extends State<_ConnectivityDemoPage> {
   final _controller = StreamController<bool>.broadcast();
   var _isConnected = true;
   var _useCustomBanner = false;
+  var _useCustomSource = false;
 
   @override
   void dispose() {
@@ -498,8 +527,12 @@ class _ConnectivityDemoPageState extends State<_ConnectivityDemoPage> {
   Widget build(BuildContext context) {
     return ScaffoldPlus<void>(
       connectivityBanner: true,
-      isConnected: _isConnected,
-      connectivityStream: _controller.stream,
+      isConnected: _useCustomSource ? _isConnected : null,
+      connectivityStream: _useCustomSource ? _controller.stream : null,
+      useBuiltInInternetCheck: !_useCustomSource,
+      internetCheckerConfig: const PlusInternetCheckerConfig(
+        interval: Duration(seconds: 4),
+      ),
       connectivityBannerConfig: const PlusConnectivityConfig(
         offlineMessage: 'You are currently offline',
         onlineMessage: 'Back online!',
@@ -525,8 +558,11 @@ class _ConnectivityDemoPageState extends State<_ConnectivityDemoPage> {
         padding: const EdgeInsets.all(16),
         children: [
           Text(
-            'Core stays plugin-free. This demo feeds a Stream<bool> that '
-            'should represent reachability in real apps.',
+            _useCustomSource
+                ? 'Custom mode: feed your own Stream<bool> / bool. '
+                      'Built-in checking is skipped.'
+                : 'Built-in mode: PlusInternetChecker probes reachability '
+                      '(no connectivity plugin).',
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 16),
@@ -534,14 +570,23 @@ class _ConnectivityDemoPageState extends State<_ConnectivityDemoPage> {
             spacing: 8,
             runSpacing: 8,
             children: [
-              FilledButton(
-                onPressed: () => _setConnected(true),
-                child: const Text('Go online'),
+              FilterChip(
+                label: const Text('Custom source'),
+                selected: _useCustomSource,
+                onSelected: (value) {
+                  setState(() => _useCustomSource = value);
+                },
               ),
-              FilledButton.tonal(
-                onPressed: () => _setConnected(false),
-                child: const Text('Go offline'),
-              ),
+              if (_useCustomSource) ...[
+                FilledButton(
+                  onPressed: () => _setConnected(true),
+                  child: const Text('Go online'),
+                ),
+                FilledButton.tonal(
+                  onPressed: () => _setConnected(false),
+                  child: const Text('Go offline'),
+                ),
+              ],
               FilterChip(
                 label: const Text('Custom banner'),
                 selected: _useCustomBanner,
@@ -581,6 +626,294 @@ class _ConnectivityDemoPageState extends State<_ConnectivityDemoPage> {
           PlusConnectivityBanner(isConnected: _isConnected),
         ],
       ),
+    );
+  }
+}
+
+class _FeedbackScreenflowPage extends StatefulWidget {
+  const new();
+
+  @override
+  State<_FeedbackScreenflowPage> createState() =>
+      _FeedbackScreenflowPageState();
+}
+
+class _FeedbackScreenflowPageState extends State<_FeedbackScreenflowPage> {
+  final _pageController = PageController();
+  final _connectivity = StreamController<bool>.broadcast();
+  var _step = 0;
+  var _isConnected = true;
+
+  static const _titles = ['Toasts', 'Dialogs', 'Confirm', 'Banner', 'All set'];
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    unawaited(_connectivity.close());
+    super.dispose();
+  }
+
+  Future<void> _goTo(int index) async {
+    setState(() => _step = index);
+    await _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 320),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+  void _setConnected(bool value) {
+    setState(() => _isConnected = value);
+    _connectivity.add(value);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return ScaffoldPlus<void>(
+      connectivityBanner: _step == 3,
+      isConnected: _isConnected,
+      connectivityStream: _connectivity.stream,
+      connectivityBannerConfig: const PlusConnectivityConfig(
+        offlineMessage: 'You are offline',
+        offlineSubtitle: 'Changes will sync when you reconnect',
+        onlineMessage: 'Back online',
+        onlineSubtitle: 'All systems go',
+        dismissible: true,
+      ),
+      appBar: AppBar(
+        title: Text('Feedback · ${_titles[_step]}'),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(28),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(999),
+              child: LinearProgressIndicator(
+                value: (_step + 1) / _titles.length,
+                minHeight: 6,
+              ),
+            ),
+          ),
+        ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: PageView(
+              controller: _pageController,
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                _FeedbackStep(
+                  eyebrow: 'Step 1 · Toast',
+                  title: 'Polished snackbars',
+                  body:
+                      'Tone icons, soft surfaces, and a springy badge '
+                      'entrance — still powered by ScaffoldMessenger.',
+                  child: Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: [
+                      FilledButton.tonal(
+                        onPressed: () => PlusSnackbar.info(
+                          context,
+                          message: 'Draft autosaved',
+                        ),
+                        child: const Text('Info'),
+                      ),
+                      FilledButton.tonal(
+                        onPressed: () => PlusSnackbar.success(
+                          context,
+                          message: 'Profile updated',
+                          actionLabel: 'Undo',
+                          onAction: () {},
+                        ),
+                        child: const Text('Success'),
+                      ),
+                      FilledButton.tonal(
+                        onPressed: () => PlusSnackbar.error(
+                          context,
+                          message: 'Could not sync changes',
+                        ),
+                        child: const Text('Error'),
+                      ),
+                    ],
+                  ),
+                ),
+                _FeedbackStep(
+                  eyebrow: 'Step 2 · Dialog',
+                  title: 'Soft motion alerts',
+                  body:
+                      'Scale + fade entrance, icon badge, and rounded chrome — '
+                      'not a stock AlertDialog dump.',
+                  child: FilledButton(
+                    onPressed: () => PlusDialog.alert(
+                      context,
+                      title: 'Welcome to UI Plus',
+                      message:
+                          'This dialog uses a springy entrance and a calm '
+                          'icon header.',
+                      icon: Icons.auto_awesome_rounded,
+                    ),
+                    child: const Text('Show alert'),
+                  ),
+                ),
+                _FeedbackStep(
+                  eyebrow: 'Step 3 · Confirm',
+                  title: 'Destructive clarity',
+                  body:
+                      'Confirmation dialogs tint the badge and primary action '
+                      'when the outcome is destructive.',
+                  child: FilledButton(
+                    onPressed: () async {
+                      final ok = await PlusConfirmationDialog.show(
+                        context,
+                        title: 'Delete project?',
+                        message:
+                            'This removes local drafts and cannot be undone.',
+                        confirmLabel: 'Delete',
+                        isDestructive: true,
+                      );
+                      if (!context.mounted) return;
+                      if (ok) {
+                        PlusSnackbar.success(
+                          context,
+                          message: 'Project deleted',
+                        );
+                      } else {
+                        PlusSnackbar.info(context, message: 'Kept project');
+                      }
+                    },
+                    child: const Text('Show confirm'),
+                  ),
+                ),
+                _FeedbackStep(
+                  eyebrow: 'Step 4 · Banner',
+                  title: 'Connectivity moments',
+                  body:
+                      'Animated icon badge and softer card chrome. Toggle '
+                      'reachability to see online / offline states.',
+                  child: Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: [
+                      FilledButton.tonal(
+                        onPressed: () => _setConnected(false),
+                        child: const Text('Go offline'),
+                      ),
+                      FilledButton.tonal(
+                        onPressed: () => _setConnected(true),
+                        child: const Text('Restore'),
+                      ),
+                    ],
+                  ),
+                ),
+                _FeedbackStep(
+                  eyebrow: 'Step 5 · Done',
+                  title: 'Feedback that feels intentional',
+                  body:
+                      'Use these surfaces anywhere — ScaffoldPlus wires '
+                      'banners and product states when you need the full '
+                      'shell.',
+                  child: Text(
+                    'You can revisit snackbars, dialogs, and connectivity '
+                    'demos from the home list.',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+              child: Row(
+                children: [
+                  if (_step > 0)
+                    TextButton(
+                      onPressed: () => _goTo(_step - 1),
+                      child: const Text('Back'),
+                    ),
+                  const Spacer(),
+                  FilledButton(
+                    onPressed: _step >= _titles.length - 1
+                        ? () => Navigator.of(context).maybePop()
+                        : () => _goTo(_step + 1),
+                    child: Text(
+                      _step >= _titles.length - 1 ? 'Finish' : 'Next',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FeedbackStep extends StatelessWidget {
+  const new({
+    required this.eyebrow,
+    required this.title,
+    required this.body,
+    required this.child,
+  });
+
+  final String eyebrow;
+  final String title;
+  final String body;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(24, 20, 24, 12),
+      children: [
+        Text(
+          eyebrow,
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: scheme.primary,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          title,
+          style: theme.textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.w700,
+            letterSpacing: -0.3,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          body,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: scheme.onSurfaceVariant,
+            height: 1.45,
+          ),
+        ),
+        const SizedBox(height: 28),
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: scheme.surfaceContainerHighest.withValues(alpha: 0.55),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: scheme.outlineVariant.withValues(alpha: 0.5),
+            ),
+          ),
+          child: Padding(padding: const EdgeInsets.all(20), child: child),
+        ),
+      ],
     );
   }
 }
@@ -1030,6 +1363,127 @@ class _AdaptiveScaffoldDemoPageState extends State<_AdaptiveScaffoldDemoPage> {
       onDestinationSelected: (index) => setState(() => _index = index),
       appBar: AppBar(title: const Text('PlusAdaptiveScaffold')),
       body: pages[_index],
+    );
+  }
+}
+
+class _MaintenanceModeDemoPage extends StatefulWidget {
+  const new();
+
+  @override
+  State<_MaintenanceModeDemoPage> createState() =>
+      _MaintenanceModeDemoPageState();
+}
+
+class _MaintenanceModeDemoPageState extends State<_MaintenanceModeDemoPage> {
+  var _maintenance = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaffoldPlus<void>(
+      maintenanceMode: _maintenance,
+      appBar: AppBar(
+        title: const Text('PlusMaintenanceMode'),
+        actions: [
+          Switch(
+            value: _maintenance,
+            onChanged: (value) => setState(() => _maintenance = value),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.add),
+      ),
+      body: const Center(child: Text('App content (toggle maintenance off)')),
+      maintenanceBuilder: (_) => PlusMaintenanceMode(
+        actionLabel: 'Dismiss for demo',
+        onAction: () => setState(() => _maintenance = false),
+      ),
+    );
+  }
+}
+
+class _PermissionStateDemoPage extends StatefulWidget {
+  const new();
+
+  @override
+  State<_PermissionStateDemoPage> createState() =>
+      _PermissionStateDemoPageState();
+}
+
+class _PermissionStateDemoPageState extends State<_PermissionStateDemoPage> {
+  var _denied = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaffoldPlus<void>(
+      permissionDenied: _denied,
+      appBar: AppBar(
+        title: const Text('PlusPermissionState'),
+        actions: [
+          Switch(
+            value: _denied,
+            onChanged: (value) => setState(() => _denied = value),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.camera_alt),
+      ),
+      body: const Center(child: Text('Camera feature content')),
+      permissionBuilder: (_) => PlusPermissionState(
+        title: 'Camera access needed',
+        message: 'Allow camera access to continue. (Demo — no OS prompt.)',
+        actionLabel: 'Grant for demo',
+        onAction: () => setState(() => _denied = false),
+        secondaryActionLabel: 'Not now',
+        onSecondaryAction: () {
+          PlusSnackbar.info(context, message: 'Permission still required');
+        },
+      ),
+    );
+  }
+}
+
+class _SessionExpiredDemoPage extends StatefulWidget {
+  const new();
+
+  @override
+  State<_SessionExpiredDemoPage> createState() =>
+      _SessionExpiredDemoPageState();
+}
+
+class _SessionExpiredDemoPageState extends State<_SessionExpiredDemoPage> {
+  var _expired = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaffoldPlus<void>(
+      sessionExpired: _expired,
+      appBar: AppBar(
+        title: const Text('PlusSessionExpired'),
+        actions: [
+          Switch(
+            value: _expired,
+            onChanged: (value) => setState(() => _expired = value),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.add),
+      ),
+      body: const Center(child: Text('Authenticated content')),
+      sessionExpiredBuilder: (_) => PlusSessionExpired(
+        actionLabel: 'Sign in (demo)',
+        onAction: () => setState(() => _expired = false),
+        secondaryActionLabel: 'Stay signed out',
+        onSecondaryAction: () {
+          PlusSnackbar.info(context, message: 'Still signed out');
+        },
+      ),
     );
   }
 }

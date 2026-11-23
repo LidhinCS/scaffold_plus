@@ -227,6 +227,178 @@ void main() {
       expect(find.text('No internet connection'), findsOneWidget);
       expect(find.text('body:hello'), findsOneWidget);
     });
+
+    testWidgets('maintenanceMode replaces body and hides FAB', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ScaffoldPlus<String>(
+            maintenanceMode: true,
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {},
+              child: const Icon(Icons.add),
+            ),
+            state: const PlusSuccess('hello'),
+            bodyBuilder: _bodyBuilder,
+          ),
+        ),
+      );
+
+      expect(find.text("We'll be back soon"), findsOneWidget);
+      expect(find.text('body:hello'), findsNothing);
+      expect(find.byType(FloatingActionButton), findsNothing);
+    });
+
+    testWidgets('maintenanceBuilder overrides default maintenance UI', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ScaffoldPlus<void>(
+            maintenanceMode: true,
+            maintenanceBuilder: (_) => const Text('Custom maintenance'),
+            body: const Text('Normal body'),
+          ),
+        ),
+      );
+
+      expect(find.text('Custom maintenance'), findsOneWidget);
+      expect(find.text('Normal body'), findsNothing);
+    });
+
+    testWidgets('permissionDenied replaces body and hides FAB', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ScaffoldPlus<String>(
+            permissionDenied: true,
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {},
+              child: const Icon(Icons.add),
+            ),
+            state: const PlusSuccess('hello'),
+            bodyBuilder: _bodyBuilder,
+          ),
+        ),
+      );
+
+      expect(find.text('Permission required'), findsOneWidget);
+      expect(find.text('body:hello'), findsNothing);
+      expect(find.byType(FloatingActionButton), findsNothing);
+    });
+
+    testWidgets('maintenanceMode takes priority over permissionDenied', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: ScaffoldPlus<void>(
+            maintenanceMode: true,
+            permissionDenied: true,
+            body: Text('Normal body'),
+          ),
+        ),
+      );
+
+      expect(find.text("We'll be back soon"), findsOneWidget);
+      expect(find.text('Permission required'), findsNothing);
+    });
+
+    testWidgets('permissionBuilder overrides default permission UI', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ScaffoldPlus<void>(
+            permissionDenied: true,
+            permissionBuilder: (_) => const Text('Custom permission'),
+            body: const Text('Normal body'),
+          ),
+        ),
+      );
+
+      expect(find.text('Custom permission'), findsOneWidget);
+      expect(find.text('Normal body'), findsNothing);
+    });
+
+    testWidgets('sessionExpired replaces body and hides FAB', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ScaffoldPlus<String>(
+            sessionExpired: true,
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {},
+              child: const Icon(Icons.add),
+            ),
+            state: const PlusSuccess('hello'),
+            bodyBuilder: _bodyBuilder,
+          ),
+        ),
+      );
+
+      expect(find.text('Session expired'), findsOneWidget);
+      expect(find.text('body:hello'), findsNothing);
+      expect(find.byType(FloatingActionButton), findsNothing);
+    });
+
+    testWidgets('sessionExpired takes priority over permissionDenied', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: ScaffoldPlus<void>(
+            sessionExpired: true,
+            permissionDenied: true,
+            body: Text('Normal body'),
+          ),
+        ),
+      );
+
+      expect(find.text('Session expired'), findsOneWidget);
+      expect(find.text('Permission required'), findsNothing);
+    });
+
+    testWidgets('maintenanceMode takes priority over sessionExpired', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: ScaffoldPlus<void>(
+            maintenanceMode: true,
+            sessionExpired: true,
+            body: Text('Normal body'),
+          ),
+        ),
+      );
+
+      expect(find.text("We'll be back soon"), findsOneWidget);
+      expect(find.text('Session expired'), findsNothing);
+    });
+
+    testWidgets('onRefresh wraps success body in PlusRefreshIndicator', (
+      tester,
+    ) async {
+      var refreshed = 0;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ScaffoldPlus<String>(
+            state: const PlusSuccess('hello'),
+            onRefresh: () async {
+              refreshed++;
+            },
+            bodyBuilder: (context, data) =>
+                ListView(children: [Text('body:$data')]),
+          ),
+        ),
+      );
+
+      expect(find.byType(PlusRefreshIndicator), findsOneWidget);
+      expect(find.text('body:hello'), findsOneWidget);
+
+      await tester.fling(find.byType(ListView), const Offset(0, 300), 1000);
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+      expect(refreshed, 1);
+    });
   });
 }
 

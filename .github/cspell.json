@@ -41,6 +41,13 @@
     "riverpod",
     "Snackbars",
     "affordances",
-    "ConfirmationDialog"
+    "ConfirmationDialog",
+    "MkDocs",
+    "mkdocs",
+    "dartdoc",
+    "lidhincs",
+    "Lidhin",
+    "screenflow",
+    "squidfunk"
   ]
 }

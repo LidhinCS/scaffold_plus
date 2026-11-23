@@ -15,6 +15,7 @@ Demos currently cover:
 - `PlusLoader` / `PlusSkeleton`
 - Connectivity (`ScaffoldPlus` banner, `PlusConnectivityBuilder`,
   `PlusOfflineState`, `PlusConnectivityBanner`)
+- Feedback screenflow (toast → dialog → confirm → banner)
 - `PlusSnackbar`
 - `PlusDialog` / `PlusConfirmationDialog`
 - `PlusBottomSheet`
@@ -23,3 +24,7 @@ Demos currently cover:
 - `PlusAsyncButton`
 - `PlusPagedList`
 - `PlusAdaptiveScaffold`
+- `PlusMaintenanceMode` / `ScaffoldPlus.maintenanceMode`
+- `PlusPermissionState` / `ScaffoldPlus.permissionDenied`
+- `PlusSessionExpired` / `ScaffoldPlus.sessionExpired`
+- `ScaffoldPlus.onRefresh` (pull-to-refresh on async success)

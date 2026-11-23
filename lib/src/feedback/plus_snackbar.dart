@@ -38,6 +38,8 @@ abstract final class PlusSnackbar {
   ///
   /// An action button is shown only when both [actionLabel] and [onAction]
   /// are non-null.
+  ///
+  /// When [showIcon] is true (default), a tone icon appears beside the message.
   static ScaffoldFeatureController<SnackBar, SnackBarClosedReason> show(
     BuildContext context, {
     required String message,
@@ -47,6 +49,8 @@ abstract final class PlusSnackbar {
     Duration? duration,
     SnackBarBehavior behavior = SnackBarBehavior.floating,
     bool clearCurrent = true,
+    bool showIcon = true,
+    IconData? icon,
     Color? backgroundColor,
     Color? foregroundColor,
     TextStyle? textStyle,
@@ -61,28 +65,43 @@ abstract final class PlusSnackbar {
       messenger.clearSnackBars();
     }
 
+    final theme = Theme.of(context);
     final colors = _resolveColors(context, tone);
     final resolvedBackground = backgroundColor ?? colors.background;
     final resolvedForeground = foregroundColor ?? colors.foreground;
     final resolvedTextStyle =
         textStyle ??
-        Theme.of(context).textTheme.bodyMedium
-            ?.copyWith(color: resolvedForeground);
+        theme.textTheme.bodyMedium?.copyWith(
+          color: resolvedForeground,
+          fontWeight: FontWeight.w500,
+          height: 1.35,
+        );
     final resolvedDuration = duration ?? PlusTheme.of(context).snackbarDuration;
-
+    final resolvedIcon = icon ?? _iconForTone(tone);
     final showAction = actionLabel != null && onAction != null;
 
     return messenger.showSnackBar(
       SnackBar(
-        content: Text(message, style: resolvedTextStyle),
+        content: _PlusSnackbarBody(
+          message: message,
+          textStyle: resolvedTextStyle,
+          foreground: resolvedForeground,
+          iconBackground: colors.iconBackground,
+          showIcon: showIcon,
+          icon: resolvedIcon,
+        ),
         duration: resolvedDuration,
         behavior: behavior,
         backgroundColor: resolvedBackground,
-        elevation: elevation,
-        shape: shape,
-        margin: margin,
-        padding: padding,
+        elevation: elevation ?? 6,
+        shape:
+            shape ??
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        margin: margin ?? const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        padding:
+            padding ?? const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         width: width,
+        dismissDirection: DismissDirection.down,
         action: showAction
             ? SnackBarAction(
                 label: actionLabel,
@@ -103,6 +122,7 @@ abstract final class PlusSnackbar {
     Duration? duration,
     SnackBarBehavior behavior = SnackBarBehavior.floating,
     bool clearCurrent = true,
+    bool showIcon = true,
   }) {
     return show(
       context,
@@ -112,6 +132,7 @@ abstract final class PlusSnackbar {
       duration: duration,
       behavior: behavior,
       clearCurrent: clearCurrent,
+      showIcon: showIcon,
     );
   }
 
@@ -124,6 +145,7 @@ abstract final class PlusSnackbar {
     Duration? duration,
     SnackBarBehavior behavior = SnackBarBehavior.floating,
     bool clearCurrent = true,
+    bool showIcon = true,
   }) {
     return show(
       context,
@@ -134,6 +156,7 @@ abstract final class PlusSnackbar {
       duration: duration,
       behavior: behavior,
       clearCurrent: clearCurrent,
+      showIcon: showIcon,
     );
   }
 
@@ -146,6 +169,7 @@ abstract final class PlusSnackbar {
     Duration? duration,
     SnackBarBehavior behavior = SnackBarBehavior.floating,
     bool clearCurrent = true,
+    bool showIcon = true,
   }) {
     return show(
       context,
@@ -156,6 +180,7 @@ abstract final class PlusSnackbar {
       duration: duration,
       behavior: behavior,
       clearCurrent: clearCurrent,
+      showIcon: showIcon,
     );
   }
 
@@ -169,24 +194,103 @@ abstract final class PlusSnackbar {
     ScaffoldMessenger.of(context).clearSnackBars();
   }
 
-  static ({Color background, Color foreground}) _resolveColors(
-    BuildContext context,
-    PlusSnackbarTone tone,
-  ) {
+  static IconData _iconForTone(PlusSnackbarTone tone) {
+    return switch (tone) {
+      PlusSnackbarTone.info => Icons.info_rounded,
+      PlusSnackbarTone.success => Icons.check_circle_rounded,
+      PlusSnackbarTone.error => Icons.error_rounded,
+    };
+  }
+
+  static ({Color background, Color foreground, Color iconBackground})
+  _resolveColors(BuildContext context, PlusSnackbarTone tone) {
     final colorScheme = Theme.of(context).colorScheme;
     return switch (tone) {
       PlusSnackbarTone.info => (
         background: colorScheme.inverseSurface,
         foreground: colorScheme.onInverseSurface,
+        iconBackground: colorScheme.onInverseSurface.withValues(alpha: 0.14),
       ),
       PlusSnackbarTone.success => (
         background: colorScheme.primaryContainer,
         foreground: colorScheme.onPrimaryContainer,
+        iconBackground: colorScheme.primary.withValues(alpha: 0.16),
       ),
       PlusSnackbarTone.error => (
         background: colorScheme.errorContainer,
         foreground: colorScheme.onErrorContainer,
+        iconBackground: colorScheme.error.withValues(alpha: 0.16),
       ),
     };
+  }
+}
+
+class _PlusSnackbarBody extends StatefulWidget {
+  const new({
+    required this.message,
+    required this.foreground,
+    required this.iconBackground,
+    required this.showIcon,
+    required this.icon,
+    this.textStyle,
+  });
+
+  final String message;
+  final TextStyle? textStyle;
+  final Color foreground;
+  final Color iconBackground;
+  final bool showIcon;
+  final IconData icon;
+
+  @override
+  State<_PlusSnackbarBody> createState() => _PlusSnackbarBodyState();
+}
+
+class _PlusSnackbarBodyState extends State<_PlusSnackbarBody>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 420),
+  );
+  late final Animation<double> _scale = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeOutBack,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        if (widget.showIcon) ...[
+          ScaleTransition(
+            scale: _scale,
+            child: Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: widget.iconBackground,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              alignment: Alignment.center,
+              child: Icon(widget.icon, size: 20, color: widget.foreground),
+            ),
+          ),
+          const SizedBox(width: 12),
+        ],
+        Expanded(child: Text(widget.message, style: widget.textStyle)),
+      ],
+    );
   }
 }

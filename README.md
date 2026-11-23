@@ -3,12 +3,15 @@
 [![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link]
 [![Powered by Mason](https://img.shields.io/endpoint?url=https%3A%2F%2Ftinyurl.com%2Fmason-badge)](https://github.com/felangel/mason)
 [![License: MIT][license_badge]][license_link]
+[![Docs][docs_badge]][docs_link]
 
 **More power to your Flutter UI.**
 
 A collection of reusable Flutter UI components, application states,
 connectivity features and productivity utilities — without locking developers
 into an architecture.
+
+**Docs:** [lidhincs.github.io/ui_plus][docs_link] (guides + API reference).
 
 ## Goals
 
@@ -28,6 +31,7 @@ into an architecture.
 | `PlusAsyncView` | Available |
 | `PlusConnectivityConfig` | Available |
 | `PlusConnectivityBanner` / Overlay | Available |
+| `PlusInternetChecker` | Available (unreleased) |
 | `PlusOfflineState` | Available |
 | `PlusConnectivityBuilder` | Available |
 | `PlusEmptyState` | Available |
@@ -44,9 +48,13 @@ into an architecture.
 | `PlusAsyncButton` | Available |
 | `PlusPagedList` | Available |
 | `PlusAdaptiveScaffold` | Available |
+| `PlusMaintenanceMode` | Available (unreleased) |
+| `PlusPermissionState` | Available (unreleased) |
+| `PlusSessionExpired` | Available (unreleased) |
 
 See [plan.md](plan.md) (summary: [doc/roadmap.md](doc/roadmap.md)) for the
 release plan. Connectivity design notes: [doc/connectivity.md](doc/connectivity.md).
+User-facing guides: [Documentation site][docs_link].
 
 ## Installation 💻
 
@@ -106,12 +114,12 @@ rendering. Composes a native `Scaffold` internally (so `Scaffold.of` works).
 
 **Solves:** one widget for chrome + loading / empty / error / success.
 
-**Body precedence:** when `state` is `null`, `body` is shown. When `state` is
-non-null, async rendering takes priority and `body` is ignored (no assert).
+**Body precedence:** `maintenanceMode` → `sessionExpired` → `permissionDenied`
+→ async `state` → `body`. Product states also suppress the FAB.
 
-**Async options:** `state`, `bodyBuilder`, `isEmpty`, `onRetry`,
-`loadingBuilder`, `emptyBuilder`, `errorBuilder`, `useSkeleton`,
-`skeletonBuilder`.
+**Async options:** `state`, `bodyBuilder`, `isEmpty`, `onRetry`, `onRefresh`,
+`onRefreshError`, `loadingBuilder`, `emptyBuilder`, `errorBuilder`,
+`useSkeleton`, `skeletonBuilder`.
 
 **Skeleton:** `useSkeleton: true` shows a default `PlusSkeleton` layout;
 provide `skeletonBuilder` to override. `loadingBuilder` still wins when set.
@@ -119,6 +127,17 @@ provide `skeletonBuilder` to override. `loadingBuilder` still wins when set.
 Shares the same internal async renderer as `PlusAsyncView`.
 
 **Connectivity (opt-in):**
+
+Built-in internet check (default when no custom source is passed):
+
+```dart
+ScaffoldPlus(
+  connectivityBanner: true,
+  body: const HomePage(),
+)
+```
+
+Custom source (always wins over built-in):
 
 ```dart
 ScaffoldPlus(
@@ -133,9 +152,68 @@ ScaffoldPlus(
 )
 ```
 
-Core does **not** include a connectivity plugin. Pass a `bool` / `Stream<bool>`
-that represents **reachability** when you need a reliable internet indicator
-(Wi-Fi association alone is not enough).
+No connectivity plugin dependency. Details: [doc/connectivity.md](doc/connectivity.md).
+
+**Maintenance (opt-in):**
+
+```dart
+ScaffoldPlus(
+  maintenanceMode: isUnderMaintenance,
+  maintenanceBuilder: (context) => const PlusMaintenanceMode(
+    title: "We'll be back soon",
+    message: 'Scheduled maintenance is in progress.',
+  ),
+  body: const HomePage(),
+)
+```
+
+The app owns the flag (remote config / feature flag). Default UI is
+`PlusMaintenanceMode` when `maintenanceBuilder` is omitted.
+
+**Permission denied (opt-in):**
+
+```dart
+ScaffoldPlus(
+  permissionDenied: !cameraGranted,
+  permissionBuilder: (context) => PlusPermissionState(
+    title: 'Camera access needed',
+    message: 'Allow camera access to take photos.',
+    actionLabel: 'Open settings',
+    onAction: openAppSettings,
+  ),
+  body: const CameraPage(),
+)
+```
+
+Core does **not** depend on a permission plugin — pass a bool from the app.
+
+**Session expired (opt-in):**
+
+```dart
+ScaffoldPlus(
+  sessionExpired: isSessionExpired,
+  sessionExpiredBuilder: (context) => PlusSessionExpired(
+    actionLabel: 'Sign in',
+    onAction: goToLogin,
+  ),
+  body: const HomePage(),
+)
+```
+
+**Pull-to-refresh (async success/empty):**
+
+```dart
+ScaffoldPlus<List<Item>>(
+  state: state,
+  onRefresh: reload,
+  onRefreshError: (error, stack) {
+    PlusSnackbar.error(context, message: 'Refresh failed');
+  },
+  bodyBuilder: (context, items) => ListView(...),
+)
+```
+
+Success `bodyBuilder` content should be scrollable (e.g. `ListView`).
 
 ### PlusEmptyState
 
@@ -248,8 +326,8 @@ derived via `isEmpty` on success data only. Design notes:
 **Precedence:** loading → failure → success (empty predicate) → success body.
 
 **Customization:** `loadingBuilder`, `emptyBuilder`, `errorBuilder`, `onRetry`,
-`useSkeleton`, `skeletonBuilder`. Defaults use `PlusLoader` /
-`PlusSkeleton`, `PlusEmptyState`, and `PlusErrorState`.
+`onRefresh`, `onRefreshError`, `useSkeleton`, `skeletonBuilder`. Defaults use
+`PlusLoader` / `PlusSkeleton`, `PlusEmptyState`, and `PlusErrorState`.
 
 **Limitations:** map Bloc/Riverpod/Future states at the UI boundary — core
 stays architecture agnostic. Prefer `ScaffoldPlus` when you want scaffold +
@@ -290,9 +368,60 @@ const PlusOfflineState(
 )
 ```
 
+### PlusMaintenanceMode
+
+Full-page maintenance presentation. Independently reusable; also used by
+`ScaffoldPlus.maintenanceMode`.
+
+```dart
+const PlusMaintenanceMode(
+  title: "We'll be back soon",
+  message: 'Scheduled maintenance is in progress. Please try again later.',
+  actionLabel: 'Check status',
+)
+```
+
+Does not fetch remote flags — supply copy and show when your app decides
+maintenance is active.
+
+### PlusPermissionState
+
+Full-page permission denied / request presentation. Independently reusable;
+also used by `ScaffoldPlus.permissionDenied`.
+
+```dart
+PlusPermissionState(
+  title: 'Camera access needed',
+  message: 'Allow camera access to take photos.',
+  actionLabel: 'Open settings',
+  onAction: openAppSettings,
+  secondaryActionLabel: 'Not now',
+  onSecondaryAction: goBack,
+)
+```
+
+Does not request OS permissions — the app owns status and actions.
+
+### PlusSessionExpired
+
+Full-page session-expired presentation. Independently reusable; also used by
+`ScaffoldPlus.sessionExpired`.
+
+```dart
+PlusSessionExpired(
+  actionLabel: 'Sign in',
+  onAction: goToLogin,
+  secondaryActionLabel: 'Dismiss',
+  onSecondaryAction: close,
+)
+```
+
+Does not manage auth — the app owns the expired flag and navigation.
+
 ### PlusSnackbar
 
-Theme-aware snackbar helpers for success, info, and error feedback.
+Theme-aware snackbar helpers for success, info, and error feedback — with a
+tone icon badge, floating card chrome, and a light spring entrance on the icon.
 
 **Solves:** consistent Material 3 snackbars without repeating color / action
 boilerplate.
@@ -513,6 +642,29 @@ flutter analyze
 flutter test
 ```
 
+## Documentation site
+
+Guides are built with [MkDocs Material](https://squidfunk.github.io/mkdocs-material/)
+and API docs with `dart doc`. The [docs](.github/workflows/docs.yaml) workflow
+publishes both to GitHub Pages on every push to `main`.
+
+Local preview:
+
+```sh
+pip install -r requirements-docs.txt
+mkdocs serve
+```
+
+In a separate terminal (or before deploy), generate API docs into the site folder:
+
+```sh
+mkdocs build -d site
+dart doc -o site/api
+```
+
+Enable **Settings → Pages → Build and deployment → GitHub Actions** once on the
+repo so the workflow can deploy.
+
 ## Contributing
 
 1. Keep changes scoped to the current milestone.
@@ -525,6 +677,8 @@ flutter test
 
 MIT — see [LICENSE](LICENSE).
 
+[docs_badge]: https://img.shields.io/badge/docs-GitHub%20Pages-teal
+[docs_link]: https://lidhincs.github.io/ui_plus/
 [flutter_install_link]: https://docs.flutter.dev/get-started/install
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license_link]: https://opensource.org/licenses/MIT

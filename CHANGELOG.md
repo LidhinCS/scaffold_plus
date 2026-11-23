@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `PlusMaintenanceMode` full-page maintenance presentation (app-owned flag).
+- `ScaffoldPlus.maintenanceMode` / `maintenanceBuilder` — replaces body and
+  suppresses FAB; takes priority over async `state` and `body`.
+- `PlusPermissionState` permission denied / request presentation (app-owned
+  status; optional secondary action).
+- `ScaffoldPlus.permissionDenied` / `permissionBuilder` — same body/FAB
+  behavior; after maintenance, before async/`body`.
+- `PlusSessionExpired` session-expired presentation (app-owned auth flag).
+- `ScaffoldPlus.sessionExpired` / `sessionExpiredBuilder` — after maintenance,
+  before permission.
+- `ScaffoldPlus.onRefresh` / `onRefreshError` and matching `PlusAsyncView`
+  APIs — pull-to-refresh on async success / empty via `PlusRefreshIndicator`.
+
+### Added
+
+- `PlusInternetChecker` / `PlusInternetCheckerConfig` — plugin-free reachability
+  probe (HTTP on IO, browser online signal on web).
+- `ScaffoldPlus` / `PlusConnectivityOverlay`: `useBuiltInInternetCheck` (default
+  true) and `internetCheckerConfig`. Custom `isConnected` /
+  `connectivityStream` still win when provided.
+
+### Changed
+
+- `PlusSnackbar` — tone icon badge with spring entrance, softer floating card
+  chrome (radius / elevation / padding).
+- `PlusDialog` / `PlusConfirmationDialog` — icon header, rounded surface, and
+  scale+fade route transition; destructive confirm uses filled error action.
+- `PlusConnectivityBanner` — animated icon badge and softer card defaults.
+
 ## [0.4.0] - 2026-11-23
 
 ### Added

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:ui_plus/src/dialogs/plus_dialog_surface.dart';
 
-/// Confirm / cancel dialog helpers.
+/// Confirm / cancel dialog helpers with polished chrome and motion.
 ///
 /// Returns `true` when the user confirms, `false` when they cancel or dismiss
 /// the barrier (when barrier dismiss is allowed).
@@ -22,7 +23,8 @@ import 'package:flutter/material.dart';
 abstract final class PlusConfirmationDialog {
   /// Shows a confirm / cancel dialog.
   ///
-  /// When [isDestructive] is true, the confirm action uses the error color.
+  /// When [isDestructive] is true, the confirm action uses the error color and
+  /// a warning icon badge.
   static Future<bool> show(
     BuildContext context, {
     required String title,
@@ -33,6 +35,8 @@ abstract final class PlusConfirmationDialog {
     bool isDestructive = false,
     bool barrierDismissible = true,
     Color? barrierColor,
+    IconData? icon,
+    bool showIcon = true,
     TextStyle? titleTextStyle,
     TextStyle? messageTextStyle,
   }) async {
@@ -41,18 +45,20 @@ abstract final class PlusConfirmationDialog {
       'Provide message or content, not both.',
     );
 
-    final result = await showDialog<bool>(
+    final result = await showPlusDialogRoute<bool>(
       context: context,
       barrierDismissible: barrierDismissible,
       barrierColor: barrierColor,
       builder: (dialogContext) {
-        final theme = Theme.of(dialogContext);
-        final colorScheme = theme.colorScheme;
+        final colorScheme = Theme.of(dialogContext).colorScheme;
 
         final confirmButton = isDestructive
-            ? TextButton(
+            ? FilledButton(
                 onPressed: () => Navigator.of(dialogContext).pop(true),
-                style: TextButton.styleFrom(foregroundColor: colorScheme.error),
+                style: FilledButton.styleFrom(
+                  backgroundColor: colorScheme.error,
+                  foregroundColor: colorScheme.onError,
+                ),
                 child: Text(confirmLabel),
               )
             : FilledButton(
@@ -60,20 +66,19 @@ abstract final class PlusConfirmationDialog {
                 child: Text(confirmLabel),
               );
 
-        return AlertDialog(
-          title: Text(title, style: titleTextStyle),
-          content:
-              content ??
-              (message == null || message.isEmpty
-                  ? null
-                  : Text(
-                      message,
-                      style:
-                          messageTextStyle ??
-                          theme.textTheme.bodyMedium?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                    )),
+        return PlusDialogSurface(
+          title: title,
+          message: message,
+          content: content,
+          isDestructive: isDestructive,
+          icon: showIcon
+              ? (icon ??
+                    (isDestructive
+                        ? Icons.warning_rounded
+                        : Icons.help_rounded))
+              : null,
+          titleTextStyle: titleTextStyle,
+          messageTextStyle: messageTextStyle,
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),

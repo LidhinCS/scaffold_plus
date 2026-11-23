@@ -5,9 +5,13 @@ import 'package:ui_plus/src/async/plus_async_state.dart';
 import 'package:ui_plus/src/async/plus_async_types.dart';
 import 'package:ui_plus/src/connectivity/plus_connectivity_config.dart';
 import 'package:ui_plus/src/connectivity/plus_connectivity_overlay.dart';
+import 'package:ui_plus/src/connectivity/plus_internet_checker.dart';
+import 'package:ui_plus/src/states/plus_maintenance_mode.dart';
+import 'package:ui_plus/src/states/plus_permission_state.dart';
+import 'package:ui_plus/src/states/plus_session_expired.dart';
 
-/// A drop-in [Scaffold] replacement with optional async body rendering and
-/// optional connectivity banners.
+/// A drop-in [Scaffold] replacement with optional async body rendering,
+/// optional connectivity banners, and optional product-state overlays.
 ///
 /// Forwards the full Flutter [Scaffold] API and composes a native [Scaffold]
 /// internally, so [Scaffold.of] / [Scaffold.maybeOf] continue to work for
@@ -18,12 +22,21 @@ import 'package:ui_plus/src/connectivity/plus_connectivity_overlay.dart';
 /// - When [state] is `null`, [body] is shown (normal scaffold usage).
 /// - When [state] is non-null, async rendering takes priority and [body] is
 ///   **ignored** (no assert). Provide [bodyBuilder] for successful data.
+/// - Optional [onRefresh] wraps success / empty async content in pull-to-refresh.
+///
+/// ## Product states
+///
+/// Opt in with [maintenanceMode], [sessionExpired], or [permissionDenied].
+/// When active, the body is replaced and the FAB is suppressed. Precedence:
+/// maintenance → session expired → permission → async [state] → [body].
 ///
 /// ## Connectivity
 ///
-/// Opt in with [connectivityBanner]. Supply [isConnected] and/or
-/// [connectivityStream]. Prefer reachability-aware values when you need a
-/// reliable internet indicator. Core does not depend on a connectivity plugin.
+/// Opt in with [connectivityBanner]. By default a built-in
+/// [PlusInternetChecker] probes reachability (no plugin). Pass
+/// [isConnected] and/or [connectivityStream] to use your own source instead —
+/// custom values always win. Set [useBuiltInInternetCheck] to false to disable
+/// the built-in checker when no custom source is provided.
 class ScaffoldPlus<T> extends StatelessWidget {
   /// Creates a scaffold that optionally renders async [state] in its body.
   const new({
@@ -59,14 +72,24 @@ class ScaffoldPlus<T> extends StatelessWidget {
     this.bodyBuilder,
     this.isEmpty,
     this.onRetry,
+    this.onRefresh,
+    this.onRefreshError,
     this.loadingBuilder,
     this.emptyBuilder,
     this.errorBuilder,
     this.useSkeleton = false,
     this.skeletonBuilder,
+    this.maintenanceMode = false,
+    this.maintenanceBuilder,
+    this.sessionExpired = false,
+    this.sessionExpiredBuilder,
+    this.permissionDenied = false,
+    this.permissionBuilder,
     this.connectivityBanner = false,
     this.isConnected,
     this.connectivityStream,
+    this.useBuiltInInternetCheck = true,
+    this.internetCheckerConfig = const PlusInternetCheckerConfig(),
     this.connectivityBannerConfig = const PlusConnectivityConfig(),
     this.connectivityBannerBuilder,
   });
@@ -169,6 +192,15 @@ class ScaffoldPlus<T> extends StatelessWidget {
   /// Optional retry callback for the default error UI.
   final VoidCallback? onRetry;
 
+  /// Optional pull-to-refresh for async success / empty content.
+  ///
+  /// Ignored when [state] is null. Success [bodyBuilder] content should be
+  /// scrollable (e.g. [ListView]).
+  final Future<void> Function()? onRefresh;
+
+  /// Optional error handler for [onRefresh] failures.
+  final void Function(Object error, StackTrace stackTrace)? onRefreshError;
+
   /// Optional loading UI override.
   final WidgetBuilder? loadingBuilder;
 
@@ -184,14 +216,53 @@ class ScaffoldPlus<T> extends StatelessWidget {
   /// Optional custom skeleton for the loading state.
   final WidgetBuilder? skeletonBuilder;
 
+  /// When true, replaces the body with maintenance UI and hides the FAB.
+  ///
+  /// Takes priority over [state] and [body]. The app owns the flag (remote
+  /// config, feature flag, etc.).
+  final bool maintenanceMode;
+
+  /// Optional custom maintenance UI. Defaults to [PlusMaintenanceMode].
+  final WidgetBuilder? maintenanceBuilder;
+
+  /// When true, replaces the body with session-expired UI and hides the FAB.
+  ///
+  /// Takes priority over [permissionDenied], [state], and [body], but not over
+  /// [maintenanceMode]. The app owns the flag (auth layer).
+  final bool sessionExpired;
+
+  /// Optional custom session-expired UI. Defaults to [PlusSessionExpired].
+  final WidgetBuilder? sessionExpiredBuilder;
+
+  /// When true, replaces the body with permission UI and hides the FAB.
+  ///
+  /// Takes priority over [state] and [body], but not over [maintenanceMode] or
+  /// [sessionExpired]. The app owns the flag (permission plugin / OS status).
+  final bool permissionDenied;
+
+  /// Optional custom permission UI. Defaults to [PlusPermissionState].
+  final WidgetBuilder? permissionBuilder;
+
   /// Enables the optional connectivity banner overlay.
   final bool connectivityBanner;
 
-  /// Optional connectivity snapshot. Prefer reachability-aware values.
+  /// Optional custom connectivity snapshot.
+  ///
+  /// When set (alone or with [connectivityStream]), built-in checking is
+  /// skipped.
   final bool? isConnected;
 
-  /// Optional live connectivity updates. Prefer reachability-aware values.
+  /// Optional custom live connectivity updates.
+  ///
+  /// When set, built-in checking is skipped.
   final Stream<bool>? connectivityStream;
+
+  /// When true and no custom [isConnected] / [connectivityStream] is provided,
+  /// uses the built-in [PlusInternetChecker].
+  final bool useBuiltInInternetCheck;
+
+  /// Configuration for the built-in internet checker.
+  final PlusInternetCheckerConfig internetCheckerConfig;
 
   /// Appearance and behavior for the connectivity banner.
   final PlusConnectivityConfig connectivityBannerConfig;
@@ -199,7 +270,31 @@ class ScaffoldPlus<T> extends StatelessWidget {
   /// Optional custom connectivity banner builder.
   final PlusConnectivityBannerBuilder? connectivityBannerBuilder;
 
+  bool get _blocksContent =>
+      maintenanceMode || sessionExpired || permissionDenied;
+
   Widget? get _resolvedBody {
+    if (maintenanceMode) {
+      return Builder(
+        builder: (context) =>
+            maintenanceBuilder?.call(context) ?? const PlusMaintenanceMode(),
+      );
+    }
+
+    if (sessionExpired) {
+      return Builder(
+        builder: (context) =>
+            sessionExpiredBuilder?.call(context) ?? const PlusSessionExpired(),
+      );
+    }
+
+    if (permissionDenied) {
+      return Builder(
+        builder: (context) =>
+            permissionBuilder?.call(context) ?? const PlusPermissionState(),
+      );
+    }
+
     final asyncState = state;
     if (asyncState == null) {
       return body;
@@ -210,6 +305,8 @@ class ScaffoldPlus<T> extends StatelessWidget {
       builder: bodyBuilder ?? (context, data) => const SizedBox.shrink(),
       isEmpty: isEmpty,
       onRetry: onRetry,
+      onRefresh: onRefresh,
+      onRefreshError: onRefreshError,
       loadingBuilder: loadingBuilder,
       emptyBuilder: emptyBuilder,
       errorBuilder: errorBuilder,
@@ -218,15 +315,18 @@ class ScaffoldPlus<T> extends StatelessWidget {
     );
   }
 
+  Widget? get _resolvedFab => _blocksContent ? null : floatingActionButton;
+
   Widget _buildScaffold() {
     final resolvedBody = _resolvedBody;
+    final resolvedFab = _resolvedFab;
     final scrimBuilder = bottomSheetScrimBuilder;
 
     if (scrimBuilder != null) {
       return Scaffold(
         appBar: appBar,
         body: resolvedBody,
-        floatingActionButton: floatingActionButton,
+        floatingActionButton: resolvedFab,
         floatingActionButtonLocation: floatingActionButtonLocation,
         floatingActionButtonAnimator: floatingActionButtonAnimator,
         persistentFooterButtons: persistentFooterButtons,
@@ -257,7 +357,7 @@ class ScaffoldPlus<T> extends StatelessWidget {
     return Scaffold(
       appBar: appBar,
       body: resolvedBody,
-      floatingActionButton: floatingActionButton,
+      floatingActionButton: resolvedFab,
       floatingActionButtonLocation: floatingActionButtonLocation,
       floatingActionButtonAnimator: floatingActionButtonAnimator,
       persistentFooterButtons: persistentFooterButtons,
@@ -294,6 +394,8 @@ class ScaffoldPlus<T> extends StatelessWidget {
     return PlusConnectivityOverlay(
       isConnected: isConnected,
       connectivityStream: connectivityStream,
+      useBuiltInInternetCheck: useBuiltInInternetCheck,
+      internetCheckerConfig: internetCheckerConfig,
       config: connectivityBannerConfig,
       bannerBuilder: connectivityBannerBuilder,
       child: scaffold,
