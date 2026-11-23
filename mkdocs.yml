@@ -3,7 +3,6 @@ site_description: More power to your Flutter UI — architecture-agnostic widget
 site_url: https://lidhincs.github.io/ui_plus/
 repo_url: https://github.com/LidhinCS/ui_plus
 repo_name: LidhinCS/ui_plus
-edit_uri: edit/main/docs/
 copyright: Copyright &copy; UI Plus contributors
 
 theme:
@@ -41,7 +40,6 @@ theme:
     - search.highlight
     - content.code.copy
     - content.code.annotate
-    - content.action.edit
     - toc.follow
   icon:
     repo: fontawesome/brands/github
