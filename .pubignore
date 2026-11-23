@@ -1,0 +1,11 @@
+# Editor / agent tooling — not part of the published package.
+.cursor/
+
+# Local / IDE noise.
+.idea/
+.vscode/
+*.iml
+
+# Test/coverage artifacts (sources under test/ may still be useful locally;
+# exclude generated coverage only).
+coverage/

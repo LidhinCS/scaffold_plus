@@ -1,21 +1,21 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:scaffold_plus/scaffold_plus.dart';
+import 'package:ui_plus/ui_plus.dart';
 
 void main() {
-  runApp(const ScaffoldPlusExampleApp());
+  runApp(const UiPlusExampleApp());
 }
 
-/// Minimal host app used to demonstrate `scaffold_plus` components.
-class ScaffoldPlusExampleApp extends StatelessWidget {
+/// Minimal host app used to demonstrate UI Plus components.
+class UiPlusExampleApp extends StatelessWidget {
   /// Creates the example application.
   const new({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'scaffold_plus example',
+      title: 'UI Plus example',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         useMaterial3: true,
@@ -38,7 +38,7 @@ class _HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('scaffold_plus')),
+      appBar: AppBar(title: const Text('UI Plus')),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 16),
         children: [

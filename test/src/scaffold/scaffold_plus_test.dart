@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:scaffold_plus/scaffold_plus.dart';
+import 'package:ui_plus/ui_plus.dart';
 
 void main() {
   group('ScaffoldPlus', () {

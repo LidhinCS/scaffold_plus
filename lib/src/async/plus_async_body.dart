@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:scaffold_plus/src/async/plus_async_state.dart';
-import 'package:scaffold_plus/src/async/plus_async_types.dart';
-import 'package:scaffold_plus/src/loaders/plus_loader.dart';
-import 'package:scaffold_plus/src/loaders/plus_skeleton.dart';
-import 'package:scaffold_plus/src/states/plus_empty_state.dart';
-import 'package:scaffold_plus/src/states/plus_error_state.dart';
+import 'package:ui_plus/src/async/plus_async_state.dart';
+import 'package:ui_plus/src/async/plus_async_types.dart';
+import 'package:ui_plus/src/loaders/plus_loader.dart';
+import 'package:ui_plus/src/loaders/plus_skeleton.dart';
+import 'package:ui_plus/src/states/plus_empty_state.dart';
+import 'package:ui_plus/src/states/plus_error_state.dart';
 
 /// Shared async state renderer used by `PlusAsyncView` and `ScaffoldPlus`.
 ///

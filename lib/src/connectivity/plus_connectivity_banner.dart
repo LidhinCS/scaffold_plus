@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scaffold_plus/src/connectivity/plus_connectivity_config.dart';
+import 'package:ui_plus/src/connectivity/plus_connectivity_config.dart';
 
 /// Default Material 3 connectivity banner presentation.
 ///
