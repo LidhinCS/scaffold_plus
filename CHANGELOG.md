@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-23
+
+### Added
+
+- `PlusAsyncButton` / `PlusAsyncButtonVariant` — awaits a `Future` on press,
+  locks against double-submit, optional success flash and `onError`.
+- `PlusPagedList` — infinite/paged list shell with load-more threshold and
+  loading / error / end footers (app owns items + flags).
+- `PlusAdaptiveScaffold` / `PlusNavigationDestination` — navigation bar ↔ rail
+  shell by breakpoint; body stays orthogonal to async/connectivity.
+
+### Changed
+
+- Roadmap v0.4.0 pivoted to unique application patterns (not thin Material
+  wrappers).
+
 ## [0.3.0] - 2026-11-23
 
 ### Added

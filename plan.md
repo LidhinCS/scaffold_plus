@@ -3,7 +3,7 @@
 > **Role:** Central development roadmap for `ui_plus`.  
 > **Branding:** UI Plus — More power to your Flutter UI.  
 > **Last verified against source:** 2026-11-23 (lib exports, tests, example, docs).  
-> **Package version in `pubspec.yaml`:** `0.3.0`
+> **Package version in `pubspec.yaml`:** `0.4.0`
 
 Modular, architecture-agnostic Flutter UI toolkit for reusable components,
 application states, connectivity presentation, and productivity utilities.
@@ -47,11 +47,15 @@ Flagship widget remains `ScaffoldPlus`.
 | **v0.1.0** Core Foundation | Scaffold + async + state widgets | **Completed** | `0.1.0` |
 | **v0.2.0** Connectivity | Plugin-free connectivity UI | **Completed** | `0.2.0` |
 | **v0.3.0** Everyday Productivity | Snackbars, dialogs, sheets, search, refresh, theme | **Completed** | `0.3.0` |
-| **v0.4.0** Responsive UI & Utilities | Adaptive / responsive helpers | **Planned** | — |
+| **v0.4.0** Unique application patterns | Async button, paged list, adaptive shell | **Completed** | `0.4.0` |
 | **v0.5.0** Advanced Application UI | Higher-value advanced helpers | **Planned / Future** | — |
 | **v1.0.0** Stable Release | API freeze + pub.dev readiness | **Planned** | — |
 
 **In Progress:** none.
+
+**Uniqueness bar:** Prefer APIs that encode a multi-step app pattern (async
+lifecycle, paging, adaptive navigation). Avoid thin wrappers around a single
+Material widget.
 
 ---
 
@@ -282,6 +286,46 @@ Plugin-free connectivity **presentation**. Apps supply `bool` / `Stream<bool>` (
 
 ---
 
+## v0.4.0 — Unique application patterns
+
+Goal: ship helpers that encode real app patterns Flutter does not provide
+out of the box — not renamed Material widgets.
+
+### PlusAsyncButton
+
+| Field | Detail |
+| --- | --- |
+| **Purpose** | Button that owns in-flight async action UX (lock, loading, optional success flash). |
+| **Public API** | `PlusAsyncButton`, `PlusAsyncButtonVariant` |
+| **Main functionality** | Awaits `Future` on press; disables while loading; optional success child / error callback. |
+| **Dependencies** | Flutter SDK only |
+| **Testing** | `test/src/actions/plus_async_button_test.dart` |
+| **Status** | **Completed** |
+
+### PlusPagedList
+
+| Field | Detail |
+| --- | --- |
+| **Purpose** | Infinite / paged list shell with load-more threshold and footer states. |
+| **Public API** | `PlusPagedList` |
+| **Main functionality** | Apps own data + flags; widget triggers `onLoadMore`, shows loading / error / end footers. |
+| **Dependencies** | Flutter SDK only |
+| **Testing** | `test/src/lists/plus_paged_list_test.dart` |
+| **Status** | **Completed** |
+
+### PlusAdaptiveScaffold
+
+| Field | Detail |
+| --- | --- |
+| **Purpose** | Adaptive navigation shell (nav bar ↔ rail) without replacing `ScaffoldPlus`. |
+| **Public API** | `PlusAdaptiveScaffold`, `PlusNavigationDestination` |
+| **Main functionality** | Breakpoint-driven chrome; destinations API; body stays orthogonal to async/connectivity. |
+| **Dependencies** | Flutter SDK only |
+| **Testing** | `test/src/scaffold/plus_adaptive_scaffold_test.dart` |
+| **Status** | **Completed** |
+
+---
+
 # In Progress
 
 _None._
@@ -290,59 +334,10 @@ _None._
 
 # Planned
 
-## Later / next milestones
+## Deferred responsive utilities
 
-Goal: start responsive helpers (v0.4.0).
-
----
-
-## v0.4.0 — Responsive UI & Utilities
-
-Goal: phone/tablet layout helpers that stay composable. Avoid a mega-scaffold with unrelated knobs.
-
-### PlusResponsive
-
-| Field | Detail |
-| --- | --- |
-| **Purpose** | Breakpoint-based builder for width classes. |
-| **Public API** | `PlusResponsive` (+ optional breakpoint config) |
-| **Main functionality** | `LayoutBuilder`/MediaQuery-based slots (compact / medium / expanded). |
-| **Dependencies** | Flutter SDK only |
-| **Testing** | Breakpoint switches under fixed constraints |
-| **Status** | **Planned** |
-
-### PlusAdaptiveScaffold (or layout shell)
-
-| Field | Detail |
-| --- | --- |
-| **Purpose** | Adaptive navigation shell (nav bar ↔ rail/drawer) without replacing `ScaffoldPlus`. |
-| **Public API** | `PlusAdaptiveScaffold` |
-| **Main functionality** | Compose with or wrap `ScaffoldPlus`; destinations API; keep async/connectivity orthogonal. |
-| **Dependencies** | Flutter SDK only |
-| **Testing** | Narrow/wide layouts, destination selection |
-| **Status** | **Planned** |
-
-### PlusScrollToTop
-
-| Field | Detail |
-| --- | --- |
-| **Purpose** | Convenience for list/scaffold scroll-to-top affordances. |
-| **Public API** | `PlusScrollToTop` |
-| **Main functionality** | Listen to scroll controller; expose FAB/button or callback. |
-| **Dependencies** | Flutter SDK only |
-| **Testing** | Visibility threshold, callback, controller attach/detach |
-| **Status** | **Planned** |
-
-### Layout utilities
-
-| Field | Detail |
-| --- | --- |
-| **Purpose** | Small helpers (gaps, constrained content width) only when repeatedly useful across examples. |
-| **Public API** | TBD (`PlusGap`, `PlusContentWidth`, …) — name at implementation time |
-| **Main functionality** | Reduce boilerplate without inventing a layout framework. |
-| **Dependencies** | Flutter SDK only |
-| **Testing** | Constraint behavior |
-| **Status** | **Planned** |
+Thin breakpoint builders / gaps only if a concrete value case appears later.
+Prefer opinionated shells (`PlusAdaptiveScaffold`) over `LayoutBuilder` renames.
 
 ---
 
@@ -418,7 +413,6 @@ explicit value case and approval.
 
 | Candidate | Rough purpose |
 | --- | --- |
-| `PlusAsyncButton` | Button that reflects in-flight async action state |
 | `PlusFeedback` | Unified success/info/error feedback helper |
 | `PlusCountdown` | Timed countdown / resend affordance |
 | `PlusDebouncer` | Debounce utility for UI events |
@@ -464,12 +458,14 @@ From `lib/ui_plus.dart`:
 
 - Async: `PlusAsyncState`, `PlusLoading`, `PlusSuccess`, `PlusFailure`, typedefs, `PlusAsyncView`
 - Connectivity: `PlusConnectivityBanner`, `PlusConnectivityBuilder`, `PlusConnectivityConfig`, `PlusConnectivityBannerPosition`, `PlusConnectivityOverlay`, `PlusConnectivityBannerBuilder`, `PlusOfflineState`
+- Actions: `PlusAsyncButton`, `PlusAsyncButtonVariant`
 - Dialogs: `PlusDialog`, `PlusConfirmationDialog`
 - Feedback: `PlusSnackbar`, `PlusSnackbarTone`
 - Inputs: `PlusSearchField`
+- Lists: `PlusPagedList`
 - Loaders: `PlusLoader`, `PlusSkeleton`
 - Refresh: `PlusRefreshIndicator`
-- Scaffold: `ScaffoldPlus`
+- Scaffold: `ScaffoldPlus`, `PlusAdaptiveScaffold`, `PlusNavigationDestination`
 - Sheets: `PlusBottomSheet`
 - States: `PlusEmptyState`, `PlusErrorState`
 - Theme: `PlusTheme`
@@ -478,9 +474,10 @@ From `lib/ui_plus.dart`:
 
 ## Recommended implementation order (next)
 
-1. **Publish / tag `0.3.0`** on pub.dev when approved.
-2. **Start v0.4.0** responsive helpers (`PlusResponsiveBuilder` / breakpoints) with a written API sketch first.
-3. Future Consideration candidates above remain unscheduled until explicitly approved.
+1. Publish / tag `0.4.0` on pub.dev when approved.
+2. Schedule v0.5.0 only with a written uniqueness value case (form/submit shell,
+   permission/session state, etc.).
+3. Future Consideration candidates remain unscheduled until explicitly approved.
 
 ---
 

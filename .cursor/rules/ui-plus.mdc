@@ -46,6 +46,7 @@ This is a reusable Flutter package, not an application.
 
 - Source of truth: `plan.md` (Completed / In Progress / Planned / Future).
 - v0.1.0 Core Foundation · v0.2.0 Connectivity · v0.3.0 Everyday Productivity ·
-  v0.4.0 Responsive UI · v0.5.0 Advanced UI · v1.0.0 Stable.
+  v0.4.0 Unique application patterns · v0.5.0 Advanced UI · v1.0.0 Stable.
+- Prefer multi-step app patterns over thin Material wrappers.
 - Implement one component at a time with tests, example usage, and docs in the same task.
 - Do not implement features outside the active milestone without explicit approval.

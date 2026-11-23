@@ -1,6 +1,6 @@
 # UI Plus example
 
-Minimal Flutter app that depends on the local `ui_plus` package (`v0.3.0`).
+Minimal Flutter app that depends on the local `ui_plus` package (`v0.4.0`).
 
 ```sh
 cd example
@@ -20,3 +20,6 @@ Demos currently cover:
 - `PlusBottomSheet`
 - `PlusSearchField`
 - `PlusRefreshIndicator` / `PlusTheme`
+- `PlusAsyncButton`
+- `PlusPagedList`
+- `PlusAdaptiveScaffold`

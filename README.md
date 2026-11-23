@@ -19,8 +19,8 @@ into an architecture.
 
 ## Status
 
-**v0.3.0** Everyday Productivity released. Flagship entry is `ScaffoldPlus`;
-building blocks remain independently reusable.
+**v0.4.0** Unique application patterns released. Flagship entry is
+`ScaffoldPlus`; building blocks remain independently reusable.
 
 | Component | Status |
 | --- | --- |
@@ -41,6 +41,9 @@ building blocks remain independently reusable.
 | `PlusSearchField` | Available |
 | `PlusRefreshIndicator` | Available |
 | `PlusTheme` | Available |
+| `PlusAsyncButton` | Available |
+| `PlusPagedList` | Available |
+| `PlusAdaptiveScaffold` | Available |
 
 See [plan.md](plan.md) (summary: [doc/roadmap.md](doc/roadmap.md)) for the
 release plan. Connectivity design notes: [doc/connectivity.md](doc/connectivity.md).
@@ -423,6 +426,58 @@ Used when arguments are omitted by `PlusSnackbar` (duration),
 `PlusSearchField` (debounce), empty/error/offline states (`statePadding`), and
 `PlusBottomSheet` (`bottomSheetContentPadding`). Read with
 `PlusTheme.of(context)`.
+
+### PlusAsyncButton
+
+Material button that owns in-flight async UX — not a plain `onPressed`.
+
+```dart
+PlusAsyncButton(
+  onPressed: () async => await saveDraft(),
+  successChild: const Text('Saved'),
+  onError: (error, stack) {
+    PlusSnackbar.error(context, message: 'Save failed');
+  },
+  child: const Text('Save'),
+)
+```
+
+While the future is pending the button shows a loader and stays disabled
+(prevents double-submit). Optional success flash and `onError` handling.
+
+### PlusPagedList
+
+Infinite / paged list shell. Apps own items and paging flags; the widget
+triggers load-more near the end and renders footers.
+
+```dart
+PlusPagedList<Item>(
+  items: items,
+  hasMore: hasMore,
+  isLoadingMore: isLoadingMore,
+  loadMoreError: error,
+  onLoadMore: fetchNextPage,
+  onRetryLoadMore: fetchNextPage,
+  itemBuilder: (context, item, index) => ListTile(title: Text(item.name)),
+)
+```
+
+### PlusAdaptiveScaffold
+
+Navigation shell that switches bottom bar ↔ rail by width. Compose
+`ScaffoldPlus` (or any body) inside — async/connectivity stay orthogonal.
+
+```dart
+PlusAdaptiveScaffold(
+  destinations: const [
+    PlusNavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+    PlusNavigationDestination(icon: Icon(Icons.settings), label: 'Settings'),
+  ],
+  selectedIndex: index,
+  onDestinationSelected: (i) => setState(() => index = i),
+  body: pages[index],
+)
+```
 
 ---
 

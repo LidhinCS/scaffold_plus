@@ -10,6 +10,7 @@
 /// ```
 library;
 
+export 'src/actions/plus_async_button.dart';
 export 'src/async/plus_async_state.dart';
 export 'src/async/plus_async_types.dart';
 export 'src/async/plus_async_view.dart';
@@ -22,9 +23,11 @@ export 'src/dialogs/plus_confirmation_dialog.dart';
 export 'src/dialogs/plus_dialog.dart';
 export 'src/feedback/plus_snackbar.dart';
 export 'src/inputs/plus_search_field.dart';
+export 'src/lists/plus_paged_list.dart';
 export 'src/loaders/plus_loader.dart';
 export 'src/loaders/plus_skeleton.dart';
 export 'src/refresh/plus_refresh_indicator.dart';
+export 'src/scaffold/plus_adaptive_scaffold.dart';
 export 'src/scaffold/scaffold_plus.dart';
 export 'src/sheets/plus_bottom_sheet.dart';
 export 'src/states/plus_empty_state.dart';

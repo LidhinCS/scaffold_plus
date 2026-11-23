@@ -116,6 +116,21 @@ class _HomePage extends StatelessWidget {
             subtitle: 'Pull-to-refresh with error handling',
             builder: (_) => const _RefreshIndicatorDemoPage(),
           ),
+          _DemoTile(
+            title: 'PlusAsyncButton',
+            subtitle: 'Async action with loading lock and success flash',
+            builder: (_) => const _AsyncButtonDemoPage(),
+          ),
+          _DemoTile(
+            title: 'PlusPagedList',
+            subtitle: 'Infinite list with load-more footers',
+            builder: (_) => const _PagedListDemoPage(),
+          ),
+          _DemoTile(
+            title: 'PlusAdaptiveScaffold',
+            subtitle: 'Nav bar ↔ rail by breakpoint',
+            builder: (_) => const _AdaptiveScaffoldDemoPage(),
+          ),
         ],
       ),
     );
@@ -853,6 +868,168 @@ class _RefreshIndicatorDemoPageState extends State<_RefreshIndicatorDemoPage> {
           },
         ),
       ),
+    );
+  }
+}
+
+class _AsyncButtonDemoPage extends StatelessWidget {
+  const new();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('PlusAsyncButton')),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              PlusAsyncButton(
+                onPressed: () async {
+                  await Future<void>.delayed(const Duration(seconds: 1));
+                },
+                successChild: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.check, size: 18),
+                    SizedBox(width: 8),
+                    Text('Saved'),
+                  ],
+                ),
+                child: const Text('Save draft'),
+              ),
+              const SizedBox(height: 16),
+              PlusAsyncButton(
+                variant: PlusAsyncButtonVariant.tonal,
+                onPressed: () async {
+                  await Future<void>.delayed(const Duration(milliseconds: 800));
+                  throw StateError('Simulated failure');
+                },
+                onError: (error, stack) {
+                  PlusSnackbar.error(context, message: 'Save failed');
+                },
+                child: const Text('Save (will fail)'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PagedListDemoPage extends StatefulWidget {
+  const new();
+
+  @override
+  State<_PagedListDemoPage> createState() => _PagedListDemoPageState();
+}
+
+class _PagedListDemoPageState extends State<_PagedListDemoPage> {
+  final List<String> _items = List.generate(15, (i) => 'Item ${i + 1}');
+  bool _loadingMore = false;
+  bool _hasMore = true;
+  Object? _error;
+  var _failNext = false;
+
+  Future<void> _loadMore() async {
+    setState(() {
+      _loadingMore = true;
+      _error = null;
+    });
+    await Future<void>.delayed(const Duration(milliseconds: 700));
+    if (!mounted) return;
+    if (_failNext) {
+      _failNext = false;
+      setState(() {
+        _loadingMore = false;
+        _error = StateError('Simulated page failure');
+      });
+      return;
+    }
+    setState(() {
+      final start = _items.length;
+      _items.addAll(List.generate(10, (i) => 'Item ${start + i + 1}'));
+      _loadingMore = false;
+      if (_items.length >= 45) {
+        _hasMore = false;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('PlusPagedList'),
+        actions: [
+          TextButton(
+            onPressed: () => setState(() => _failNext = true),
+            child: const Text('Fail next'),
+          ),
+        ],
+      ),
+      body: PlusPagedList<String>(
+        items: _items,
+        hasMore: _hasMore,
+        isLoadingMore: _loadingMore,
+        loadMoreError: _error,
+        onLoadMore: _loadMore,
+        onRetryLoadMore: _loadMore,
+        endFooter: const Padding(
+          padding: EdgeInsets.all(16),
+          child: Center(child: Text('End of list')),
+        ),
+        itemBuilder: (context, item, index) => ListTile(title: Text(item)),
+      ),
+    );
+  }
+}
+
+class _AdaptiveScaffoldDemoPage extends StatefulWidget {
+  const new();
+
+  @override
+  State<_AdaptiveScaffoldDemoPage> createState() =>
+      _AdaptiveScaffoldDemoPageState();
+}
+
+class _AdaptiveScaffoldDemoPageState extends State<_AdaptiveScaffoldDemoPage> {
+  var _index = 0;
+
+  static const _destinations = [
+    PlusNavigationDestination(
+      icon: Icon(Icons.home_outlined),
+      selectedIcon: Icon(Icons.home),
+      label: 'Home',
+    ),
+    PlusNavigationDestination(
+      icon: Icon(Icons.search_outlined),
+      selectedIcon: Icon(Icons.search),
+      label: 'Search',
+    ),
+    PlusNavigationDestination(
+      icon: Icon(Icons.person_outline),
+      selectedIcon: Icon(Icons.person),
+      label: 'Profile',
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final pages = [
+      const Center(child: Text('Home — resize for rail')),
+      const Center(child: Text('Search')),
+      const Center(child: Text('Profile')),
+    ];
+
+    return PlusAdaptiveScaffold(
+      destinations: _destinations,
+      selectedIndex: _index,
+      onDestinationSelected: (index) => setState(() => _index = index),
+      appBar: AppBar(title: const Text('PlusAdaptiveScaffold')),
+      body: pages[_index],
     );
   }
 }
