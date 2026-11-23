@@ -1,0 +1,49 @@
+---
+description: scaffold_plus package conventions and implementation constraints
+alwaysApply: true
+---
+
+# scaffold_plus
+
+This is a reusable Flutter package, not an application.
+
+## Architecture
+
+- Keep core APIs architecture agnostic.
+- Do not depend on Bloc, Riverpod, Provider, GetX, Dio, or networking clients in the core package.
+- Public APIs must be exported from `lib/scaffold_plus.dart`.
+- Keep implementation files inside `lib/src/`.
+- Do not ask package users to import from `src/`.
+
+## Dependencies
+
+- Do not add dependencies without explaining why they are needed.
+- Prefer Flutter SDK APIs before introducing third-party packages.
+- Do not add connectivity plugins to the core package; accept `bool` / `Stream<bool>` from the app.
+- Optional state-management integrations belong in companion packages only when there is a real integration API.
+
+## Quality bar
+
+- Add widget tests for every new public component.
+- Follow Dart formatting and Flutter lint rules (`very_good_analysis`).
+- Use const constructors wherever appropriate.
+- Respect Material 3, theme brightness, accessibility, and text scaling.
+- Do not make breaking API changes without documenting the reason.
+- Do not implement speculative features outside the current milestone.
+- Run `dart format`, `flutter analyze`, and `flutter test` after changes.
+- Update README and example usage when public APIs change.
+
+## ScaffoldPlus
+
+- `ScaffoldPlus<T>` is the primary all-in-one widget; it composes Flutter's native `Scaffold`.
+- `PlusAsyncView` stays independently usable and must share the internal async renderer (`PlusAsyncBody`).
+- Do not duplicate async state-switching logic between widgets.
+- Keep `PlusLoader`, `PlusSkeleton`, `PlusEmptyState`, and `PlusErrorState` independently reusable.
+
+## Milestones
+
+- Source of truth: `plan.md` (Completed / In Progress / Planned / Future).
+- v0.1.0 Core Foundation · v0.2.0 Connectivity · v0.3.0 Everyday Productivity ·
+  v0.4.0 Responsive UI · v0.5.0 Advanced UI · v1.0.0 Stable.
+- Implement one component at a time with tests, example usage, and docs in the same task.
+- Do not implement features outside the active milestone without explicit approval.
