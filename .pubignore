@@ -9,3 +9,11 @@
 # Test/coverage artifacts (sources under test/ may still be useful locally;
 # exclude generated coverage only).
 coverage/
+
+# MkDocs GitHub Pages sources (keep package docs in singular `doc/`).
+# Pub warns on a top-level plural `docs/` directory.
+docs/
+mkdocs.yml
+requirements-docs.txt
+plan.md
+tool/
