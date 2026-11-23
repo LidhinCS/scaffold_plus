@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-23
+
 ### Added
 
 - `PlusSnackbar` / `PlusSnackbarTone` helpers for success, info, and error
@@ -26,6 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - README: removed Continuous Integration section from the package docs.
+- Empty / error / offline state padding and bottom-sheet content padding fall
+  back to `PlusTheme` when omitted.
 
 ## [0.2.0] - 2026-11-23
 

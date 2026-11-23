@@ -19,8 +19,8 @@ into an architecture.
 
 ## Status
 
-**v0.2.0** published; **v0.3.0** everyday productivity helpers in progress.
-Flagship entry is `ScaffoldPlus`; building blocks remain independently reusable.
+**v0.3.0** Everyday Productivity released. Flagship entry is `ScaffoldPlus`;
+building blocks remain independently reusable.
 
 | Component | Status |
 | --- | --- |

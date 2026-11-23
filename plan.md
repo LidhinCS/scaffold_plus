@@ -3,7 +3,7 @@
 > **Role:** Central development roadmap for `ui_plus`.  
 > **Branding:** UI Plus — More power to your Flutter UI.  
 > **Last verified against source:** 2026-11-23 (lib exports, tests, example, docs).  
-> **Package version in `pubspec.yaml`:** `0.2.0`
+> **Package version in `pubspec.yaml`:** `0.3.0`
 
 Modular, architecture-agnostic Flutter UI toolkit for reusable components,
 application states, connectivity presentation, and productivity utilities.
@@ -44,9 +44,9 @@ Flagship widget remains `ScaffoldPlus`.
 
 | Milestone | Theme | Implementation | Release |
 | --- | --- | --- | --- |
-| **v0.1.0** Core Foundation | Scaffold + async + state widgets | **Completed** (theme config still open) | `0.1.0` (changelog) |
-| **v0.2.0** Connectivity | Plugin-free connectivity UI | **Completed** | `0.2.0+1` |
-| **v0.3.0** Everyday Productivity | Snackbars, dialogs, sheets, search, refresh, theme | **Completed** (unreleased) | — |
+| **v0.1.0** Core Foundation | Scaffold + async + state widgets | **Completed** | `0.1.0` |
+| **v0.2.0** Connectivity | Plugin-free connectivity UI | **Completed** | `0.2.0` |
+| **v0.3.0** Everyday Productivity | Snackbars, dialogs, sheets, search, refresh, theme | **Completed** | `0.3.0` |
 | **v0.4.0** Responsive UI & Utilities | Adaptive / responsive helpers | **Planned** | — |
 | **v0.5.0** Advanced Application UI | Higher-value advanced helpers | **Planned / Future** | — |
 | **v1.0.0** Stable Release | API freeze + pub.dev readiness | **Planned** | — |
@@ -212,11 +212,7 @@ Plugin-free connectivity **presentation**. Apps supply `bool` / `Stream<bool>` (
 
 ---
 
-# In Progress
-
-_None — v0.3.0 implementation complete (unreleased)._
-
-## v0.3.0 — Everyday Productivity (completed, unreleased)
+## v0.3.0 — Everyday Productivity
 
 ### PlusSnackbar
 
@@ -227,7 +223,7 @@ _None — v0.3.0 implementation complete (unreleased)._
 | **Main functionality** | `show` / `success` / `info` / `error` / `hide` / `clear`; Material 3 tones; optional action; clears current by default. |
 | **Dependencies** | Flutter SDK only |
 | **Testing** | `test/src/feedback/plus_snackbar_test.dart` |
-| **Status** | **Completed** (unreleased) |
+| **Status** | **Completed** |
 
 ### PlusDialog / PlusConfirmationDialog
 
@@ -238,7 +234,7 @@ _None — v0.3.0 implementation complete (unreleased)._
 | **Main functionality** | Alert `show`/`alert`; confirmation returns `bool`; optional destructive confirm. |
 | **Dependencies** | Flutter SDK only |
 | **Testing** | `test/src/dialogs/plus_dialog_test.dart`, `plus_confirmation_dialog_test.dart` |
-| **Status** | **Completed** (unreleased) |
+| **Status** | **Completed** |
 
 ### PlusBottomSheet
 
@@ -249,7 +245,7 @@ _None — v0.3.0 implementation complete (unreleased)._
 | **Main functionality** | `show` / `showScrollable` with optional title, drag handle, safe area, height factor. |
 | **Dependencies** | Flutter SDK only |
 | **Testing** | `test/src/sheets/plus_bottom_sheet_test.dart` |
-| **Status** | **Completed** (unreleased) |
+| **Status** | **Completed** |
 
 ### PlusSearchField
 
@@ -260,7 +256,7 @@ _None — v0.3.0 implementation complete (unreleased)._
 | **Main functionality** | Optional debounced `onChanged`, clear button, hint, Material 3 theming; no search engine coupling. |
 | **Dependencies** | Flutter SDK only |
 | **Testing** | `test/src/inputs/plus_search_field_test.dart` |
-| **Status** | **Completed** (unreleased) |
+| **Status** | **Completed** |
 
 ### PlusRefreshIndicator
 
@@ -271,7 +267,7 @@ _None — v0.3.0 implementation complete (unreleased)._
 | **Main functionality** | Material `RefreshIndicator` defaults + `onError` so failures can dismiss cleanly. |
 | **Dependencies** | Flutter SDK only |
 | **Testing** | `test/src/refresh/plus_refresh_indicator_test.dart` |
-| **Status** | **Completed** (unreleased) |
+| **Status** | **Completed** |
 
 ### PlusTheme
 
@@ -282,7 +278,13 @@ _None — v0.3.0 implementation complete (unreleased)._
 | **Main functionality** | `ThemeExtension` for snackbar duration, search debounce, state/sheet paddings; `PlusTheme.of`. |
 | **Dependencies** | Flutter SDK only |
 | **Testing** | `test/src/theme/plus_theme_test.dart` |
-| **Status** | **Completed** (unreleased) |
+| **Status** | **Completed** |
+
+---
+
+# In Progress
+
+_None._
 
 ---
 
@@ -290,7 +292,7 @@ _None — v0.3.0 implementation complete (unreleased)._
 
 ## Later / next milestones
 
-Goal: continue with responsive helpers (v0.4) after cutting v0.3.0.
+Goal: start responsive helpers (v0.4.0).
 
 ---
 
@@ -418,7 +420,6 @@ explicit value case and approval.
 | --- | --- |
 | `PlusAsyncButton` | Button that reflects in-flight async action state |
 | `PlusFeedback` | Unified success/info/error feedback helper |
-| `PlusConfirmationDialog` | **Shipped in v0.3 (unreleased)** — confirm/cancel returning `bool` |
 | `PlusCountdown` | Timed countdown / resend affordance |
 | `PlusDebouncer` | Debounce utility for UI events |
 | `PlusThrottler` | Throttle utility for UI events |
@@ -431,7 +432,6 @@ explicit value case and approval.
 ### Other deferred ideas
 
 - Optional reachability helper **as a separate package** (never a core plugin dependency).
-- Shared `PlusTheme` / `ThemeExtension` if cross-widget defaults become painful.
 - Analytics / telemetry hooks (likely out of scope forever for core).
 - Code generation / mason bricks for feature folders.
 - Decorative / marketing widget kits.
@@ -464,18 +464,23 @@ From `lib/ui_plus.dart`:
 
 - Async: `PlusAsyncState`, `PlusLoading`, `PlusSuccess`, `PlusFailure`, typedefs, `PlusAsyncView`
 - Connectivity: `PlusConnectivityBanner`, `PlusConnectivityBuilder`, `PlusConnectivityConfig`, `PlusConnectivityBannerPosition`, `PlusConnectivityOverlay`, `PlusConnectivityBannerBuilder`, `PlusOfflineState`
+- Dialogs: `PlusDialog`, `PlusConfirmationDialog`
+- Feedback: `PlusSnackbar`, `PlusSnackbarTone`
+- Inputs: `PlusSearchField`
 - Loaders: `PlusLoader`, `PlusSkeleton`
+- Refresh: `PlusRefreshIndicator`
 - Scaffold: `ScaffoldPlus`
+- Sheets: `PlusBottomSheet`
 - States: `PlusEmptyState`, `PlusErrorState`
+- Theme: `PlusTheme`
 
 ---
 
 ## Recommended implementation order (next)
 
-1. **Publish / tag `0.2.0`** when approved (git tag + pub.dev if desired).
-2. **Start v0.3.0 with `PlusSnackbar`** — highest everyday value, smallest API risk, validates overlay/helper patterns used by dialogs/sheets.
-3. Then dialogs → `PlusBottomSheet` → `PlusSearchField`; evaluate `PlusRefreshIndicator` / `PlusTheme` only with a written value case.
-4. Future Consideration candidates above remain unscheduled until explicitly approved.
+1. **Publish / tag `0.3.0`** on pub.dev when approved.
+2. **Start v0.4.0** responsive helpers (`PlusResponsiveBuilder` / breakpoints) with a written API sketch first.
+3. Future Consideration candidates above remain unscheduled until explicitly approved.
 
 ---
 

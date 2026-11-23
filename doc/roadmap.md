@@ -9,7 +9,7 @@ The authoritative development roadmap for **UI Plus** (`ui_plus`) lives in
 | --- | --- | --- |
 | **v0.1.0** | Core Foundation | Released (`0.1.0`) |
 | **v0.2.0** | Connectivity | Released (`0.2.0`) |
-| **v0.3.0** | Everyday Productivity | Completed in source (unreleased) |
+| **v0.3.0** | Everyday Productivity | Released (`0.3.0`) |
 | **v0.4.0** | Responsive UI & Utilities | Planned |
 | **v0.5.0** | Advanced Application UI | Planned / Future |
 | **v1.0.0** | Stable Release | Planned |
