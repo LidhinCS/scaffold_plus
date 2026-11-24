@@ -77,7 +77,20 @@ PlusOfflineState(
 - First status is silent (avoids a false “restored” flash on launch)
 - Offline banner stays until online again
 - Online banner can auto-hide via `PlusConnectivityConfig`
-- Overlay uses a `Stack` — body layout does not resize
+- Default layout is **inline** — on `ScaffoldPlus` the banner sits in the body
+  below the app bar and pushes content down (does not cover controls)
+- Use `layout: PlusConnectivityBannerLayout.overlay` for a floating `Stack`
+  banner that does not resize the body
+
+```dart
+ScaffoldPlus(
+  connectivityBanner: true,
+  connectivityBannerConfig: const PlusConnectivityConfig(
+    layout: PlusConnectivityBannerLayout.overlay,
+  ),
+  body: child,
+)
+```
 
 Design deep-dive in the repo:
 [`doc/connectivity.md`](https://github.com/LidhinCS/ui_plus/blob/main/doc/connectivity.md).

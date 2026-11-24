@@ -89,7 +89,7 @@ await PlusBottomSheet.show(
 
 ## Banners
 
-`PlusConnectivityBanner` / overlay used by `ScaffoldPlus.connectivityBanner` —
+`PlusConnectivityBanner` / host used by `ScaffoldPlus.connectivityBanner` —
 soft card chrome with an animated icon badge.
 
 ## See also

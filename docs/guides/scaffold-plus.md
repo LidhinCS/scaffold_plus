@@ -78,6 +78,9 @@ Standalone widgets (usable without `ScaffoldPlus`):
 
 ## Connectivity banner
 
+The banner wraps the scaffold **body** (below the app bar). Default layout is
+**inline** so content shifts down instead of being covered.
+
 ```dart
 ScaffoldPlus(
   connectivityBanner: true, // built-in PlusInternetChecker by default

@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:ui_plus/ui_plus.dart';
 
 void main() {
@@ -197,36 +197,47 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('connectivity banner overlays without breaking async body', (
-      tester,
-    ) async {
-      final controller = StreamController<bool>.broadcast();
-      addTearDown(controller.close);
+    testWidgets(
+      'connectivity banner sits below app bar without covering body',
+      (tester) async {
+        final controller = StreamController<bool>.broadcast();
+        addTearDown(controller.close);
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: ScaffoldPlus<String>(
-            connectivityBanner: true,
-            isConnected: true,
-            connectivityStream: controller.stream,
-            connectivityBannerConfig: const PlusConnectivityConfig(
-              debounceDuration: Duration.zero,
-              animationDuration: Duration.zero,
+        await tester.pumpWidget(
+          MaterialApp(
+            home: ScaffoldPlus<String>(
+              appBar: AppBar(title: const Text('Inbox')),
+              connectivityBanner: true,
+              isConnected: true,
+              connectivityStream: controller.stream,
+              connectivityBannerConfig: const PlusConnectivityConfig(
+                debounceDuration: Duration.zero,
+                animationDuration: Duration.zero,
+              ),
+              state: const PlusSuccess('hello'),
+              bodyBuilder: _bodyBuilder,
             ),
-            state: const PlusSuccess('hello'),
-            bodyBuilder: _bodyBuilder,
           ),
-        ),
-      );
+        );
 
-      expect(find.text('body:hello'), findsOneWidget);
-      expect(find.text('Connection restored'), findsNothing);
+        expect(find.text('body:hello'), findsOneWidget);
+        expect(find.text('Connection restored'), findsNothing);
 
-      controller.add(false);
-      await tester.pump();
-      expect(find.text('No internet connection'), findsOneWidget);
-      expect(find.text('body:hello'), findsOneWidget);
-    });
+        controller.add(false);
+        await tester.pump();
+        expect(find.text('No internet connection'), findsOneWidget);
+        expect(find.text('body:hello'), findsOneWidget);
+        expect(find.text('Inbox'), findsOneWidget);
+
+        final bannerY = tester
+            .getTopLeft(find.text('No internet connection'))
+            .dy;
+        final bodyY = tester.getTopLeft(find.text('body:hello')).dy;
+        final titleY = tester.getTopLeft(find.text('Inbox')).dy;
+        expect(bannerY, greaterThan(titleY));
+        expect(bodyY, greaterThan(bannerY));
+      },
+    );
 
     testWidgets('maintenanceMode replaces body and hides FAB', (tester) async {
       await tester.pumpWidget(

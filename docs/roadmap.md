@@ -12,6 +12,7 @@ in the repository.
 | v0.3.0 | Everyday Productivity | Released |
 | v0.4.0 | Unique application patterns | Released |
 | v0.5.0 | Product gates + polish | Released |
+| v0.6.0 | material_ui + inline connectivity banner | Released |
 | v1.0.0 | API freeze + pub.dev readiness | Planned |
 
 ## Uniqueness bar

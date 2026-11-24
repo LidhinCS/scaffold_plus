@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Registers the nearest [ScaffoldMessenger] so snackbars can show
 /// without a [BuildContext] (toastification-style).

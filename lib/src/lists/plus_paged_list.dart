@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:ui_plus/src/loaders/plus_loader.dart';
 
 /// Infinite / paged list shell with load-more threshold and footer states.

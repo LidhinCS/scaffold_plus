@@ -69,7 +69,10 @@ your own) over Wi-Fi/mobile association alone.
 - Offline banner stays until connectivity returns.
 - Online banner can auto-hide (default 2 seconds).
 - Changes are debounced (default 300ms) to reduce flicker.
-- Overlay uses a `Stack` so the body does not resize.
+- Default layout is **inline**: banner takes body space (below the app bar on
+  `ScaffoldPlus`) so it does not cover controls. Use
+  `PlusConnectivityBannerLayout.overlay` for a floating `Stack` that does not
+  resize the body.
 
 ## ScaffoldPlus
 

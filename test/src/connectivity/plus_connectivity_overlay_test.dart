@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:ui_plus/ui_plus.dart';
 
 void main() {
@@ -215,7 +215,7 @@ void main() {
       expect(find.text('No internet connection'), findsOneWidget);
     });
 
-    testWidgets('does not resize child body', (tester) async {
+    testWidgets('overlay layout does not resize child body', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: PlusConnectivityOverlay(
@@ -223,6 +223,7 @@ void main() {
             config: PlusConnectivityConfig(
               debounceDuration: Duration.zero,
               animationDuration: Duration.zero,
+              layout: PlusConnectivityBannerLayout.overlay,
             ),
             child: Scaffold(body: SizedBox.expand(child: Text('body'))),
           ),
@@ -232,6 +233,36 @@ void main() {
       final bodySize = tester.getSize(find.text('body'));
       expect(bodySize.width, greaterThan(0));
       expect(find.text('No internet connection'), findsOneWidget);
+    });
+
+    testWidgets('inline layout sits above child and keeps child visible', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            appBar: AppBar(title: const Text('title')),
+            body: const PlusConnectivityOverlay(
+              isConnected: false,
+              config: PlusConnectivityConfig(
+                debounceDuration: Duration.zero,
+                animationDuration: Duration.zero,
+              ),
+              child: Text('body'),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('No internet connection'), findsOneWidget);
+      expect(find.text('body'), findsOneWidget);
+      expect(find.text('title'), findsOneWidget);
+
+      final bannerY = tester.getTopLeft(find.text('No internet connection')).dy;
+      final bodyY = tester.getTopLeft(find.text('body')).dy;
+      final titleY = tester.getTopLeft(find.text('title')).dy;
+      expect(bannerY, greaterThan(titleY));
+      expect(bodyY, greaterThan(bannerY));
     });
   });
 }

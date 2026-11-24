@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Shared polished dialog chrome used by Plus dialog helpers.
 class PlusDialogSurface extends StatelessWidget {

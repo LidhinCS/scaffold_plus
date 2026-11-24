@@ -24,7 +24,7 @@ app. Source: [`example/`](https://github.com/LidhinCS/ui_plus/tree/main/example)
 | Search + paging | `PlusSearchField`, `PlusPagedList` |
 | Create / delete | `PlusBottomSheet`, `PlusAsyncButton`, `PlusConfirmationDialog` |
 | Global toasts | `PlusToastHost`, `PlusSnackbar` (from Cubits, no context) |
-| Connectivity | Built-in checker + Settings “Force offline” |
+| Connectivity | Built-in checker + inline banner below app bar (Settings “Force offline”) |
 | Product gates | Maintenance / session / permission toggles |
 | Activity feed | Second `ScaffoldPlus` + Cubit mapping |
 

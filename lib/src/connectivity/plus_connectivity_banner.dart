@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:ui_plus/src/connectivity/plus_connectivity_config.dart';
 
 /// Default Material 3 connectivity banner presentation.

@@ -1,5 +1,5 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:ui_plus/src/async/plus_async_body.dart';
 import 'package:ui_plus/src/async/plus_async_state.dart';
 import 'package:ui_plus/src/async/plus_async_types.dart';
@@ -32,11 +32,13 @@ import 'package:ui_plus/src/states/plus_session_expired.dart';
 ///
 /// ## Connectivity
 ///
-/// Opt in with [connectivityBanner]. By default a built-in
-/// [PlusInternetChecker] probes reachability (no plugin). Pass
-/// [isConnected] and/or [connectivityStream] to use your own source instead —
-/// custom values always win. Set [useBuiltInInternetCheck] to false to disable
-/// the built-in checker when no custom source is provided.
+/// Opt in with [connectivityBanner]. The banner wraps the scaffold **body**
+/// (below the app bar). Default layout is inline so content shifts down
+/// instead of being covered. By default a built-in [PlusInternetChecker]
+/// probes reachability (no plugin). Pass [isConnected] and/or
+/// [connectivityStream] to use your own source instead — custom values always
+/// win. Set [useBuiltInInternetCheck] to false to disable the built-in checker
+/// when no custom source is provided.
 class ScaffoldPlus<T> extends StatelessWidget {
   /// Creates a scaffold that optionally renders async [state] in its body.
   const new({
@@ -317,8 +319,24 @@ class ScaffoldPlus<T> extends StatelessWidget {
 
   Widget? get _resolvedFab => _blocksContent ? null : floatingActionButton;
 
+  Widget? _wrapBody(Widget? body) {
+    if (!connectivityBanner) {
+      return body;
+    }
+
+    return PlusConnectivityOverlay(
+      isConnected: isConnected,
+      connectivityStream: connectivityStream,
+      useBuiltInInternetCheck: useBuiltInInternetCheck,
+      internetCheckerConfig: internetCheckerConfig,
+      config: connectivityBannerConfig,
+      bannerBuilder: connectivityBannerBuilder,
+      child: body ?? const SizedBox.shrink(),
+    );
+  }
+
   Widget _buildScaffold() {
-    final resolvedBody = _resolvedBody;
+    final resolvedBody = _wrapBody(_resolvedBody);
     final resolvedFab = _resolvedFab;
     final scrimBuilder = bottomSheetScrimBuilder;
 
@@ -385,20 +403,5 @@ class ScaffoldPlus<T> extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final scaffold = _buildScaffold();
-    if (!connectivityBanner) {
-      return scaffold;
-    }
-
-    return PlusConnectivityOverlay(
-      isConnected: isConnected,
-      connectivityStream: connectivityStream,
-      useBuiltInInternetCheck: useBuiltInInternetCheck,
-      internetCheckerConfig: internetCheckerConfig,
-      config: connectivityBannerConfig,
-      bannerBuilder: connectivityBannerBuilder,
-      child: scaffold,
-    );
-  }
+  Widget build(BuildContext context) => _buildScaffold();
 }

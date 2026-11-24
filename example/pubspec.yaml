@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
+  material_ui: ^1.11.1
   ui_plus:
     path: ../
 

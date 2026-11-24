@@ -2,8 +2,8 @@
 
 > **Role:** Central development roadmap for `ui_plus`.  
 > **Branding:** UI Plus — More power to your Flutter UI.  
-> **Last verified against source:** 2026-11-23 (lib exports, tests, example, docs).  
-> **Package version in `pubspec.yaml`:** `0.5.0`
+> **Last verified against source:** 2026-11-24 (lib exports, tests, example, docs).  
+> **Package version in `pubspec.yaml`:** `0.6.0`
 
 Modular, architecture-agnostic Flutter UI toolkit for reusable components,
 application states, connectivity presentation, and productivity utilities.
@@ -20,7 +20,7 @@ Flagship widget remains `ScaffoldPlus`.
 4. Customizable — builders and overrides without parallel design systems by default.
 5. Accessible — semantics, text scaling, reduced motion, theme brightness.
 6. Testable — deterministic widgets; widget tests per public API.
-7. Lightweight — no mandatory third-party runtime deps beyond Flutter SDK.
+7. Lightweight — only Flutter SDK + design packages (`material_ui`); no Bloc/Dio/etc.
 8. Stable APIs — small public surface; document breaking changes.
 
 **Deferred by design:** project generation, DI, routing frameworks, networking clients, global app state, analytics, automatic connectivity monitoring plugins.
@@ -49,6 +49,7 @@ Flagship widget remains `ScaffoldPlus`.
 | **v0.3.0** Everyday Productivity | Snackbars, dialogs, sheets, search, refresh, theme | **Completed** | `0.3.0` |
 | **v0.4.0** Unique application patterns | Async button, paged list, adaptive shell | **Completed** | `0.4.0` |
 | **v0.5.0** Product gates + polish | Maintenance/session/permission, internet checker, toast host, Pulse Tasks, docs | **Completed** | `0.5.0` |
+| **v0.6.0** material_ui + inline banner | Standalone Material + body connectivity banner | **Completed** | `0.6.0` |
 | **v1.0.0** Stable Release | API freeze + pub.dev readiness | **Planned** | — |
 
 **In Progress:** none.
@@ -153,9 +154,9 @@ Plugin-free connectivity **presentation**. Apps supply `bool` / `Stream<bool>` (
 | Field | Detail |
 | --- | --- |
 | **Purpose** | Shared appearance/behavior for banners. |
-| **Public API** | `PlusConnectivityConfig`, `PlusConnectivityBannerPosition` |
-| **Main functionality** | Offline/online copy, colors, position, debounce, auto-hide duration. |
-| **Dependencies** | Flutter SDK only |
+| **Public API** | `PlusConnectivityConfig`, `PlusConnectivityBannerPosition`, `PlusConnectivityBannerLayout` |
+| **Main functionality** | Offline/online copy, colors, position, layout, debounce, auto-hide duration. |
+| **Dependencies** | Flutter SDK + `material_ui` |
 | **Testing** | Covered via banner/overlay/scaffold tests |
 | **Status** | **Completed** |
 
@@ -174,10 +175,10 @@ Plugin-free connectivity **presentation**. Apps supply `bool` / `Stream<bool>` (
 
 | Field | Detail |
 | --- | --- |
-| **Purpose** | Host lifecycle for banners without resizing body. |
+| **Purpose** | Host lifecycle for connectivity banners. |
 | **Public API** | `PlusConnectivityOverlay`, `PlusConnectivityBannerBuilder` |
-| **Main functionality** | Stack overlay; debounce; silent first status (no false “restored”); offline sticky; online auto-hide. |
-| **Dependencies** | Flutter SDK only |
+| **Main functionality** | Inline (default) or overlay layout; debounce; silent first status; offline sticky; online auto-hide. |
+| **Dependencies** | Flutter SDK + `material_ui` |
 | **Testing** | `test/src/connectivity/plus_connectivity_overlay_test.dart` |
 | **Status** | **Completed** |
 
@@ -209,8 +210,8 @@ Plugin-free connectivity **presentation**. Apps supply `bool` / `Stream<bool>` (
 | --- | --- |
 | **Purpose** | Opt-in banner on the primary scaffold. |
 | **Public API** | `connectivityBanner`, `isConnected`, `connectivityStream`, `connectivityBannerConfig`, `connectivityBannerBuilder` |
-| **Main functionality** | Wraps body stack with overlay when enabled; independent of async `state`. |
-| **Dependencies** | Flutter SDK only |
+| **Main functionality** | Wraps scaffold **body** (below app bar); default inline layout; independent of async `state`. |
+| **Dependencies** | Flutter SDK + `material_ui` |
 | **Testing** | Integration case in `scaffold_plus_test.dart` |
 | **Status** | **Completed** |
 
@@ -374,6 +375,33 @@ out of the box — not renamed Material widgets.
 
 Also in **0.5.0:** `PlusInternetChecker`, `PlusToastHost`, Pulse Tasks example,
 docs site, pub.dev screenshots.
+
+---
+
+## v0.6.0 — material_ui + inline connectivity
+
+### material_ui migration
+
+| Field | Detail |
+| --- | --- |
+| **Purpose** | Align with Flutter 3.47+ standalone Material package. |
+| **Public API** | Same widgets; import `package:material_ui/material_ui.dart` |
+| **Main functionality** | All package + example imports migrated; dependency on `material_ui`. |
+| **Dependencies** | `material_ui` |
+| **Testing** | Full suite green under Flutter 3.47+ |
+| **Status** | **Completed** |
+
+### Inline connectivity banner
+
+| Field | Detail |
+| --- | --- |
+| **Purpose** | Offline banner that does not cover app bar / body controls. |
+| **Public API** | `PlusConnectivityBannerLayout` on `PlusConnectivityConfig` |
+| **Main functionality** | Default `inline` in body; optional `overlay` Stack; `ScaffoldPlus` injects into body. |
+| **Dependencies** | Flutter SDK + `material_ui` |
+| **Testing** | Overlay + `ScaffoldPlus` placement tests |
+| **Status** | **Completed** |
+
 ---
 
 # In Progress
@@ -491,7 +519,7 @@ Revisit only when they reduce real app boilerplate without violating architectur
 | `ScaffoldPlus` composes native `Scaffold` | `Scaffold.of` compatibility |
 | `state == null` → `body`; else async wins (no assert) | Drop-in scaffold + opt-in async |
 | Connectivity presentation + optional built-in probe; custom wins | No connectivity plugin; apps can still own reachability |
-| Banner via `Stack` overlay | Body does not resize |
+| Banner default inline in scaffold body | Below app bar; does not cover controls; overlay opt-in |
 | Silent first connectivity status | No false “restored” on launch |
 | Public import only via `lib/ui_plus.dart` | Stable surface |
 | No empty folders for speculative features | Implement when scheduled |
@@ -506,7 +534,7 @@ Revisit only when they reduce real app boilerplate without violating architectur
 From `lib/ui_plus.dart`:
 
 - Async: `PlusAsyncState`, `PlusLoading`, `PlusSuccess`, `PlusFailure`, typedefs, `PlusAsyncView`
-- Connectivity: `PlusConnectivityBanner`, `PlusConnectivityBuilder`, `PlusConnectivityConfig`, `PlusConnectivityBannerPosition`, `PlusConnectivityOverlay`, `PlusConnectivityBannerBuilder`, `PlusOfflineState`, `PlusInternetChecker`, `PlusInternetCheckerConfig`
+- Connectivity: `PlusConnectivityBanner`, `PlusConnectivityBuilder`, `PlusConnectivityConfig`, `PlusConnectivityBannerPosition`, `PlusConnectivityBannerLayout`, `PlusConnectivityOverlay`, `PlusConnectivityBannerBuilder`, `PlusOfflineState`, `PlusInternetChecker`, `PlusInternetCheckerConfig`
 - Actions: `PlusAsyncButton`, `PlusAsyncButtonVariant`
 - Dialogs: `PlusDialog`, `PlusConfirmationDialog`
 - Feedback: `PlusSnackbar`, `PlusSnackbarTone`
@@ -524,11 +552,11 @@ From `lib/ui_plus.dart`:
 
 ## Recommended implementation order (next)
 
-1. Publish / tag `0.5.0` on pub.dev when approved.
-2. Enable GitHub Pages (Actions) so the docs workflow can publish
-   `https://lidhincs.github.io/ui_plus/` (if not already).
-3. Schedule further work only with a written uniqueness value case
-   (Future Consideration candidates remain unscheduled until approved).
+1. Publish / tag `0.6.0` on pub.dev when approved.
+2. Confirm GitHub Pages docs are live at
+   `https://lidhincs.github.io/ui_plus/`.
+3. Begin **v1.0.0** stable pass (API freeze, a11y, package score) — or schedule
+   an Advanced UI item only with a written uniqueness value case.
 
 ---
 

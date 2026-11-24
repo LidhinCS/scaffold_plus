@@ -18,7 +18,7 @@ flutter run
 | Search + paging | `PlusSearchField`, `PlusPagedList` |
 | Create / delete | `PlusBottomSheet`, `PlusAsyncButton`, `PlusConfirmationDialog` |
 | Global toasts | `PlusToastHost`, `PlusSnackbar` (no context from Cubits) |
-| Connectivity | Built-in checker + Settings “Force offline” |
+| Connectivity | Built-in checker + inline banner below app bar (Settings “Force offline”) |
 | Product gates | Maintenance / session / permission toggles in Settings |
 | Activity feed | Second `ScaffoldPlus` + Bloc mapping surface |
 

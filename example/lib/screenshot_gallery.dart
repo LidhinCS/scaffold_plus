@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:ui_plus/ui_plus.dart';
 
 /// Auto-advancing gallery used to capture pub.dev screenshots via simctl.
@@ -185,9 +185,7 @@ class _TasksInboxScene extends StatelessWidget {
                   title: Text(
                     task.title,
                     style: TextStyle(
-                      decoration: task.done
-                          ? TextDecoration.lineThrough
-                          : null,
+                      decoration: task.done ? TextDecoration.lineThrough : null,
                     ),
                   ),
                   subtitle: Text(
@@ -316,9 +314,8 @@ class _SettingsScene extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: Text(
                 'Developer gates',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                style: Theme.of(context).textTheme.titleSmall
+                    ?.copyWith(color: Theme.of(context).colorScheme.primary),
               ),
             ),
             const SwitchListTile(

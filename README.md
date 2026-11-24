@@ -21,9 +21,9 @@ into an architecture.
 
 ## Status
 
-**v0.5.0** Product gates, built-in reachability, global toasts, and the Pulse
-Tasks example. Flagship entry is `ScaffoldPlus`; building blocks remain
-independently reusable.
+**v0.6.0** — standalone [`material_ui`](https://pub.dev/packages/material_ui)
+(Flutter 3.47+) and inline connectivity banners below the app bar. Flagship
+entry is `ScaffoldPlus`; building blocks remain independently reusable.
 
 | Component | Status |
 | --- | --- |
@@ -55,13 +55,16 @@ independently reusable.
 
 ## Installation
 
-Requires Flutter `>=3.47.0` and Dart `^3.13.0`.
+Requires Flutter `>=3.47.0` and Dart `^3.13.0`. Material widgets come from
+[`material_ui`](https://pub.dev/packages/material_ui) (not
+`package:flutter/material.dart`).
 
 ```sh
-dart pub add ui_plus
+dart pub add ui_plus material_ui
 ```
 
 ```dart
+import 'package:material_ui/material_ui.dart';
 import 'package:ui_plus/ui_plus.dart';
 ```
 
@@ -119,11 +122,13 @@ rendering. Composes a native `Scaffold` internally (so `Scaffold.of` works).
 
 Shares the same internal async renderer as `PlusAsyncView`.
 
-**Connectivity (opt-in):**
+**Connectivity (opt-in):** banner sits in the scaffold **body** (below the app
+bar) by default and pushes content down. Use
+`PlusConnectivityBannerLayout.overlay` for a floating banner.
 
 ```dart
 ScaffoldPlus(
-  connectivityBanner: true, // built-in check by default
+  connectivityBanner: true, // built-in check + inline layout by default
   body: const HomePage(),
 )
 
@@ -192,7 +197,7 @@ PlusConnectivityBuilder(
 ```
 
 Also: `PlusInternetChecker` (plugin-free reachability), `PlusConnectivityBanner`,
-`PlusConnectivityConfig`.
+`PlusConnectivityConfig` / `PlusConnectivityBannerLayout`.
 
 ### Feedback
 
@@ -255,6 +260,16 @@ ThemeData(
   ],
 )
 ```
+
+## Migrating to 0.6.0
+
+1. Add `material_ui` and switch Material imports (or run
+   `dart fix --apply --code=migrate_design_widgets`).
+2. Expect the connectivity banner **below the app bar** (inline). Restore the
+   old floating behavior with
+   `layout: PlusConnectivityBannerLayout.overlay`.
+
+See [CHANGELOG](CHANGELOG.md) for full notes.
 
 ## License
 

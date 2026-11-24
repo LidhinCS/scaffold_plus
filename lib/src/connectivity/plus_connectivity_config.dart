@@ -1,12 +1,26 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Vertical placement for connectivity banners.
 enum PlusConnectivityBannerPosition {
-  /// Align the banner to the top of the overlay (below the status bar).
+  /// Align the banner to the top of the host.
   top,
 
-  /// Align the banner to the bottom of the overlay (above the home indicator).
+  /// Align the banner to the bottom of the host.
   bottom,
+}
+
+/// How the connectivity banner participates in layout.
+enum PlusConnectivityBannerLayout {
+  /// Banner floats in a `Stack` and does not resize the child.
+  ///
+  /// May cover interactive content underneath.
+  overlay,
+
+  /// Banner sits in the content flow and pushes the child aside.
+  ///
+  /// With `ScaffoldPlus`, this places the banner in the scaffold body — below
+  /// the app bar — so it does not cover body controls.
+  inline,
 }
 
 /// Appearance and behavior options for connectivity banners.
@@ -36,6 +50,7 @@ class PlusConnectivityConfig {
     this.elevation = 4,
     this.margin = const EdgeInsets.fromLTRB(12, 8, 12, 12),
     this.position = PlusConnectivityBannerPosition.top,
+    this.layout = PlusConnectivityBannerLayout.inline,
     this.showOfflineMessage = true,
     this.showOnlineMessage = true,
     this.autoHideOnline = true,
@@ -102,8 +117,13 @@ class PlusConnectivityConfig {
   /// Outer margin around the banner within the overlay.
   final EdgeInsetsGeometry margin;
 
-  /// Top or bottom overlay placement.
+  /// Top or bottom placement within [layout].
   final PlusConnectivityBannerPosition position;
+
+  /// Whether the banner overlays content or participates in layout.
+  ///
+  /// Defaults to [PlusConnectivityBannerLayout.inline].
+  final PlusConnectivityBannerLayout layout;
 
   /// Whether to show the offline banner.
   final bool showOfflineMessage;

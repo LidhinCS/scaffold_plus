@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:ui_plus/src/dialogs/plus_dialog_surface.dart';
 
 /// Confirm / cancel dialog helpers with polished chrome and motion.

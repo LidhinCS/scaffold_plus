@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:ui_plus/src/async/plus_async_body.dart';
 import 'package:ui_plus/src/async/plus_async_state.dart';
 import 'package:ui_plus/src/async/plus_async_types.dart';

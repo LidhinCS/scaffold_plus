@@ -2,7 +2,7 @@ name: ui_plus
 description: >
   A collection of reusable Flutter UI components, application states,
   connectivity features and productivity utilities.
-version: 0.5.0
+version: 0.6.0
 homepage: https://github.com/LidhinCS/ui_plus
 repository: https://github.com/LidhinCS/ui_plus
 issue_tracker: https://github.com/LidhinCS/ui_plus/issues
@@ -15,7 +15,7 @@ screenshots:
     path: screenshots/02_compose_task.png
   - description: 'Settings developer gates for maintenance, permission, offline.'
     path: screenshots/03_settings_gates.png
-  - description: 'Offline connectivity banner over the tasks screen.'
+  - description: 'Inline offline connectivity banner below the app bar.'
     path: screenshots/04_offline_banner.png
   - description: 'ScaffoldPlus maintenanceMode full-page gate.'
     path: screenshots/05_maintenance_gate.png
@@ -36,6 +36,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  material_ui: ^1.11.1
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:ui_plus/src/connectivity/plus_connectivity_banner.dart';
 import 'package:ui_plus/src/connectivity/plus_connectivity_config.dart';
 import 'package:ui_plus/src/connectivity/plus_internet_checker.dart';
@@ -11,7 +11,14 @@ typedef PlusConnectivityBannerBuilder = Widget Function(
   required bool isConnected,
 });
 
-/// Overlays a connectivity banner on [child] without resizing the body.
+/// Hosts a connectivity banner around [child].
+///
+/// With [PlusConnectivityBannerLayout.inline] (default), the banner takes
+/// layout space so content is pushed rather than covered. With
+/// [PlusConnectivityBannerLayout.overlay], the banner floats in a `Stack`.
+///
+/// When used from `ScaffoldPlus`, the host wraps the scaffold **body**, so an
+/// inline top banner sits below the app bar.
 ///
 /// Connectivity source precedence:
 /// 1. Custom [connectivityStream] / [isConnected] when either is provided
@@ -34,7 +41,7 @@ class PlusConnectivityOverlay extends StatefulWidget {
     this.bannerBuilder,
   });
 
-  /// Underlying content (typically a [Scaffold]).
+  /// Underlying content (scaffold body when used from `ScaffoldPlus`).
   final Widget child;
 
   /// Optional custom snapshot status.
@@ -305,41 +312,71 @@ class _PlusConnectivityOverlayState extends State<PlusConnectivityOverlay>
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  bool get _shouldShowBanner {
     final connected = _connected ?? true;
-    final showBanner =
-        _bannerVisible &&
+    return _bannerVisible &&
         !_dismissed &&
         ((connected && _showingOnline && widget.config.showOnlineMessage) ||
             (!connected && widget.config.showOfflineMessage));
+  }
+
+  Widget _animatedBanner(BuildContext context, bool connected) {
+    final isTop = widget.config.position == PlusConnectivityBannerPosition.top;
+    final banner = SlideTransition(
+      position: _slideAnimation,
+      child: Padding(
+        padding: widget.config.margin,
+        child: _buildBanner(context, connected),
+      ),
+    );
+
+    if (widget.config.layout == PlusConnectivityBannerLayout.inline) {
+      return ClipRect(
+        child: SizeTransition(
+          sizeFactor: _controller,
+          alignment: Alignment(0, isTop ? -1 : 1),
+          child: banner,
+        ),
+      );
+    }
+
+    return banner;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final connected = _connected ?? true;
+    final showBanner = _shouldShowBanner;
+    final isTop = widget.config.position == PlusConnectivityBannerPosition.top;
+
+    if (widget.config.layout == PlusConnectivityBannerLayout.inline) {
+      final banner = showBanner
+          ? _animatedBanner(context, connected)
+          : const SizedBox.shrink();
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (isTop) banner,
+          Expanded(child: widget.child),
+          if (!isTop) banner,
+        ],
+      );
+    }
 
     return Stack(
       children: [
         widget.child,
         if (showBanner)
           Positioned(
-            top: widget.config.position == PlusConnectivityBannerPosition.top
-                ? 0
-                : null,
-            bottom:
-                widget.config.position == PlusConnectivityBannerPosition.bottom
-                ? 0
-                : null,
+            top: isTop ? 0 : null,
+            bottom: isTop ? null : 0,
             left: 0,
             right: 0,
             child: SafeArea(
-              bottom:
-                  widget.config.position ==
-                  PlusConnectivityBannerPosition.bottom,
-              top: widget.config.position == PlusConnectivityBannerPosition.top,
-              child: SlideTransition(
-                position: _slideAnimation,
-                child: Padding(
-                  padding: widget.config.margin,
-                  child: _buildBanner(context, connected),
-                ),
-              ),
+              bottom: !isTop,
+              top: isTop,
+              child: _animatedBanner(context, connected),
             ),
           ),
       ],

@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-11-24
+
+### Breaking
+
+- Migrated from `package:flutter/material.dart` to
+  [`package:material_ui/material_ui.dart`](https://pub.dev/packages/material_ui)
+  (Flutter 3.47+ design-library split). Apps must use `material_ui` for
+  `MaterialApp` / `ThemeData` / Material widgets that interoperate with
+  `ui_plus`. Symbols are the same; they come from a different library.
+- Connectivity banner default layout is **inline** and `ScaffoldPlus` hosts it
+  in the scaffold **body** (below the app bar), pushing content instead of
+  covering it. Use `PlusConnectivityBannerLayout.overlay` for the previous
+  floating `Stack` behavior.
+
+### Added
+
+- `PlusConnectivityBannerLayout` (`inline` | `overlay`) on
+  `PlusConnectivityConfig`.
+
+### Changed
+
+- Depends on `material_ui` so Flutter 3.47+ / pub.dev static analysis no longer
+  flags deprecated in-framework Material imports.
+- Docs, README, and Pulse Tasks example updated for `material_ui` + inline
+  banners.
+
+### Migration
+
+```sh
+dart pub add ui_plus material_ui
+dart fix --apply --code=migrate_design_widgets
+```
+
+```dart
+import 'package:material_ui/material_ui.dart';
+import 'package:ui_plus/ui_plus.dart';
+```
+
 ## [0.5.0] - 2026-11-23
 
 ### Breaking
