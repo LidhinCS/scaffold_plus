@@ -1,19 +1,43 @@
-# Editor / agent tooling — not part of the published package.
-.cursor/
+# When .pubignore exists, pub uses it *instead of* .gitignore.
+# Keep publish excludes complete here.
 
-# Local / IDE noise.
+# Editor / agent tooling
+.cursor/
 .idea/
 .vscode/
 *.iml
 
-# Test/coverage artifacts (sources under test/ may still be useful locally;
-# exclude generated coverage only).
-coverage/
+# Flutter / Dart build & tooling (all packages in the tree)
+.dart_tool/
+build/
+**/build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+pubspec.lock
 
-# MkDocs GitHub Pages sources (keep package docs in singular `doc/`).
-# Pub warns on a top-level plural `docs/` directory.
+# Test / coverage
+coverage/
+**/coverage/
+
+# Docs site (MkDocs + dartdoc output)
+site/
 docs/
 mkdocs.yml
 requirements-docs.txt
 plan.md
 tool/
+
+# Example app artifacts (source under example/ is still published)
+example/.dart_tool/
+example/build/
+example/.flutter-plugins
+example/.flutter-plugins-dependencies
+example/pubspec.lock
+example/**/Pods/
+example/ios/Flutter/Flutter.framework
+example/ios/Flutter/Flutter.podspec
+example/android/.gradle/
+example/android/local.properties

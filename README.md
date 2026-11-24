@@ -54,6 +54,18 @@ remain independently reusable.
 | `PlusPermissionState` | Available |
 | `PlusSessionExpired` | Available |
 
+## Preview
+
+Pulse Tasks example (Bloc showcase):
+
+| Inbox | Compose | Settings |
+| --- | --- | --- |
+| ![Tasks inbox](screenshots/01_tasks_inbox.png) | ![Compose task](screenshots/02_compose_task.png) | ![Settings gates](screenshots/03_settings_gates.png) |
+
+| Offline banner | Maintenance | Permission |
+| --- | --- | --- |
+| ![Offline banner](screenshots/04_offline_banner.png) | ![Maintenance](screenshots/05_maintenance_gate.png) | ![Permission](screenshots/06_permission_gate.png) |
+
 ## Installation
 
 Requires Flutter `>=3.47.0` and Dart `^3.13.0`. Material widgets come from
