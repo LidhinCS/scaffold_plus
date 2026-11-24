@@ -2,7 +2,7 @@ name: ui_plus
 description: >
   A collection of reusable Flutter UI components, application states,
   connectivity features and productivity utilities.
-version: 0.6.0
+version: 1.0.0
 homepage: https://github.com/LidhinCS/ui_plus
 repository: https://github.com/LidhinCS/ui_plus
 issue_tracker: https://github.com/LidhinCS/ui_plus/issues

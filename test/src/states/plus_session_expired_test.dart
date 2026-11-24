@@ -47,5 +47,21 @@ void main() {
 
       expect(find.text('Session expired'), findsOneWidget);
     });
+
+    testWidgets('does not overflow at large text scale', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: MediaQuery(
+            data: MediaQueryData(textScaler: TextScaler.linear(2)),
+            child: Scaffold(
+              body: SizedBox(height: 320, child: PlusSessionExpired()),
+            ),
+          ),
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Session expired'), findsOneWidget);
+    });
   });
 }

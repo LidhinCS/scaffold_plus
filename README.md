@@ -21,9 +21,10 @@ into an architecture.
 
 ## Status
 
-**v0.6.0** — standalone [`material_ui`](https://pub.dev/packages/material_ui)
-(Flutter 3.47+) and inline connectivity banners below the app bar. Flagship
-entry is `ScaffoldPlus`; building blocks remain independently reusable.
+**v1.0.0** — stable public API. Built on Flutter 3.47+ /
+[`material_ui`](https://pub.dev/packages/material_ui), with inline connectivity
+banners below the app bar. Flagship entry is `ScaffoldPlus`; building blocks
+remain independently reusable.
 
 | Component | Status |
 | --- | --- |
@@ -261,7 +262,19 @@ ThemeData(
 )
 ```
 
-## Migrating to 0.6.0
+## Versioning
+
+UI Plus follows [Semantic Versioning](https://semver.org/):
+
+- **MAJOR** — breaking public API changes (documented in CHANGELOG)
+- **MINOR** — new features / non-breaking enhancements
+- **PATCH** — bug fixes and docs
+
+Import only `package:ui_plus/ui_plus.dart`. Do not import `src/`.
+
+## Migrating from 0.5.x
+
+`1.0.0` freezes the `0.6.0` surface. From `0.5.x`:
 
 1. Add `material_ui` and switch Material imports (or run
    `dart fix --apply --code=migrate_design_widgets`).

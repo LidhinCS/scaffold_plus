@@ -17,7 +17,9 @@ class SettingsPage extends StatelessWidget {
 
     return ScaffoldPlus<void>(
       connectivityBanner: true,
-      useBuiltInInternetCheck: !shell.forceOffline,
+      useBuiltInInternetCheck:
+          context.read<AppShellCubit>().useBuiltInInternetCheck &&
+          !shell.forceOffline,
       isConnected: shell.forceOffline ? false : null,
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(

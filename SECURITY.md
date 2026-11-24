@@ -5,13 +5,13 @@ supported with security updates and how to report a vulnerability.
 
 ## Supported Versions
 
-Only the latest minor release receives security updates. Older releases are not
-supported.
+The latest **1.x** release receives security updates. Pre-1.0 (`0.x`) releases
+are not supported.
 
-| Version              | Supported          |
-| -------------------- | ------------------ |
-| Latest minor release | :white_check_mark: |
-| Older releases       | :x:                |
+| Version | Supported |
+| --- | --- |
+| 1.x (latest) | :white_check_mark: |
+| 0.x | :x: |
 
 ## Reporting a Vulnerability
 

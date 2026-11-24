@@ -36,7 +36,9 @@ class _TasksPageState extends State<TasksPage> {
       builder: (context, tasksState) {
         return ScaffoldPlus<List<Task>>(
           connectivityBanner: true,
-          useBuiltInInternetCheck: !shell.forceOffline,
+          useBuiltInInternetCheck:
+              context.read<AppShellCubit>().useBuiltInInternetCheck &&
+              !shell.forceOffline,
           isConnected: shell.forceOffline ? false : null,
           maintenanceMode: shell.maintenanceMode,
           sessionExpired: !shell.isSignedIn,

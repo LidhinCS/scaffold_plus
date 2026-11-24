@@ -14,7 +14,13 @@ void main() {
 /// Pulse Tasks — Bloc showcase host for `ui_plus`.
 class PulseTasksApp extends StatefulWidget {
   /// Creates the app.
-  const new({super.key});
+  ///
+  /// Pass [useBuiltInInternetCheck]: false for widget tests / screenshot
+  /// capture to avoid hanging on `PlusInternetChecker` HTTP probes.
+  const new({super.key, this.useBuiltInInternetCheck = true});
+
+  /// Whether pages should enable the built-in internet checker.
+  final bool useBuiltInInternetCheck;
 
   @override
   State<PulseTasksApp> createState() => _PulseTasksAppState();
@@ -35,7 +41,11 @@ class _PulseTasksAppState extends State<PulseTasksApp> {
       value: _repository,
       child: MultiBlocProvider(
         providers: [
-          BlocProvider(create: (_) => AppShellCubit()),
+          BlocProvider(
+            create: (_) => AppShellCubit(
+              useBuiltInInternetCheck: widget.useBuiltInInternetCheck,
+            ),
+          ),
           BlocProvider(
             create: (context) => TasksCubit(context.read<TaskRepository>()),
           ),

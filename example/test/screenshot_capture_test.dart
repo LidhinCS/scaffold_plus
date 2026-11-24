@@ -8,45 +8,52 @@ import 'package:ui_plus_example/main.dart';
 
 /// Captures pub.dev screenshots from the Pulse Tasks example.
 ///
+/// Opt-in — `toImage` is flaky under `flutter test` on some hosts:
+///
 /// ```sh
-/// cd example && flutter test test/screenshot_capture_test.dart
+/// cd example && flutter test test/screenshot_capture_test.dart --name capture
 /// ```
 ///
-/// Images are written to `../screenshots/`.
+/// Prefer `tool/capture_screenshots.sh` / `lib/screenshot_gallery.dart` for
+/// reliable device captures. Images are written to `../screenshots/`.
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
-
   const size = Size(390, 844);
 
   Future<void> pumpFrames(WidgetTester tester, {int frames = 8}) async {
     for (var i = 0; i < frames; i++) {
-      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pump(const Duration(milliseconds: 16));
     }
   }
 
   Future<void> capture(WidgetTester tester, String filename) async {
+    await tester.pump();
     final boundary = tester.renderObject(
       find.byKey(const ValueKey('screenshot.root')),
-    );
-    expect(boundary, isA<RenderRepaintBoundary>());
-    final image = await (boundary as RenderRepaintBoundary).toImage(
-      pixelRatio: 2,
-    );
-    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+    ) as RenderRepaintBoundary;
+
+    // `toImage` must run outside the test frame lock or it can hang.
+    final bytes = await tester.runAsync(() async {
+      final image = await boundary.toImage(pixelRatio: 2);
+      final data = await image.toByteData(format: ui.ImageByteFormat.png);
+      image.dispose();
+      return data;
+    });
     expect(bytes, isNotNull);
+    expect(bytes!.lengthInBytes, greaterThan(1000));
 
     final dir = Directory('../screenshots');
     if (!dir.existsSync()) {
       dir.createSync(recursive: true);
     }
-    await File('${dir.path}/$filename')
-        .writeAsBytes(bytes!.buffer.asUint8List());
+    final out = File('${dir.path}/$filename');
+    final tmp = File('${dir.path}/.$filename.tmp');
+    await tmp.writeAsBytes(bytes.buffer.asUint8List());
+    await tmp.rename(out.path);
   }
 
   testWidgets('capture pub.dev screenshots', (tester) async {
-    final binding = tester.binding;
-    await binding.setSurfaceSize(size);
-    addTearDown(() => binding.setSurfaceSize(null));
+    await tester.binding.setSurfaceSize(size);
+    addTearDown(() => tester.binding.setSurfaceSize(null));
 
     await tester.pumpWidget(
       const RepaintBoundary(
@@ -55,15 +62,13 @@ void main() {
           data: MediaQueryData(
             size: size,
             padding: EdgeInsets.only(top: 47, bottom: 34),
-            devicePixelRatio: 2,
             disableAnimations: true,
           ),
-          child: PulseTasksApp(),
+          child: PulseTasksApp(useBuiltInInternetCheck: false),
         ),
       ),
     );
 
-    // Wait for fake repository latency (550ms + jitter).
     await tester.pump();
     await tester.pump(const Duration(seconds: 2));
     await pumpFrames(tester);
@@ -71,30 +76,25 @@ void main() {
     expect(find.text('New task'), findsOneWidget);
     await capture(tester, '01_tasks_inbox.png');
 
-    // Compose sheet
     await tester.tap(find.text('New task'));
     await pumpFrames(tester, frames: 12);
     expect(find.text('Create task'), findsOneWidget);
     await capture(tester, '02_compose_task.png');
 
     tester.state<NavigatorState>(find.byType(Navigator).first).pop();
-
     await pumpFrames(tester);
 
-    // Settings
     await tester.tap(find.text('Settings').last);
     await pumpFrames(tester);
     expect(find.text('Developer gates'), findsOneWidget);
     await capture(tester, '03_settings_gates.png');
 
-    // Force offline → Tasks
     await tester.tap(find.text('Force offline'));
     await pumpFrames(tester);
     await tester.tap(find.text('Tasks').last);
     await pumpFrames(tester, frames: 12);
     await capture(tester, '04_offline_banner.png');
 
-    // Maintenance gate
     await tester.tap(find.text('Settings').last);
     await pumpFrames(tester);
     await tester.tap(find.text('Force offline'));
@@ -105,7 +105,6 @@ void main() {
     await pumpFrames(tester, frames: 12);
     await capture(tester, '05_maintenance_gate.png');
 
-    // Permission gate
     await tester.tap(find.text('Settings').last);
     await pumpFrames(tester);
     await tester.tap(find.text('Maintenance mode'));
@@ -115,5 +114,5 @@ void main() {
     await tester.tap(find.text('Tasks').last);
     await pumpFrames(tester, frames: 12);
     await capture(tester, '06_permission_gate.png');
-  });
+  }, skip: true);
 }

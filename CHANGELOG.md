@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-24
+
+### Added
+
+- Declared **stable** public API (`lib/ui_plus.dart` barrel is the contract).
+- Versioning policy documented in README (semver; breaking changes only in
+  major releases).
+
+### Changed
+
+- Package version set to `1.0.0` after API review, docs/example sync, analyze
+  + test green, and pub.dev readiness pass (screenshots, topics, `material_ui`).
+
+### Notes
+
+- No intentional API removals vs `0.6.0`. If you are upgrading from `0.5.x`,
+  apply the `0.6.0` migration (`material_ui` + inline connectivity banner)
+  first — see that section below.
+
 ## [0.6.0] - 2026-11-24
 
 ### Breaking

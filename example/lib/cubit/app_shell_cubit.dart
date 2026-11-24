@@ -57,7 +57,13 @@ final class AppShellState extends Equatable {
 /// Owns tab selection and developer product-state toggles.
 final class AppShellCubit extends Cubit<AppShellState> {
   /// Creates the shell cubit.
-  new() : super(const AppShellState());
+  ///
+  /// Set [useBuiltInInternetCheck] to false in widget tests / screenshot
+  /// capture so `PlusInternetChecker` does not hang the binding.
+  new({this.useBuiltInInternetCheck = true}) : super(const AppShellState());
+
+  /// Whether ScaffoldPlus pages should run the built-in reachability probe.
+  final bool useBuiltInInternetCheck;
 
   /// Selects a navigation destination.
   void selectTab(int index) {

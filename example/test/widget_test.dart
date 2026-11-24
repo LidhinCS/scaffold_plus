@@ -8,7 +8,7 @@ void main() {
     await tester.pumpWidget(
       const MediaQuery(
         data: MediaQueryData(disableAnimations: true),
-        child: PulseTasksApp(),
+        child: PulseTasksApp(useBuiltInInternetCheck: false),
       ),
     );
     await tester.pump();
@@ -24,7 +24,7 @@ void main() {
     await tester.pumpWidget(
       const MediaQuery(
         data: MediaQueryData(disableAnimations: true),
-        child: PulseTasksApp(),
+        child: PulseTasksApp(useBuiltInInternetCheck: false),
       ),
     );
     await tester.pump();

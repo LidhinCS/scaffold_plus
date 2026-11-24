@@ -3,7 +3,7 @@
 > **Role:** Central development roadmap for `ui_plus`.  
 > **Branding:** UI Plus — More power to your Flutter UI.  
 > **Last verified against source:** 2026-11-24 (lib exports, tests, example, docs).  
-> **Package version in `pubspec.yaml`:** `0.6.0`
+> **Package version in `pubspec.yaml`:** `1.0.0`
 
 Modular, architecture-agnostic Flutter UI toolkit for reusable components,
 application states, connectivity presentation, and productivity utilities.
@@ -50,7 +50,7 @@ Flagship widget remains `ScaffoldPlus`.
 | **v0.4.0** Unique application patterns | Async button, paged list, adaptive shell | **Completed** | `0.4.0` |
 | **v0.5.0** Product gates + polish | Maintenance/session/permission, internet checker, toast host, Pulse Tasks, docs | **Completed** | `0.5.0` |
 | **v0.6.0** material_ui + inline banner | Standalone Material + body connectivity banner | **Completed** | `0.6.0` |
-| **v1.0.0** Stable Release | API freeze + pub.dev readiness | **Planned** | — |
+| **v1.0.0** Stable Release | API freeze + pub.dev readiness | **Completed** | `1.0.0` |
 
 **In Progress:** none.
 
@@ -404,6 +404,19 @@ docs site, pub.dev screenshots.
 
 ---
 
+## v1.0.0 — Stable Release
+
+| Field | Detail |
+| --- | --- |
+| **Purpose** | Declare a stable public API suitable for pub.dev consumers. |
+| **Public API** | Freeze `lib/ui_plus.dart` barrel; no intentional removals vs `0.6.0` |
+| **Main functionality** | API review, README versioning policy, docs/example sync, a11y/text-scale coverage on state widgets, SDK `>=3.47` + `material_ui`, screenshots/topics, analyze/test green. |
+| **Dependencies** | Flutter SDK + `material_ui` only |
+| **Testing** | Full suite + example analyze/tests |
+| **Status** | **Completed** |
+
+---
+
 # In Progress
 
 _None._
@@ -466,19 +479,6 @@ Goal: higher-value helpers that remain architecture-agnostic. Each item requires
 | **Dependencies** | Live in companion packages |
 | **Testing** | Adapter unit/widget tests in those packages |
 | **Status** | **Future** until demand + concrete API |
-
----
-
-## v1.0.0 — Stable Release
-
-| Field | Detail |
-| --- | --- |
-| **Purpose** | Declare a stable public API suitable for pub.dev consumers. |
-| **Public API** | Freeze current barrel exports; migration notes if needed |
-| **Main functionality** | API review, full README/API docs, example screenshots, a11y/large-text pass, SDK constraint verification, package score, semantic versioning policy, CI green. |
-| **Dependencies** | No new mandatory runtime deps |
-| **Testing** | Full suite + example builds; optional golden/a11y audits |
-| **Status** | **Planned** |
 
 ---
 
@@ -552,11 +552,11 @@ From `lib/ui_plus.dart`:
 
 ## Recommended implementation order (next)
 
-1. Publish / tag `0.6.0` on pub.dev when approved.
+1. Publish / tag `1.0.0` on pub.dev when approved.
 2. Confirm GitHub Pages docs are live at
    `https://lidhincs.github.io/ui_plus/`.
-3. Begin **v1.0.0** stable pass (API freeze, a11y, package score) — or schedule
-   an Advanced UI item only with a written uniqueness value case.
+3. Post-1.0: schedule Advanced UI / companion packages only with a written
+   uniqueness value case (see Planned / Future Considerations).
 
 ---
 

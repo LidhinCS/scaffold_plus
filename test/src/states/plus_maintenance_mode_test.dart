@@ -64,5 +64,21 @@ void main() {
 
       expect(find.text("We'll be back soon"), findsOneWidget);
     });
+
+    testWidgets('does not overflow at large text scale', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: MediaQuery(
+            data: MediaQueryData(textScaler: TextScaler.linear(2)),
+            child: Scaffold(
+              body: SizedBox(height: 320, child: PlusMaintenanceMode()),
+            ),
+          ),
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(find.text("We'll be back soon"), findsOneWidget);
+    });
   });
 }
