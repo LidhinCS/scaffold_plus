@@ -15,9 +15,9 @@ Generated **dartdoc** for every public export from
 | Scaffold & shell | `ScaffoldPlus`, `PlusAdaptiveScaffold`, `PlusNavigationDestination` |
 | Async | `PlusAsyncState`, `PlusLoading`, `PlusSuccess`, `PlusFailure`, `PlusAsyncView` |
 | Connectivity | `PlusInternetChecker`, `PlusConnectivityOverlay`, `PlusConnectivityBanner`, `PlusConnectivityBuilder`, `PlusOfflineState`, `PlusConnectivityConfig`, `PlusConnectivityBannerLayout`, `PlusConnectivityBannerPosition` |
-| Feedback | `PlusSnackbar`, `PlusSnackbarTone`, `PlusToastHost`, `PlusDialog`, `PlusConfirmationDialog`, `PlusBottomSheet` |
+| Feedback | `PlusFeedback`, `PlusSnackbar`, `PlusSnackbarTone`, `PlusToastHost`, `PlusDialog`, `PlusConfirmationDialog`, `PlusBottomSheet` |
 | Floating | `PlusFloatingWindowHost`, `PlusFloatingWindowController`, `PlusFloatingWindow` |
-| States | `PlusEmptyState`, `PlusErrorState`, `PlusMaintenanceMode`, `PlusSessionExpired`, `PlusPermissionState` |
+| States | `PlusEmptyState`, `PlusErrorState`, `PlusErrorBoundary`, `PlusErrorBoundaryView`, `PlusMaintenanceMode`, `PlusSessionExpired`, `PlusPermissionState` |
 | Productivity | `PlusPagedList`, `PlusSearchField`, `PlusAsyncButton`, `PlusRefreshIndicator`, `PlusLoader`, `PlusSkeleton`, `PlusTheme` |
 
 ## Local regenerate

@@ -21,11 +21,11 @@ into an architecture.
 
 ## Status
 
-**v1.1.1** — stable public API plus floating-window (PiP) overlay and an
-example **Components** gallery. Built on Flutter 3.47+ /
-[`material_ui`](https://pub.dev/packages/material_ui), with inline connectivity
-banners below the app bar. Flagship entry is `ScaffoldPlus`; building blocks
-remain independently reusable.
+**v1.3.0** — stable public API plus floating-window (PiP) overlay,
+`PlusFeedback`, `PlusErrorBoundary`, and an example **Components** gallery.
+Built on Flutter 3.47+ / [`material_ui`](https://pub.dev/packages/material_ui),
+with inline connectivity banners below the app bar. Flagship entry is
+`ScaffoldPlus`; building blocks remain independently reusable.
 
 | Component | Status |
 | --- | --- |
@@ -38,9 +38,11 @@ remain independently reusable.
 | `PlusConnectivityBuilder` | Available |
 | `PlusEmptyState` | Available |
 | `PlusErrorState` | Available |
+| `PlusErrorBoundary` | Available |
 | `PlusLoader` | Available |
 | `PlusSkeleton` | Available |
 | `PlusSnackbar` | Available |
+| `PlusFeedback` | Available |
 | `PlusToastHost` | Available |
 | `PlusFloatingWindowHost` / `PlusFloatingWindow` | Available |
 | `PlusDialog` | Available |
@@ -60,9 +62,19 @@ remain independently reusable.
 
 Pulse Tasks example (Bloc showcase):
 
-| Toast | Floating window | Dialog |
-| --- | --- | --- |
-| ![Toast](screenshots/toast.png) | ![Floating window](screenshots/floating_widget.gif) | ![Dialog](screenshots/dialog.png) |
+<!-- HTML table + width=100% so equal columns; GIF/PNG intrinsic sizes match (1206px). -->
+<table>
+  <tr>
+    <th>Toast</th>
+    <th>Floating window</th>
+    <th>Dialog</th>
+  </tr>
+  <tr>
+    <td><img src="screenshots/toast.png" alt="Toast" width="100%" /></td>
+    <td><img src="screenshots/floating_widget.gif" alt="Floating window" width="100%" /></td>
+    <td><img src="screenshots/dialog.png" alt="Dialog" width="100%" /></td>
+  </tr>
+</table>
 
 | Offline banner | Maintenance | Permission |
 | --- | --- | --- |
@@ -202,6 +214,12 @@ const PlusEmptyState(title: 'Nothing here yet')
 const PlusErrorState(title: 'Something went wrong')
 const PlusLoader()
 const PlusSkeleton(height: 16)
+
+// Replace the red ErrorWidget once at startup:
+void main() {
+  PlusErrorBoundary.install();
+  runApp(const MyApp());
+}
 ```
 
 ### Connectivity
@@ -247,6 +265,11 @@ Detach on navigate while active; drag / resize / dismiss in the host overlay
 ### Feedback
 
 ```dart
+await PlusFeedback.run(
+  action: () => save(),
+  successMessage: 'Saved',
+);
+
 PlusSnackbar.success(context: context, message: 'Saved');
 PlusSnackbar.error(message: 'Failed'); // with PlusToastHost
 

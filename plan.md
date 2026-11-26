@@ -3,7 +3,7 @@
 > **Role:** Central development roadmap for `ui_plus`.  
 > **Branding:** UI Plus — More power to your Flutter UI.  
 > **Last verified against source:** 2026-11-26 (lib exports, tests, example, docs).  
-> **Package version in `pubspec.yaml`:** `1.1.1`
+> **Package version in `pubspec.yaml`:** `1.3.0`
 
 Modular, architecture-agnostic Flutter UI toolkit for reusable components,
 application states, connectivity presentation, and productivity utilities.
@@ -53,6 +53,8 @@ Flagship widget remains `ScaffoldPlus`.
 | **v1.0.0** Stable Release | API freeze + pub.dev readiness | **Completed** | `1.0.0` |
 | **v1.1.0** Floating window | PiP-style detachable overlay | **Completed** | `1.1.0` |
 | **v1.1.1** Preview assets | README / pub.dev screenshot refresh | **Completed** | `1.1.1` |
+| **v1.2.0** PlusFeedback | Result → snackbar / blocking dialog helper | **Completed** | `1.2.0` |
+| **v1.3.0** PlusErrorBoundary | Presentable ErrorWidget replacement | **Completed** | `1.3.0` |
 
 **In Progress:** none.
 
@@ -419,6 +421,38 @@ docs site, pub.dev screenshots.
 
 ---
 
+## v1.3.0 — PlusErrorBoundary
+
+### PlusErrorBoundary
+
+| Field | Detail |
+| --- | --- |
+| **Purpose** | Replace Flutter’s red `ErrorWidget` with a calm, theme-aware layout. |
+| **Public API** | `PlusErrorBoundary`, `PlusErrorBoundaryView`, `PlusErrorBoundaryBuilder` |
+| **Main functionality** | `install` / `uninstall` wraps `ErrorWidget.builder`; default view uses `PlusErrorState` (debug details optional). |
+| **Dependencies** | Flutter SDK + `material_ui` |
+| **Testing** | `test/src/states/plus_error_boundary_test.dart` |
+| **Example / docs** | Pulse Tasks `main` + Components demo; feedback / scaffold guides |
+| **Status** | **Completed** |
+
+---
+
+## v1.2.0 — PlusFeedback
+
+### PlusFeedback
+
+| Field | Detail |
+| --- | --- |
+| **Purpose** | Map async / operation outcomes to snackbar or blocking dialog without repeating wiring. |
+| **Public API** | `PlusFeedback` (`success`, `failure`, `exception`, `result`, `run`, `messageFor`) |
+| **Main functionality** | Soft errors → `PlusSnackbar.error`; `blocking` / `blockingErrors` → `PlusDialog.alert`; `run` awaits action and reports. |
+| **Dependencies** | Flutter SDK + `material_ui` |
+| **Testing** | `test/src/feedback/plus_feedback_test.dart` |
+| **Example / docs** | Components gallery + Tasks create/delete; `docs/guides/feedback.md` |
+| **Status** | **Completed** |
+
+---
+
 ## v1.1.0 — Floating window (PiP-style overlay)
 
 ### PlusFloatingWindowHost / Controller / Window
@@ -509,11 +543,9 @@ explicit value case and approval.
 
 | Candidate | Rough purpose |
 | --- | --- |
-| `PlusFeedback` | Unified success/info/error feedback helper |
 | `PlusCountdown` | Timed countdown / resend affordance |
 | `PlusDebouncer` | Debounce utility for UI events |
 | `PlusThrottler` | Throttle utility for UI events |
-| `PlusErrorBoundary` | Widget-tree error catch UI (presentation only) |
 | `PlusShowcase` | Feature highlight / coach-mark presentation |
 
 ### Other deferred ideas
@@ -555,7 +587,7 @@ From `lib/ui_plus.dart`:
 - Connectivity: `PlusConnectivityBanner`, `PlusConnectivityBuilder`, `PlusConnectivityConfig`, `PlusConnectivityBannerPosition`, `PlusConnectivityBannerLayout`, `PlusConnectivityOverlay`, `PlusConnectivityBannerBuilder`, `PlusOfflineState`, `PlusInternetChecker`, `PlusInternetCheckerConfig`
 - Actions: `PlusAsyncButton`, `PlusAsyncButtonVariant`
 - Dialogs: `PlusDialog`, `PlusConfirmationDialog`
-- Feedback: `PlusSnackbar`, `PlusSnackbarTone`
+- Feedback: `PlusFeedback`, `PlusSnackbar`, `PlusSnackbarTone`
 - Floating: `PlusFloatingWindowHost`, `PlusFloatingWindowHostScope`,
   `PlusFloatingWindowController`, `PlusFloatingWindow`,
   `PlusFloatingWindowContentBuilder`
@@ -565,15 +597,16 @@ From `lib/ui_plus.dart`:
 - Refresh: `PlusRefreshIndicator`
 - Scaffold: `ScaffoldPlus`, `PlusAdaptiveScaffold`, `PlusNavigationDestination`
 - Sheets: `PlusBottomSheet`
-- States: `PlusEmptyState`, `PlusErrorState`, `PlusMaintenanceMode`,
-  `PlusPermissionState`, `PlusSessionExpired`
+- States: `PlusEmptyState`, `PlusErrorState`, `PlusErrorBoundary`,
+  `PlusErrorBoundaryView`, `PlusMaintenanceMode`, `PlusPermissionState`,
+  `PlusSessionExpired`
 - Theme: `PlusTheme`
 
 ---
 
 ## Recommended implementation order (next)
 
-1. Publish / tag `1.1.1` on pub.dev when approved.
+1. Publish / tag `1.3.0` on pub.dev when approved.
 2. Confirm GitHub Pages docs include the floating-window guide.
 3. Further minors: Advanced UI / companion packages only with a written
    uniqueness value case (see Planned / Future Considerations).

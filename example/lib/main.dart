@@ -8,6 +8,7 @@ import 'package:ui_plus_example/cubit/tasks_cubit.dart';
 import 'package:ui_plus_example/data/task_repository.dart';
 
 void main() {
+  PlusErrorBoundary.install();
   runApp(const PulseTasksApp());
 }
 

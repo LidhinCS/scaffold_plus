@@ -97,6 +97,8 @@ Already have a `Scaffold`? Use the shared renderer:
 
 - `PlusAsyncView` — same async switching as `ScaffoldPlus`
 - `PlusEmptyState` / `PlusErrorState` / `PlusLoader` / `PlusSkeleton`
+- `PlusErrorBoundary.install()` — presentable replacement for the red
+  `ErrorWidget` (call once in `main`)
 
 ## See also
 

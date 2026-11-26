@@ -188,8 +188,14 @@ final class TasksCubit extends Cubit<TasksState> {
 
   /// Creates a task then reloads.
   Future<void> createTask({required String title, String notes = ''}) async {
-    final task = await _repository.createTask(title: title, notes: notes);
-    PlusSnackbar.success(message: 'Created “${task.title}”');
+    final task = await PlusFeedback.run(
+      action: () => _repository.createTask(title: title, notes: notes),
+      successMessage: 'Created “$title”',
+      rethrowError: true,
+    );
+    if (task == null || isClosed) {
+      return;
+    }
     await load(showLoading: false);
   }
 
@@ -211,14 +217,18 @@ final class TasksCubit extends Cubit<TasksState> {
 
   /// Deletes after UI confirmation.
   Future<void> deleteTask(Task task) async {
-    try {
-      await _repository.deleteTask(task.id);
-      final next = state.items.where((t) => t.id != task.id).toList();
-      emit(state.copyWith(status: PlusSuccess(next), items: next));
-      PlusSnackbar.success(message: 'Deleted “${task.title}”');
-    } on Object catch (error) {
-      PlusSnackbar.error(message: '$error');
+    final deleted = await PlusFeedback.run(
+      action: () async {
+        await _repository.deleteTask(task.id);
+        return task;
+      },
+      successMessage: 'Deleted “${task.title}”',
+    );
+    if (deleted == null || isClosed) {
+      return;
     }
+    final next = state.items.where((t) => t.id != task.id).toList();
+    emit(state.copyWith(status: PlusSuccess(next), items: next));
   }
 
   /// Demo helper: next fetch fails once.

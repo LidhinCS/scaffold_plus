@@ -33,6 +33,38 @@ Material 3 snackbars, dialogs, and connectivity banners with polished motion.
 
 Tone icon badge, floating card chrome, optional `showIcon: false`.
 
+## PlusFeedback (result helper)
+
+Maps operation outcomes so call sites do not repeat snackbar / dialog wiring:
+
+```dart
+await PlusFeedback.run(
+  context: context, // optional with PlusToastHost for snackbars
+  action: () => repository.save(item),
+  successMessage: 'Saved',
+);
+
+await PlusFeedback.result(
+  error: failure, // null → success path
+  successMessage: 'Done',
+  mapError: (e) => 'Could not save: $e',
+);
+
+await PlusFeedback.failure(
+  context: context,
+  error: exception,
+  blocking: true, // PlusDialog instead of snackbar
+  title: 'Could not complete',
+);
+```
+
+| API | Role |
+| --- | --- |
+| `success` | Success snackbar |
+| `failure` / `exception` | Error snackbar, or blocking dialog when `blocking: true` |
+| `result` | `error == null` → success message; else failure |
+| `run` | Await action; report success / failure; optional `rethrowError` |
+
 ### Global toasts (optional)
 
 Wire the host once (toastification-style). Call sites can omit `context`:
@@ -54,6 +86,27 @@ MaterialApp(
 !!! note "Dialogs stay contextual"
     Only toasts are global. `PlusDialog` / `PlusConfirmationDialog` still need a
     `BuildContext` (navigator).
+
+## UI error boundary
+
+Replace Flutter’s red `ErrorWidget` with `PlusErrorState` styling:
+
+```dart
+void main() {
+  PlusErrorBoundary.install(); // debug shows exception text; release stays calm
+  runApp(const MyApp());
+}
+```
+
+| API | Role |
+| --- | --- |
+| `PlusErrorBoundary.install` | Sets global `ErrorWidget.builder` |
+| `PlusErrorBoundary.uninstall` | Restores the previous builder (tests) |
+| `PlusErrorBoundaryView` | Default / reusable presentable layout |
+
+Catches build/layout/paint failures that become an `ErrorWidget`. Pair with
+`FlutterError.onError` in the app if you need crash reporting — core stays
+presentation-only.
 
 ## Dialogs
 

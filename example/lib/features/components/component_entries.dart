@@ -64,6 +64,15 @@ final List<ComponentGroup> componentCatalog = [
         demoBuilder: (_) => const _ErrorStateDemo(),
       ),
       ComponentEntry(
+        name: 'PlusErrorBoundary',
+        ability: 'Replace the red ErrorWidget with PlusErrorState',
+        details:
+            'Call PlusErrorBoundary.install() in main. Tap below to throw in '
+            'build and see the presentable fallback (Pulse Tasks installs it).',
+        icon: Icons.shield_outlined,
+        demoBuilder: (_) => const _ErrorBoundaryDemo(),
+      ),
+      ComponentEntry(
         name: 'PlusOfflineState',
         ability: 'Dedicated offline / no-connection layout',
         icon: Icons.wifi_off_rounded,
@@ -152,6 +161,15 @@ final List<ComponentGroup> componentCatalog = [
         details: 'With PlusToastHost you can show without a BuildContext.',
         icon: Icons.notifications_active_outlined,
         demoBuilder: (_) => const _SnackbarDemo(),
+      ),
+      ComponentEntry(
+        name: 'PlusFeedback',
+        ability: 'Map success / failure / Exception → snackbar or dialog',
+        details:
+            'Result helper over PlusSnackbar + PlusDialog. Soft errors toast; '
+            'blocking: true requires acknowledgment.',
+        icon: Icons.rule_rounded,
+        demoBuilder: (_) => const _FeedbackDemo(),
       ),
       ComponentEntry(
         name: 'PlusDialog',
@@ -388,6 +406,47 @@ class _ErrorStateDemo extends StatelessWidget {
   }
 }
 
+class _ErrorBoundaryDemo extends StatefulWidget {
+  const new();
+
+  @override
+  State<_ErrorBoundaryDemo> createState() => _ErrorBoundaryDemoState();
+}
+
+class _ErrorBoundaryDemoState extends State<_ErrorBoundaryDemo> {
+  var _explode = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Text(
+          'Installs with PlusErrorBoundary.install() in main. Trigger a '
+          'build failure to see the presentable UI instead of the red box.',
+        ),
+        const SizedBox(height: 12),
+        if (_explode)
+          const SizedBox(height: 160, child: _ExplodingChild())
+        else
+          FilledButton.tonal(
+            onPressed: () => setState(() => _explode = true),
+            child: const Text('Throw in build'),
+          ),
+      ],
+    );
+  }
+}
+
+class _ExplodingChild extends StatelessWidget {
+  const new();
+
+  @override
+  Widget build(BuildContext context) {
+    throw Exception('Demo UI failure from Components gallery');
+  }
+}
+
 class _SkeletonDemo extends StatelessWidget {
   const new();
 
@@ -544,6 +603,72 @@ class _SnackbarDemo extends StatelessWidget {
         FilledButton.tonal(
           onPressed: () => PlusSnackbar.error(message: 'Failed'),
           child: const Text('Error'),
+        ),
+      ],
+    );
+  }
+}
+
+class _FeedbackDemo extends StatelessWidget {
+  const new();
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        FilledButton.tonal(
+          onPressed: () {
+            unawaited(
+              PlusFeedback.run(
+                context: context,
+                action: () async {
+                  await Future<void>.delayed(const Duration(milliseconds: 400));
+                },
+                successMessage: 'Saved via PlusFeedback.run',
+              ),
+            );
+          },
+          child: const Text('run → success'),
+        ),
+        FilledButton.tonal(
+          onPressed: () {
+            unawaited(
+              PlusFeedback.run(
+                context: context,
+                action: () async {
+                  await Future<void>.delayed(const Duration(milliseconds: 200));
+                  throw Exception('Network timeout');
+                },
+              ),
+            );
+          },
+          child: const Text('run → snackbar error'),
+        ),
+        FilledButton.tonal(
+          onPressed: () {
+            unawaited(
+              PlusFeedback.failure(
+                context: context,
+                error: Exception('Payment declined'),
+                blocking: true,
+                title: 'Could not complete',
+              ),
+            );
+          },
+          child: const Text('blocking failure'),
+        ),
+        FilledButton.tonal(
+          onPressed: () {
+            unawaited(
+              PlusFeedback.result(
+                context: context,
+                successMessage: 'result() success',
+              ),
+            );
+          },
+          child: const Text('result success'),
         ),
       ],
     );

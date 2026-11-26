@@ -16,6 +16,8 @@ The authoritative development roadmap for **UI Plus** (`ui_plus`) lives in
 | **v1.0.0** | Stable Release | Released (`1.0.0`) |
 | **v1.1.0** | Floating window (PiP) | Released (`1.1.0`) |
 | **v1.1.1** | Preview screenshots refresh | Released (`1.1.1`) |
+| **v1.2.0** | PlusFeedback result helper | Released (`1.2.0`) |
+| **v1.3.0** | PlusErrorBoundary | Released (`1.3.0`) |
 
 Empty folders for speculative features are intentionally avoided until those APIs are implemented.
 

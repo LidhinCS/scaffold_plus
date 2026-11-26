@@ -18,6 +18,7 @@ flutter run
 | Search + paging | `PlusSearchField`, `PlusPagedList` |
 | Create / delete | `PlusBottomSheet`, `PlusAsyncButton`, `PlusConfirmationDialog` |
 | Global toasts | `PlusToastHost`, `PlusSnackbar` (no context from Cubits) |
+| UI error UI | `PlusErrorBoundary.install()` in `main` (presentable ErrorWidget) |
 | Floating window | `PlusFloatingWindowHost` + Focus timer on Settings (PiP on tab change) |
 | Connectivity | Built-in checker + inline banner below app bar (Settings “Force offline”) |
 | Product gates | Maintenance / session / permission toggles in Settings |
