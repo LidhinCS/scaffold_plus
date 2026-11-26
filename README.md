@@ -60,20 +60,17 @@ remain independently reusable.
 
 Pulse Tasks example (Bloc showcase):
 
-| Inbox | Compose | Settings |
+| Toast | Floating window | Dialog |
 | --- | --- | --- |
-| ![Tasks inbox](screenshots/01_tasks_inbox.png) | ![Compose task](screenshots/02_compose_task.png) | ![Settings gates](screenshots/03_settings_gates.png) |
+| ![Toast](screenshots/toast.png) | ![Floating window](screenshots/floating_widget.gif) | ![Dialog](screenshots/dialog.png) |
 
 | Offline banner | Maintenance | Permission |
 | --- | --- | --- |
 | ![Offline banner](screenshots/04_offline_banner.png) | ![Maintenance](screenshots/05_maintenance_gate.png) | ![Permission](screenshots/06_permission_gate.png) |
 
-### Floating window
-
-`PlusFloatingWindow` — start inline, then detach into a draggable / resizable
-overlay:
-
-![Floating window](screenshots/floating_widget.gif)
+| Session expired | Compose | |
+| --- | --- | --- |
+| ![Session expired](screenshots/session_expired.png) | ![Compose task](screenshots/02_compose_task.png) | |
 
 ## Installation
 
