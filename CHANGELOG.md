@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-11-26
+
+### Changed
+
+- README / pub.dev preview screenshots refreshed: toast, floating-window GIF,
+  dialog, session-expired, and compose (replacing inbox / settings tiles).
+- Compressed `floating_widget.gif` for preview-column display size.
+
 ## [1.1.0] - 2026-11-26
 
 ### Added

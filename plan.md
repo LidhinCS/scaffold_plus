@@ -3,7 +3,7 @@
 > **Role:** Central development roadmap for `ui_plus`.  
 > **Branding:** UI Plus — More power to your Flutter UI.  
 > **Last verified against source:** 2026-11-26 (lib exports, tests, example, docs).  
-> **Package version in `pubspec.yaml`:** `1.1.0`
+> **Package version in `pubspec.yaml`:** `1.1.1`
 
 Modular, architecture-agnostic Flutter UI toolkit for reusable components,
 application states, connectivity presentation, and productivity utilities.
@@ -52,6 +52,7 @@ Flagship widget remains `ScaffoldPlus`.
 | **v0.6.0** material_ui + inline banner | Standalone Material + body connectivity banner | **Completed** | `0.6.0` |
 | **v1.0.0** Stable Release | API freeze + pub.dev readiness | **Completed** | `1.0.0` |
 | **v1.1.0** Floating window | PiP-style detachable overlay | **Completed** | `1.1.0` |
+| **v1.1.1** Preview assets | README / pub.dev screenshot refresh | **Completed** | `1.1.1` |
 
 **In Progress:** none.
 
@@ -572,7 +573,7 @@ From `lib/ui_plus.dart`:
 
 ## Recommended implementation order (next)
 
-1. Publish / tag `1.1.0` on pub.dev when approved.
+1. Publish / tag `1.1.1` on pub.dev when approved.
 2. Confirm GitHub Pages docs include the floating-window guide.
 3. Further minors: Advanced UI / companion packages only with a written
    uniqueness value case (see Planned / Future Considerations).

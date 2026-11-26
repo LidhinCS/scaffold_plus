@@ -10,7 +10,7 @@ run the Pulse Tasks example.
 
 ## 1. Install
 
-UI Plus **1.1.0** (stable) uses the standalone
+UI Plus **1.1.1** (stable) uses the standalone
 [`material_ui`](https://pub.dev/packages/material_ui) package (Flutter 3.47+),
 not `package:flutter/material.dart`. Migrating an app:
 
