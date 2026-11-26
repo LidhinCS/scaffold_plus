@@ -68,6 +68,13 @@ Pulse Tasks example (Bloc showcase):
 | --- | --- | --- |
 | ![Offline banner](screenshots/04_offline_banner.png) | ![Maintenance](screenshots/05_maintenance_gate.png) | ![Permission](screenshots/06_permission_gate.png) |
 
+### Floating window
+
+`PlusFloatingWindow` — start inline, then detach into a draggable / resizable
+overlay:
+
+![Floating window](screenshots/floating_widget.gif)
+
 ## Installation
 
 Requires Flutter `>=3.47.0` and Dart `^3.13.0`. Material widgets come from
@@ -236,8 +243,9 @@ PlusFloatingWindow(
 );
 ```
 
-Detach on navigate while active; drag / resize / dismiss in the host overlay.
-See the [floating window guide](https://lidhincs.github.io/ui_plus/guides/floating-window/).
+Detach on navigate while active; drag / resize / dismiss in the host overlay
+(see preview GIF above). Guide:
+[floating window](https://lidhincs.github.io/ui_plus/guides/floating-window/).
 
 ### Feedback
 
