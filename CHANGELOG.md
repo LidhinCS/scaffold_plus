@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-26
+
+### Added
+
+- `PlusFloatingWindowHost`, `PlusFloatingWindowController`, and
+  `PlusFloatingWindow` — PiP-style detachable overlay (drag, resize, dismiss /
+  expand) that floats over new routes when the session stays active.
+- Pulse Tasks **Settings → Focus timer** demo and
+  [floating window guide](https://lidhincs.github.io/ui_plus/guides/floating-window/).
+- Pulse Tasks **Components** tab — browsable live demos of each public widget
+  with a short capability blurb (states, async, actions, feedback, inputs,
+  connectivity, floating / shell).
+
 ## [1.0.0] - 2026-11-24
 
 ### Added

@@ -14,6 +14,7 @@ The authoritative development roadmap for **UI Plus** (`ui_plus`) lives in
 | **v0.5.0** | Product gates + polish | Released (`0.5.0`) |
 | **v0.6.0** | material_ui + inline connectivity banner | Released (`0.6.0`) |
 | **v1.0.0** | Stable Release | Released (`1.0.0`) |
+| **v1.1.0** | Floating window (PiP) | Released (`1.1.0`) |
 
 Empty folders for speculative features are intentionally avoided until those APIs are implemented.
 

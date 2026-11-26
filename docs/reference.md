@@ -16,6 +16,7 @@ Generated **dartdoc** for every public export from
 | Async | `PlusAsyncState`, `PlusLoading`, `PlusSuccess`, `PlusFailure`, `PlusAsyncView` |
 | Connectivity | `PlusInternetChecker`, `PlusConnectivityOverlay`, `PlusConnectivityBanner`, `PlusConnectivityBuilder`, `PlusOfflineState`, `PlusConnectivityConfig`, `PlusConnectivityBannerLayout`, `PlusConnectivityBannerPosition` |
 | Feedback | `PlusSnackbar`, `PlusSnackbarTone`, `PlusToastHost`, `PlusDialog`, `PlusConfirmationDialog`, `PlusBottomSheet` |
+| Floating | `PlusFloatingWindowHost`, `PlusFloatingWindowController`, `PlusFloatingWindow` |
 | States | `PlusEmptyState`, `PlusErrorState`, `PlusMaintenanceMode`, `PlusSessionExpired`, `PlusPermissionState` |
 | Productivity | `PlusPagedList`, `PlusSearchField`, `PlusAsyncButton`, `PlusRefreshIndicator`, `PlusLoader`, `PlusSkeleton`, `PlusTheme` |
 

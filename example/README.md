@@ -1,7 +1,7 @@
 # Pulse Tasks (ui_plus example)
 
-A small **Bloc**-powered inbox that showcases `ui_plus` in a real app flow —
-not a component catalog.
+A small **Bloc**-powered inbox that showcases `ui_plus` in a real app flow,
+plus a **Components** tab for browsing each public widget live.
 
 ```sh
 cd example
@@ -18,9 +18,11 @@ flutter run
 | Search + paging | `PlusSearchField`, `PlusPagedList` |
 | Create / delete | `PlusBottomSheet`, `PlusAsyncButton`, `PlusConfirmationDialog` |
 | Global toasts | `PlusToastHost`, `PlusSnackbar` (no context from Cubits) |
+| Floating window | `PlusFloatingWindowHost` + Focus timer on Settings (PiP on tab change) |
 | Connectivity | Built-in checker + inline banner below app bar (Settings “Force offline”) |
 | Product gates | Maintenance / session / permission toggles in Settings |
 | Activity feed | Second `ScaffoldPlus` + Bloc mapping surface |
+| Component gallery | **Components** tab — per-widget demos and capabilities |
 
 ## Architecture
 

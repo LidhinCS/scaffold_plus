@@ -104,6 +104,19 @@ class SettingsPage extends StatelessWidget {
             },
           ),
           const Divider(),
+          const _SectionHeader('Focus timer'),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: _FocusTimerPanel(),
+          ),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
+            child: Text(
+              'Start the timer, then switch to Tasks or Activity — '
+              'the panel detaches into a resizable floating window.',
+            ),
+          ),
+          const Divider(),
           const _SectionHeader('About'),
           const ListTile(
             leading: Icon(Icons.info_outline_rounded),
@@ -114,6 +127,148 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Demo of [PlusFloatingWindow] — detach on navigate while active.
+class _FocusTimerPanel extends StatefulWidget {
+  const new();
+
+  @override
+  State<_FocusTimerPanel> createState() => _FocusTimerPanelState();
+}
+
+class _FocusTimerPanelState extends State<_FocusTimerPanel> {
+  late final PlusFloatingWindowController _controller =
+      PlusFloatingWindowController(
+        initialSize: const Size(260, 180),
+        minSize: const Size(200, 150),
+        maxSize: const Size(360, 320),
+      );
+
+  int _seconds = 25 * 60;
+  bool _running = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _toggle() {
+    setState(() => _running = !_running);
+    if (_running) {
+      _tick();
+    }
+  }
+
+  void _tick() {
+    Future<void>.delayed(const Duration(seconds: 1), () {
+      if (!mounted || !_running) {
+        return;
+      }
+      setState(() {
+        if (_seconds > 0) {
+          _seconds -= 1;
+        } else {
+          _running = false;
+        }
+      });
+      if (_running) {
+        _tick();
+      }
+    });
+  }
+
+  void _reset() {
+    setState(() {
+      _running = false;
+      _seconds = 25 * 60;
+    });
+  }
+
+  String get _label {
+    final m = (_seconds ~/ 60).toString().padLeft(2, '0');
+    final s = (_seconds % 60).toString().padLeft(2, '0');
+    return '$m:$s';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
+    // Tabs share one route (IndexedStack) — float when leaving Settings
+    // while the timer is running (route-aware float still covers pushes).
+    return BlocListener<AppShellCubit, AppShellState>(
+      listenWhen: (previous, current) => previous.tabIndex != current.tabIndex,
+      listener: (context, state) {
+        const settingsTab = 3;
+        if (state.tabIndex != settingsTab &&
+            _running &&
+            !_controller.isFloating) {
+          _controller.enterFloating();
+        } else if (state.tabIndex == settingsTab && _controller.isFloating) {
+          _controller.expand();
+        }
+      },
+      child: PlusFloatingWindow(
+        controller: _controller,
+        title: 'Focus timer',
+        // Tab shell shares one route; float via BlocListener / Float now.
+        autoFloatOnRouteExit: false,
+        onDismiss: () {
+          if (mounted) {
+            setState(() => _running = false);
+          }
+        },
+        builder: (context, {required floating}) {
+          final textStyle = floating
+              ? Theme.of(context).textTheme.titleLarge
+              : Theme.of(context).textTheme.headlineMedium;
+          return Material(
+            color: floating ? colors.surface : colors.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(12),
+            child: Padding(
+              padding: EdgeInsets.all(floating ? 8 : 16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    _label,
+                    style: textStyle?.copyWith(
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: floating ? 4 : 12),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 4,
+                    alignment: WrapAlignment.center,
+                    children: [
+                      FilledButton.tonal(
+                        onPressed: _toggle,
+                        child: Text(_running ? 'Pause' : 'Start'),
+                      ),
+                      OutlinedButton(
+                        onPressed: _reset,
+                        child: const Text('Reset'),
+                      ),
+                      if (!floating)
+                        TextButton(
+                          onPressed: _controller.enterFloating,
+                          child: const Text('Float now'),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

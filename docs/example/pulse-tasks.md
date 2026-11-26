@@ -24,6 +24,8 @@ app. Source: [`example/`](https://github.com/LidhinCS/ui_plus/tree/main/example)
 | Search + paging | `PlusSearchField`, `PlusPagedList` |
 | Create / delete | `PlusBottomSheet`, `PlusAsyncButton`, `PlusConfirmationDialog` |
 | Global toasts | `PlusToastHost`, `PlusSnackbar` (from Cubits, no context) |
+| Floating window | `PlusFloatingWindowHost` + Settings Focus timer (PiP on tab change) |
+| Component gallery | **Components** tab — live demos of each public widget |
 | Connectivity | Built-in checker + inline banner below app bar (Settings “Force offline”) |
 | Product gates | Maintenance / session / permission toggles |
 | Activity feed | Second `ScaffoldPlus` + Cubit mapping |
@@ -60,7 +62,7 @@ edge. Core `ui_plus` stays free of Bloc.
 
 | File | Role |
 | --- | --- |
-| `lib/main.dart` | `PlusToastHost`, theme, `MultiBlocProvider` |
+| `lib/main.dart` | `PlusFloatingWindowHost`, `PlusToastHost`, theme, `MultiBlocProvider` |
 | `lib/app.dart` | `PlusAdaptiveScaffold` shell |
 | `lib/data/task_repository.dart` | Fake API — latency, paging, search, failures |
 | `lib/cubit/tasks_cubit.dart` | Inbox load / search / page / mutate |
@@ -101,7 +103,9 @@ BlocBuilder<TasksCubit, TasksState>(
 // main.dart
 MaterialApp(
   scaffoldMessengerKey: PlusToastHost.messengerKey,
-  builder: (context, child) => PlusToastHost(child: child!),
+  builder: (context, child) => PlusFloatingWindowHost(
+    child: PlusToastHost(child: child!),
+  ),
   // ...
 )
 

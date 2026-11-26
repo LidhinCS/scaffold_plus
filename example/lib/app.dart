@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:ui_plus/ui_plus.dart';
 import 'package:ui_plus_example/cubit/app_shell_cubit.dart';
 import 'package:ui_plus_example/features/activity/activity_page.dart';
+import 'package:ui_plus_example/features/components/components_page.dart';
 import 'package:ui_plus_example/features/settings/settings_page.dart';
 import 'package:ui_plus_example/features/tasks/tasks_page.dart';
 
@@ -23,6 +24,11 @@ class PulseTasksAppShell extends StatelessWidget {
       label: 'Activity',
     ),
     PlusNavigationDestination(
+      icon: Icon(Icons.widgets_outlined),
+      selectedIcon: Icon(Icons.widgets_rounded),
+      label: 'Components',
+    ),
+    PlusNavigationDestination(
       icon: Icon(Icons.settings_outlined),
       selectedIcon: Icon(Icons.settings_rounded),
       label: 'Settings',
@@ -40,7 +46,12 @@ class PulseTasksAppShell extends StatelessWidget {
           onDestinationSelected: context.read<AppShellCubit>().selectTab,
           body: IndexedStack(
             index: state.tabIndex,
-            children: const [TasksPage(), ActivityPage(), SettingsPage()],
+            children: const [
+              TasksPage(),
+              ActivityPage(),
+              ComponentsPage(),
+              SettingsPage(),
+            ],
           ),
         );
       },

@@ -10,7 +10,7 @@ run the Pulse Tasks example.
 
 ## 1. Install
 
-UI Plus **1.0.0** (stable) uses the standalone
+UI Plus **1.1.0** (stable) uses the standalone
 [`material_ui`](https://pub.dev/packages/material_ui) package (Flutter 3.47+),
 not `package:flutter/material.dart`. Migrating an app:
 
@@ -76,14 +76,17 @@ MaterialApp(
 
 ## 4. Global toasts (optional)
 
-Wire [PlusToastHost](guides/feedback.md#global-toasts-optional) once so Cubits /
+Wire [PlusFloatingWindowHost](guides/floating-window.md) (optional) and
+[PlusToastHost](guides/feedback.md#global-toasts-optional) once so Cubits /
 services can call `PlusSnackbar` without a `BuildContext`. Skip if you always
 pass `context:` at the call site:
 
 ```dart
 MaterialApp(
   scaffoldMessengerKey: PlusToastHost.messengerKey,
-  builder: (context, child) => PlusToastHost(child: child!),
+  builder: (context, child) => PlusFloatingWindowHost(
+    child: PlusToastHost(child: child!),
+  ),
   home: const HomePage(),
 );
 

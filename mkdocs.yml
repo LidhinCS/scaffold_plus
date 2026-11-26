@@ -89,6 +89,7 @@ nav:
       - Feedback & toasts: guides/feedback.md
       - State management: guides/state-management.md
       - Lists, search & shell: guides/productivity.md
+      - Floating window: guides/floating-window.md
   - API reference: reference.md
   - Roadmap: roadmap.md
 

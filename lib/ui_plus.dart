@@ -24,6 +24,10 @@ export 'src/dialogs/plus_confirmation_dialog.dart';
 export 'src/dialogs/plus_dialog.dart';
 export 'src/feedback/plus_snackbar.dart';
 export 'src/feedback/plus_toast_host.dart' show PlusToastHost;
+export 'src/floating/plus_floating_window.dart';
+export 'src/floating/plus_floating_window_controller.dart';
+export 'src/floating/plus_floating_window_host.dart'
+    show PlusFloatingWindowHost, PlusFloatingWindowHostScope;
 export 'src/inputs/plus_search_field.dart';
 export 'src/lists/plus_paged_list.dart';
 export 'src/loaders/plus_loader.dart';

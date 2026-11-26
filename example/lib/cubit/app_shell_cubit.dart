@@ -12,7 +12,8 @@ final class AppShellState extends Equatable {
     this.forceOffline = false,
   });
 
-  /// Selected adaptive destination (0 Tasks, 1 Activity, 2 Settings).
+  /// Selected adaptive destination
+  /// (0 Tasks, 1 Activity, 2 Components, 3 Settings).
   final int tabIndex;
 
   /// When false, session-expired UI should activate on gated tabs.

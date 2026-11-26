@@ -2,8 +2,8 @@
 
 > **Role:** Central development roadmap for `ui_plus`.  
 > **Branding:** UI Plus — More power to your Flutter UI.  
-> **Last verified against source:** 2026-11-24 (lib exports, tests, example, docs).  
-> **Package version in `pubspec.yaml`:** `1.0.0`
+> **Last verified against source:** 2026-11-26 (lib exports, tests, example, docs).  
+> **Package version in `pubspec.yaml`:** `1.1.0`
 
 Modular, architecture-agnostic Flutter UI toolkit for reusable components,
 application states, connectivity presentation, and productivity utilities.
@@ -51,6 +51,7 @@ Flagship widget remains `ScaffoldPlus`.
 | **v0.5.0** Product gates + polish | Maintenance/session/permission, internet checker, toast host, Pulse Tasks, docs | **Completed** | `0.5.0` |
 | **v0.6.0** material_ui + inline banner | Standalone Material + body connectivity banner | **Completed** | `0.6.0` |
 | **v1.0.0** Stable Release | API freeze + pub.dev readiness | **Completed** | `1.0.0` |
+| **v1.1.0** Floating window | PiP-style detachable overlay | **Completed** | `1.1.0` |
 
 **In Progress:** none.
 
@@ -417,6 +418,22 @@ docs site, pub.dev screenshots.
 
 ---
 
+## v1.1.0 — Floating window (PiP-style overlay)
+
+### PlusFloatingWindowHost / Controller / Window
+
+| Field | Detail |
+| --- | --- |
+| **Purpose** | Multi-step attach → navigate → float → resize/dismiss pattern without system PiP APIs. |
+| **Public API** | `PlusFloatingWindowHost`, `PlusFloatingWindowHostScope`, `PlusFloatingWindowController`, `PlusFloatingWindow`, `PlusFloatingWindowContentBuilder` |
+| **Main functionality** | Root host under `MaterialApp.builder`; page-local window with builder/placeholder; auto-float on route exit when active; drag + corner resize with min/max and screen clamps; expand/dismiss. |
+| **Dependencies** | Flutter SDK + `material_ui` |
+| **Testing** | `test/src/floating/plus_floating_window_test.dart` |
+| **Example / docs** | Pulse Tasks Settings Focus timer; `docs/guides/floating-window.md` |
+| **Status** | **Completed** |
+
+---
+
 # In Progress
 
 _None._
@@ -538,6 +555,9 @@ From `lib/ui_plus.dart`:
 - Actions: `PlusAsyncButton`, `PlusAsyncButtonVariant`
 - Dialogs: `PlusDialog`, `PlusConfirmationDialog`
 - Feedback: `PlusSnackbar`, `PlusSnackbarTone`
+- Floating: `PlusFloatingWindowHost`, `PlusFloatingWindowHostScope`,
+  `PlusFloatingWindowController`, `PlusFloatingWindow`,
+  `PlusFloatingWindowContentBuilder`
 - Inputs: `PlusSearchField`
 - Lists: `PlusPagedList`
 - Loaders: `PlusLoader`, `PlusSkeleton`
@@ -552,10 +572,9 @@ From `lib/ui_plus.dart`:
 
 ## Recommended implementation order (next)
 
-1. Publish / tag `1.0.0` on pub.dev when approved.
-2. Confirm GitHub Pages docs are live at
-   `https://lidhincs.github.io/ui_plus/`.
-3. Post-1.0: schedule Advanced UI / companion packages only with a written
+1. Publish / tag `1.1.0` on pub.dev when approved.
+2. Confirm GitHub Pages docs include the floating-window guide.
+3. Further minors: Advanced UI / companion packages only with a written
    uniqueness value case (see Planned / Future Considerations).
 
 ---

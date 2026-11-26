@@ -57,7 +57,8 @@ class _PulseTasksAppState extends State<PulseTasksApp> {
           title: 'Pulse Tasks',
           debugShowCheckedModeBanner: false,
           scaffoldMessengerKey: PlusToastHost.messengerKey,
-          builder: (context, child) => PlusToastHost(child: child!),
+          builder: (context, child) =>
+              PlusFloatingWindowHost(child: PlusToastHost(child: child!)),
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
             useMaterial3: true,

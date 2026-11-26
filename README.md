@@ -21,7 +21,8 @@ into an architecture.
 
 ## Status
 
-**v1.0.0** — stable public API. Built on Flutter 3.47+ /
+**v1.1.0** — stable public API plus floating-window (PiP) overlay and an
+example **Components** gallery. Built on Flutter 3.47+ /
 [`material_ui`](https://pub.dev/packages/material_ui), with inline connectivity
 banners below the app bar. Flagship entry is `ScaffoldPlus`; building blocks
 remain independently reusable.
@@ -41,6 +42,7 @@ remain independently reusable.
 | `PlusSkeleton` | Available |
 | `PlusSnackbar` | Available |
 | `PlusToastHost` | Available |
+| `PlusFloatingWindowHost` / `PlusFloatingWindow` | Available |
 | `PlusDialog` | Available |
 | `PlusConfirmationDialog` | Available |
 | `PlusBottomSheet` | Available |
@@ -107,7 +109,8 @@ ScaffoldPlus<void>(
 
 ### Example app
 
-**Pulse Tasks** is a Bloc showcase inbox (not a widget catalog):
+**Pulse Tasks** is a Bloc showcase inbox with a **Components** tab for
+per-widget demos:
 
 ```sh
 cd example
@@ -115,9 +118,13 @@ flutter pub get
 flutter run
 ```
 
-Cubits own domain state; widgets map to `PlusAsyncState` at the UI edge. Open
-**Settings → Developer gates** to demo maintenance, session, permission, and
-offline banners. Walkthrough: [docs][docs_pulse_link].
+Cubits own domain state; widgets map to `PlusAsyncState` at the UI edge.
+
+- **Components** — live demos of each public `ui_plus` widget and what it does
+- **Settings → Developer gates** — maintenance, session, permission, offline
+- **Settings → Focus timer** — `PlusFloatingWindow` (float while switching tabs)
+
+Walkthrough: [docs][docs_pulse_link].
 
 ## Components
 
@@ -211,6 +218,26 @@ PlusConnectivityBuilder(
 
 Also: `PlusInternetChecker` (plugin-free reachability), `PlusConnectivityBanner`,
 `PlusConnectivityConfig` / `PlusConnectivityBannerLayout`.
+
+### Floating window
+
+```dart
+MaterialApp(
+  builder: (context, child) => PlusFloatingWindowHost(
+    child: PlusToastHost(child: child!),
+  ),
+  home: const HomePage(),
+);
+
+PlusFloatingWindow(
+  controller: controller,
+  title: 'Focus timer',
+  builder: (context, {required floating}) => TimerView(compact: floating),
+);
+```
+
+Detach on navigate while active; drag / resize / dismiss in the host overlay.
+See the [floating window guide](https://lidhincs.github.io/ui_plus/guides/floating-window/).
 
 ### Feedback
 
