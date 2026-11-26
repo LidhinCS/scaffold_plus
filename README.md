@@ -21,7 +21,7 @@ into an architecture.
 
 ## Status
 
-**v1.3.0** — stable public API plus floating-window (PiP) overlay,
+**v1.2.0** — stable public API plus floating-window (PiP) overlay,
 `PlusFeedback`, `PlusErrorBoundary`, and an example **Components** gallery.
 Built on Flutter 3.47+ / [`material_ui`](https://pub.dev/packages/material_ui),
 with inline connectivity banners below the app bar. Flagship entry is

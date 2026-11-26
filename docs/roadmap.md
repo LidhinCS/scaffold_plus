@@ -16,8 +16,7 @@ in the repository.
 | v1.0.0 | API freeze + pub.dev readiness | Released |
 | v1.1.0 | Floating window (PiP-style overlay) | Released |
 | v1.1.1 | Preview screenshots (toast, float, dialog, session) | Released |
-| v1.2.0 | PlusFeedback result helper | Released |
-| v1.3.0 | PlusErrorBoundary presentable ErrorWidget | Released |
+| v1.2.0 | PlusFeedback + PlusErrorBoundary | Released |
 
 ## Uniqueness bar
 

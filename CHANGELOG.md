@@ -7,14 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.3.0] - 2026-11-27
+## [1.2.0] - 2026-11-27
 
 ### Added
 
+- `PlusFeedback` — result helper that maps success / failure / `Exception` to
+  `PlusSnackbar` (optional blocking `PlusDialog` for hard errors), including
+  `run`, `result`, `success`, `failure`, and `exception`.
 - `PlusErrorBoundary` / `PlusErrorBoundaryView` — replace Flutter’s red
   `ErrorWidget` with a presentable `PlusErrorState` layout (debug shows
   exception text; release stays friendly). Call `PlusErrorBoundary.install()`
   once in `main`.
+- Pulse Tasks create/delete and Components gallery demos for `PlusFeedback` /
+  `PlusErrorBoundary`.
 
 ### Fixed
 
@@ -23,16 +28,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README floating-window GIF restored to the same 1206×2622 resolution as the
   other preview screenshots (a 402px-wide compress made it look smaller in the
   published table).
-
-## [1.2.0] - 2026-11-26
-
-### Added
-
-- `PlusFeedback` — result helper that maps success / failure / `Exception` to
-  `PlusSnackbar` (optional blocking `PlusDialog` for hard errors), including
-  `run`, `result`, `success`, `failure`, and `exception`.
-- Pulse Tasks create/delete and Components gallery demo wired through
-  `PlusFeedback`.
 
 ## [1.1.1] - 2026-11-26
 
